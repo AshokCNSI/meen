@@ -1,0 +1,69 @@
+import { Component, OnInit } from '@angular/core';
+
+import { Platform } from '@ionic/angular';
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { StatusBar } from '@ionic-native/status-bar/ngx';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: 'app.component.html',
+  styleUrls: ['app.component.scss']
+})
+export class AppComponent implements OnInit {
+  public selectedIndex = 0;
+  public appPages = [
+    {
+      title: 'Stock',
+      url: '/folder/Inbox',
+      icon: 'basket'
+    },
+    {
+      title: 'Cutomers',
+      url: '/folder/Outbox',
+      icon: 'happy'
+    },
+    {
+      title: 'Orders',
+      url: '/folder/Favorites',
+      icon: 'cart'
+    },
+    {
+      title: 'Discounts',
+      url: '/folder/Archived',
+      icon: 'megaphone'
+    },
+    {
+      title: 'Notification',
+      url: '/folder/Trash',
+      icon: 'notifications'
+    },
+    {
+      title: 'Help',
+      url: '/folder/Spam',
+      icon: 'information'
+    }
+  ];
+  public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
+
+  constructor(
+    private platform: Platform,
+    private splashScreen: SplashScreen,
+    private statusBar: StatusBar
+  ) {
+    this.initializeApp();
+  }
+
+  initializeApp() {
+    this.platform.ready().then(() => {
+      this.statusBar.styleDefault();
+      this.splashScreen.hide();
+    });
+  }
+
+  ngOnInit() {
+    const path = window.location.pathname.split('folder/')[1];
+    if (path !== undefined) {
+      this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
+    }
+  }
+}

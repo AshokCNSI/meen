@@ -1,0 +1,7 @@
+{
+  "name": "meen",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
