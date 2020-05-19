@@ -1,9 +1,60 @@
-<ion-header>
+<ion-header translucent>
   <ion-toolbar>
+	<ion-buttons slot="start">
+		<ion-back-button defaultHref="/"></ion-back-button>
+	</ion-buttons>
     <ion-title>Login</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+	<ion-row>
+      <ion-col>
+         <div class="vertical-center">
+            <div class="center">
+               <img src="assets//img//logo//logo.png"/>
+            </div>
+         </div>
+      </ion-col>
+   </ion-row>
+   <ion-row>
+      <ion-col>
+         <ion-item lines="none" class="font-size-25px">
+            <ion-label>Delight with your <b>Login</b></ion-label>
+         </ion-item>
+      </ion-col>
+   </ion-row>
+   <form #form="ngForm" (ngSubmit)="login(form)">
+   <ion-row>
+      <ion-col>
+         <ion-item>
+            <ion-label floating>Username</ion-label>
+            <ion-input type="text"></ion-input>
+         </ion-item>
+      </ion-col>
+   </ion-row>
+   <ion-row>
+      <ion-col>
+         <ion-item>
+            <ion-label floating>Password</ion-label>
+            <ion-input type="password"></ion-input>
+         </ion-item>
+      </ion-col>
+   </ion-row>
+   <ion-row>
+	  <ion-col style="text-align:center;">
+         <ion-button>Delight me in.</ion-button>
+      </ion-col>
+   </ion-row>
+   <ion-row>
+	  <ion-col style="text-align:center;">
+         <ion-label>Or</ion-label>
+      </ion-col>
+   </ion-row>
+   <ion-row>
+	  <ion-col style="text-align:center;">
+         <ion-router-link href="#" class="underline">SignUp</ion-router-link>
+      </ion-col>
+   </ion-row>
+   </form>
 </ion-content>
