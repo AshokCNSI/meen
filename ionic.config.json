@@ -1,7 +1,8 @@
 {
   "name": "meen",
   "integrations": {
-    "capacitor": {}
+    "capacitor": {},
+    "cordova": {}
   },
   "type": "angular"
 }

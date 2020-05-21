@@ -20,32 +20,42 @@
    <ion-row>
       <ion-col>
          <ion-item lines="none" class="font-size-25px text-align-center">
-            <ion-label>Delight with your <b>Login</b></ion-label>
+            <ion-label>Delight with your <b>Presence</b></ion-label>
          </ion-item>
       </ion-col>
    </ion-row>
-   <form #form="ngForm" (ngSubmit)="login(form)">
+
+   <form [formGroup]="formData" (ngSubmit)="register(form)" novalidate id="registerFrom">
 	<ion-item>
 	  <ion-label position="floating">Email</ion-label>
-	  <ion-input></ion-input>
-	</ion-item>
-	<ion-item>
-	  <ion-label position="floating">Password</ion-label>
-	  <ion-input></ion-input>
-	</ion-item>
-	<ion-item>
-	  <ion-label position="floating">Mobile</ion-label>
-	  <ion-input></ion-input>
-	</ion-item>
-	<ion-item>
-	  <ion-label position="floating">Customer Name</ion-label>
-	  <ion-input></ion-input>
+	  <ion-input formControlName="email" type="email" required></ion-input>
 	</ion-item>
 	
+	<ion-item>
+	  <ion-label position="floating">Password</ion-label>
+	  <ion-input formControlName="password" type="password" required></ion-input>
+	</ion-item>
    <ion-row>
 	  <ion-col style="text-align:center;">
-         <ion-button>Get me Delighted</ion-button>
+         <ion-button type="submit">Get me Delighted</ion-button>
       </ion-col>
    </ion-row>
+   <div *ngIf="isSubmitted && errorControl.email.errors?.required"
+		class="validator-error">
+	  Enter your Email.
+	</div>
+	<div *ngIf="isSubmitted && errorControl.email.errors?.pattern"
+		class="validator-error">
+	  Please enter a valid Email.
+	</div>
+	<div *ngIf="isSubmitted && errorControl.password.errors?.required"
+		class="validator-error">
+	  Enter your Password for security.
+	</div>
+	<div *ngIf="isSubmitted && errorControl.password.errors?.minlength"
+		class="validator-error">
+	  Password length should be minimun 8 Character.
+	</div>
+	
    </form>
 </ion-content>

@@ -1,4 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Injectable } from '@angular/core';
+import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
+import { AngularFireAuth } from '@angular/fire/auth';
+import * as firebase from 'firebase';
+import { environment } from '../../environments/environment';
+import{ Validators, FormBuilder, FormGroup, FormControl }from'@angular/forms';
+import { AlertController } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { AuthenticateService } from '../authentication.service';
+
+
+@Injectable({
+  providedIn: 'root'
+})
 
 @Component({
   selector: 'app-login',
@@ -7,9 +21,47 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginPage implements OnInit {
 
-  constructor() { }
+  constructor(public alertCtrl: AlertController, public fAuth: AngularFireAuth, public formBuilder: FormBuilder, private navController: NavController, private router: Router, private authService: AuthenticateService) { }
 
   ngOnInit() {
+	  firebase.initializeApp(environment.firebase);
+  }
+  
+  formData: FormGroup;
+  isSubmitted = false;
+  firebaseErrors = false;
+  firebaseErrorMessage = "";
+  
+  async presentAlert(status, msg) {
+    const alert = await this.alertCtrl.create({
+      header: status,
+      message: msg,
+      buttons: ['Ok']
+    });
+    await alert.present();
   }
 
+  formData = this.formBuilder.group({
+       email: ['', [Validators.required, Validators.pattern('^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$')]],
+	   password: ['', [Validators.required, Validators.minLength(8)]],
+	});
+	
+	get errorControl() {
+		return this.formData.controls;
+	  }
+  
+  login(form) {
+	  this.isSubmitted = true;
+	  if (!this.formData.valid) {
+		return false;
+	  } else {
+		  
+		this.authService.loginUser(this.formData.value.email, this.formData.value.password)
+		  .then(res => {
+			this.navController.navigateRoot('/folder/inbox');
+		  }, error => {
+			this.presentAlert('Error',error.message);
+		  })
+	  }
+  }
 }
