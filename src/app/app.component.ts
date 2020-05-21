@@ -4,6 +4,14 @@ import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
+import { environment } from '../environments/environment';
+import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
+import { AngularFireAuth } from '@angular/fire/auth';
+import * as firebase from 'firebase';
+import { AuthenticateService } from './authentication.service';
+import { NavController } from '@ionic/angular';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -12,6 +20,11 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 export class AppComponent implements OnInit {
   public selectedIndex = 0;
   public appPages = [
+	{
+      title: 'Profile',
+      url: '/folder/Inbox',
+      icon: 'people'
+    },
     {
       title: 'Stock',
       url: '/folder/Inbox',
@@ -48,9 +61,13 @@ export class AppComponent implements OnInit {
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
-    private statusBar: StatusBar
+    private statusBar: StatusBar,
+	private authService: AuthenticateService,
+	private navController: NavController, 
+	private router: Router
   ) {
     this.initializeApp();
+	firebase.initializeApp(environment.firebase);
   }
 
   initializeApp() {
@@ -65,5 +82,28 @@ export class AppComponent implements OnInit {
     if (path !== undefined) {
       this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
     }
+	
+	this.authService.userDetails().subscribe(res => {
+      console.log('res', res);
+      if (res !== null) {
+        this.userEmail = res.email;
+      } else {
+       
+      }
+    }, err => {
+      console.log('err', err);
+    })
+  }
+  
+  logout() {
+	  this.authService.logoutUser()
+      .then(res => {
+        console.log(res);
+		this.userEmail = null;
+        this.navController.navigateBack('');
+      })
+      .catch(error => {
+        console.log(error);
+      })
   }
 }

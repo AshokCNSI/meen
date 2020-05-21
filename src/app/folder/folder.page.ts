@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import * as firebase from 'firebase';
 import { ActivatedRoute } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AuthenticateService } from '../authentication.service';
@@ -15,7 +16,6 @@ export class FolderPage implements OnInit {
 
   ngOnInit() {
     this.folder = this.activatedRoute.snapshot.paramMap.get('id');
-	
 	this.authService.userDetails().subscribe(res => {
       console.log('res', res);
       if (res !== null) {
@@ -27,5 +27,4 @@ export class FolderPage implements OnInit {
       console.log('err', err);
     })
   }
-
 }

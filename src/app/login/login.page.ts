@@ -1,8 +1,6 @@
 import { Component, OnInit, Injectable } from '@angular/core';
 import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
 import { AngularFireAuth } from '@angular/fire/auth';
-import * as firebase from 'firebase';
-import { environment } from '../../environments/environment';
 import{ Validators, FormBuilder, FormGroup, FormControl }from'@angular/forms';
 import { AlertController } from '@ionic/angular';
 import { NavController } from '@ionic/angular';
@@ -24,7 +22,7 @@ export class LoginPage implements OnInit {
   constructor(public alertCtrl: AlertController, public fAuth: AngularFireAuth, public formBuilder: FormBuilder, private navController: NavController, private router: Router, private authService: AuthenticateService) { }
 
   ngOnInit() {
-	  firebase.initializeApp(environment.firebase);
+	  
   }
   
   formData: FormGroup;
