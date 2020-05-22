@@ -5,6 +5,7 @@ import{ Validators, FormBuilder, FormGroup, FormControl }from'@angular/forms';
 import { AlertController } from '@ionic/angular';
 import { NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import * as firebase from 'firebase';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,6 @@ export class RegisterPage implements OnInit {
 
   }
   
-  formData: FormGroup;
   isSubmitted = false;
   firebaseErrors = false;
   firebaseErrorMessage = "";

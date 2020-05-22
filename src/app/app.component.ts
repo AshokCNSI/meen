@@ -19,7 +19,24 @@ import { Router } from '@angular/router';
 })
 export class AppComponent implements OnInit {
   public selectedIndex = 0;
-  public appPages = [
+  public commonMenus = [
+	{
+      title: 'Discounts',
+      url: '/folder/Archived',
+      icon: 'megaphone'
+    },
+    {
+      title: 'Notification',
+      url: '/folder/Trash',
+      icon: 'notifications'
+    },
+    {
+      title: 'Help',
+      url: '/folder/Spam',
+      icon: 'information'
+    }
+  ];
+  public adminMenus = [
 	{
       title: 'Profile',
       url: '/folder/Inbox',
@@ -39,24 +56,22 @@ export class AppComponent implements OnInit {
       title: 'Orders',
       url: '/folder/Favorites',
       icon: 'cart'
+    }
+  ];
+  public customerMenus = [
+	{
+      title: 'My Profile',
+      url: '/folder/Inbox',
+      icon: 'people'
     },
     {
-      title: 'Discounts',
-      url: '/folder/Archived',
-      icon: 'megaphone'
-    },
-    {
-      title: 'Notification',
-      url: '/folder/Trash',
-      icon: 'notifications'
-    },
-    {
-      title: 'Help',
-      url: '/folder/Spam',
-      icon: 'information'
+      title: 'My Orders',
+      url: '/folder/Inbox',
+      icon: 'basket'
     }
   ];
   public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
+  public menuList = [];
 
   constructor(
     private platform: Platform,
@@ -64,10 +79,10 @@ export class AppComponent implements OnInit {
     private statusBar: StatusBar,
 	private authService: AuthenticateService,
 	private navController: NavController, 
-	private router: Router
+	private router: Router,
+	private db: AngularFireDatabase
   ) {
     this.initializeApp();
-	firebase.initializeApp(environment.firebase);
   }
 
   initializeApp() {
@@ -80,16 +95,46 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     const path = window.location.pathname.split('folder/')[1];
     if (path !== undefined) {
-      this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
+      //this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
     }
+	let menuRes = this.db.list('/menu', ref => ref.orderByChild('order'));
+	menuRes.snapshotChanges().subscribe(res => {
+      this.menuList = [];
+      res.forEach(item => {
+        let a = item.payload.toJSON();
+        a['$key'] = item.key;
+		if(this.userEmail == null && a.type == 'C') {
+			this.menuList.push(a);
+		} else if(this.userEmail != null && this.userEmail == 'admin@meen.org' && (a.type == 'C' || a.type == 'A')) {
+			this.menuList.push(a);
+		} else if(this.userEmail != null && this.userEmail != 'admin@meen.org' && (a.type == 'C' || a.type == 'D')) {
+			this.menuList.push(a);
+		}
+      })
+    });
 	
-	this.authService.userDetails().subscribe(res => {
+	this.authService.userDetails().subscribe(res => { 
       console.log('res', res);
       if (res !== null) {
         this.userEmail = res.email;
       } else {
        
       }
+	  
+	  menuRes.snapshotChanges().subscribe(res => {
+		  this.menuList = [];
+		  res.forEach(item => {
+			let a = item.payload.toJSON();
+			a['$key'] = item.key;
+			if(this.userEmail == null && a.type == 'C') {
+				this.menuList.push(a);
+			} else if(this.userEmail != null && this.userEmail == 'admin@meen.org' && (a.type == 'C' || a.type == 'A')) {
+				this.menuList.push(a);
+			} else if(this.userEmail != null && this.userEmail != 'admin@meen.org' && (a.type == 'C' || a.type == 'D')) {
+				this.menuList.push(a);
+			}
+		  })
+		});
     }, err => {
       console.log('err', err);
     })

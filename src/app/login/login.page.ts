@@ -25,7 +25,6 @@ export class LoginPage implements OnInit {
 	  
   }
   
-  formData: FormGroup;
   isSubmitted = false;
   firebaseErrors = false;
   firebaseErrorMessage = "";

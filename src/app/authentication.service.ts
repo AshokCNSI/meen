@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +8,8 @@ import { AngularFireAuth } from '@angular/fire/auth';
 export class AuthenticateService {
 
   constructor(
-    private afAuth: AngularFireAuth
+    private afAuth: AngularFireAuth,
+	private firestore: AngularFirestore
   ) { }
 
   registerUser(value) {
@@ -46,5 +48,9 @@ export class AuthenticateService {
 
   userDetails() {
     return this.afAuth.user
+  }
+  
+  read_menu() {
+    return this.firestore.collection('menu').snapshotChanges();
   }
 }
