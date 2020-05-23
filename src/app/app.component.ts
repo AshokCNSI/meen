@@ -19,60 +19,11 @@ import { Router } from '@angular/router';
 })
 export class AppComponent implements OnInit {
   public selectedIndex = 0;
-  public commonMenus = [
-	{
-      title: 'Discounts',
-      url: '/folder/Archived',
-      icon: 'megaphone'
-    },
-    {
-      title: 'Notification',
-      url: '/folder/Trash',
-      icon: 'notifications'
-    },
-    {
-      title: 'Help',
-      url: '/folder/Spam',
-      icon: 'information'
-    }
-  ];
-  public adminMenus = [
-	{
-      title: 'Profile',
-      url: '/folder/Inbox',
-      icon: 'people'
-    },
-    {
-      title: 'Stock',
-      url: '/folder/Inbox',
-      icon: 'basket'
-    },
-    {
-      title: 'Cutomers',
-      url: '/folder/Outbox',
-      icon: 'happy'
-    },
-    {
-      title: 'Orders',
-      url: '/folder/Favorites',
-      icon: 'cart'
-    }
-  ];
-  public customerMenus = [
-	{
-      title: 'My Profile',
-      url: '/folder/Inbox',
-      icon: 'people'
-    },
-    {
-      title: 'My Orders',
-      url: '/folder/Inbox',
-      icon: 'basket'
-    }
-  ];
+  
   public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
   public menuList = [];
-
+  userEmail = null;
+  
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -98,6 +49,7 @@ export class AppComponent implements OnInit {
       //this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
     }
 	let menuRes = this.db.list('/menu', ref => ref.orderByChild('order'));
+	let availableStocks = this.db.list('/menu', ref => ref.orderByChild('order'));
 	menuRes.snapshotChanges().subscribe(res => {
       this.menuList = [];
       res.forEach(item => {
@@ -105,11 +57,7 @@ export class AppComponent implements OnInit {
         a['$key'] = item.key;
 		if(this.userEmail == null && a.type == 'C') {
 			this.menuList.push(a);
-		} else if(this.userEmail != null && this.userEmail == 'admin@meen.org' && (a.type == 'C' || a.type == 'A')) {
-			this.menuList.push(a);
-		} else if(this.userEmail != null && this.userEmail != 'admin@meen.org' && (a.type == 'C' || a.type == 'D')) {
-			this.menuList.push(a);
-		}
+		} 
       })
     });
 	
@@ -117,11 +65,7 @@ export class AppComponent implements OnInit {
       console.log('res', res);
       if (res !== null) {
         this.userEmail = res.email;
-      } else {
-       
-      }
-	  
-	  menuRes.snapshotChanges().subscribe(res => {
+		menuRes.snapshotChanges().subscribe(res => {
 		  this.menuList = [];
 		  res.forEach(item => {
 			let a = item.payload.toJSON();
@@ -135,6 +79,9 @@ export class AppComponent implements OnInit {
 			}
 		  })
 		});
+      } else {
+       
+      }
     }, err => {
       console.log('err', err);
     })
