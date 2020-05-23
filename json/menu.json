@@ -1,0 +1,71 @@
+[{
+        "title": "Home",
+        "path": "/home",
+        "icon": "home",
+        "order": 1,
+        "type": "C"
+    },
+    {
+        "title": "Discounts",
+        "path": "/folder/Archived",
+        "icon": "megaphone",
+        "order": 6,
+        "type": "C"
+    },
+    {
+        "title": "Notification",
+        "path": "/folder/Trash",
+        "icon": "notifications",
+        "order": 7,
+        "type": "C"
+    },
+    {
+        "title": "Help",
+        "path": "/folder/Spam",
+        "icon": "information",
+        "order": 8,
+        "type": "C"
+    },
+    {
+        "title": "Profile",
+        "path": "/folder/Inbox",
+        "icon": "people",
+        "order": 2,
+        "type": "A"
+    },
+    {
+        "title": "Stock",
+        "path": "/folder/Inbox",
+        "icon": "basket",
+        "order": 3,
+        "type": "A"
+    },
+    {
+        "title": "Cutomers",
+        "path": "/folder/Outbox",
+        "icon": "happy",
+        "order": 4,
+        "type": "A"
+    },
+    {
+        "title": "Orders",
+        "path": "/folder/Favorites",
+        "icon": "cart",
+        "order": 5,
+        "type": "A"
+    },
+    {
+        "title": "My Profile",
+        "path": "/folder/Inbox",
+        "icon": "people",
+        "order": 2,
+        "type": "D"
+    },
+    {
+        "title": "My orders",
+        "path": "/folder/Inbox",
+        "icon": "basket",
+        "order": 3,
+        "type": "D"
+    }
+]

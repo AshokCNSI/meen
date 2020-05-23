@@ -1,0 +1,194 @@
+[
+  {
+    "available": "Y",
+    "category": "CF",
+    "details": "",
+    "image-path": "",
+    "price": 100,
+    "size": [
+      "s",
+      "m",
+      "b"
+    ],
+    "stock": "",
+    "title": "Pomfret / Yeri Vaval",
+    "discount" : "Y",
+    "discount-price" : 10
+  },
+  {
+    "available": "Y",
+    "category": "CF",
+    "details": "",
+    "image-path": "",
+    "price": "100",
+    "size": [
+      "s",
+      "m",
+      "b"
+    ],
+    "stock": "",
+    "title": "Rohu fish / Kendai fish",
+    "discount" : "Y",
+    "discount-price" : 10
+  },
+  {
+    "available": "Y",
+    "category": "CF",
+    "details": "",
+    "image-path": "",
+    "price": "100",
+    "size": [
+      "s",
+      "m",
+      "b"
+    ],
+    "stock": "",
+    "title": "Karimeen",
+    "discount" : "Y",
+    "discount-price" : 10
+  },
+  {
+    "available": "Y",
+    "category": "CF",
+    "details": "",
+    "image-path": "",
+    "price": "100",
+    "size": [
+      "s",
+      "m",
+      "b"
+    ],
+    "stock": "",
+    "title": "Catla fish / Katla Kendai",
+    "discount" : "Y",
+    "discount-price" : 10
+  },
+  {
+    "available": "Y",
+    "category": "CF",
+    "details": "",
+    "image-path": "",
+    "price": "100",
+    "size": [
+      "s",
+      "m",
+      "b"
+    ],
+    "stock": "",
+    "title": "Indian Basa Fish",
+    "discount" : "Y",
+    "discount-price" : 10
+  },
+  {
+    "available": "Y",
+    "category": "CF",
+    "details": "",
+    "image-path": "",
+    "price": "100",
+    "size": [
+      "s",
+      "m",
+      "b"
+    ],
+    "stock": "",
+    "title": "Cobia / Nei meen Boneless",
+    "discount" : "Y",
+    "discount-price" : 10
+  },
+  {
+    "available": "Y",
+    "category": "SF",
+    "details": "",
+    "image-path": "",
+    "price": "100",
+    "size": [
+      "s",
+      "m",
+      "b"
+    ],
+    "stock": "",
+    "title": "Mathi",
+    "discount" : "Y",
+    "discount-price" : 10
+  },
+  {
+    "available": "Y",
+    "category": "SF",
+    "details": "",
+    "image-path": "",
+    "price": "100",
+    "size": [
+      "s",
+      "m",
+      "b"
+    ],
+    "stock": "",
+    "title": "Aylai fish",
+    "discount" : "Y",
+    "discount-price" : 10
+  },
+  {
+    "available": "Y",
+    "category": "SF",
+    "details": "",
+    "image-path": "",
+    "price": "100",
+    "size": [
+      "s",
+      "m",
+      "b"
+    ],
+    "stock": "",
+    "title": "Red Mullet / Nagarai",
+    "discount" : "Y",
+    "discount-price" : 10
+  },
+  {
+    "available": "Y",
+    "category": "SF",
+    "details": "",
+    "image-path": "",
+    "price": "100",
+    "size": [
+      "s",
+      "m",
+      "b"
+    ],
+    "stock": "",
+    "title": "Vaala meen",
+    "discount" : "Y",
+    "discount-price" : 10
+  },
+  {
+    "available": "Y",
+    "category": "CF",
+    "details": "",
+    "image-path": "",
+    "price": "100",
+    "size": [
+      "s",
+      "m",
+      "b"
+    ],
+    "stock": "",
+    "title": "Rock Lobster",
+    "discount" : "Y",
+    "discount-price" : 10
+  },
+  {
+    "available": "Y",
+    "category": "CF",
+    "details": "",
+    "image-path": "",
+    "price": "100",
+    "size": [
+      "s",
+      "m",
+      "b"
+    ],
+    "stock": "",
+    "title": "Murrel fish",
+    "discount" : "Y",
+    "discount-price" : 10
+  }
+]
