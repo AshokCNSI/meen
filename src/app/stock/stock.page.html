@@ -1,0 +1,91 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{isAdmin ? 'Stock' : 'Products'}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<ion-list *ngIf="categoryID == 0 || categoryID == 'SF'">
+		<ion-list-header>
+		  Sea Fish
+		</ion-list-header>
+		<ng-container *ngFor="let p of stockList;">
+			<ion-item *ngIf="p.category=='SF'" (click)="routeStockDetail(p.$key,p.productcode)">
+				  <ion-avatar slot="start">
+					<img alt="M" src="{{p.imagepath}}">
+				  </ion-avatar>
+				  <ion-label>
+					<h2>{{p.title}}</h2>
+					<h3>RS.{{p.price}}</h3>
+					<p>{{p.details}}</p>
+				  </ion-label>
+			</ion-item>
+		</ng-container>
+		<ng-container *ngIf="stockList.length == 0">
+			<p class="no-items">No items available</p>
+		</ng-container>
+	</ion-list>
+	<ion-list *ngIf="categoryID == 0 || categoryID == 'CF'">
+		<ion-list-header>
+		  Fresh Fish
+		</ion-list-header>
+		<ng-container *ngFor="let p of stockList;">
+			<ion-item *ngIf="p.category=='CF'" (click)="routeStockDetail(p.$key,p.productcode)">
+				  <ion-avatar slot="start">
+					<img alt="M" src="{{p.imagepath}}">
+				  </ion-avatar>
+				  <ion-label>
+					<h2>{{p.title}}</h2>
+					<h3>RS.{{p.price}}</h3>
+					<p>{{p.details}}</p>
+				  </ion-label>
+			</ion-item>
+		</ng-container>
+		<ng-container *ngIf="stockList.length == 0">
+			<p class="no-items">No items available</p>
+		</ng-container>
+	</ion-list>
+	<ion-list *ngIf="categoryID == 0 || categoryID == 'PR'">
+		<ion-list-header>
+		  Crabs
+		</ion-list-header>
+		<ng-container *ngFor="let p of stockList;">
+			<ion-item *ngIf="p.category=='CR'" (click)="routeStockDetail(p.$key,p.productcode)">
+				  <ion-avatar slot="start">
+					<img alt="M" src="{{p.imagepath}}">
+				  </ion-avatar>
+				  <ion-label>
+					<h2>{{p.title}}</h2>
+					<h3>RS.{{p.price}}</h3>
+					<p>{{p.details}}</p>
+				  </ion-label>
+			</ion-item>
+		</ng-container>
+		<ng-container *ngIf="stockList.length == 0">
+			<p class="no-items">No items available</p>
+		</ng-container>
+	</ion-list>
+	<ion-list *ngIf="categoryID == 0 || categoryID == 'CR'">
+		<ion-list-header>
+		  Prawns
+		</ion-list-header>
+		<ng-container *ngFor="let p of stockList;">
+			<ion-item *ngIf="p.category=='PR'" (click)="routeStockDetail(p.$key,p.productcode)">
+				  <ion-avatar slot="start">
+					<img alt="M" src="{{p.imagepath}}">
+				  </ion-avatar>
+				  <ion-label>
+					<h2>{{p.title}}</h2>
+					<h3>RS.{{p.price}}</h3>
+					<p>{{p.details}}</p>
+				  </ion-label>
+			</ion-item>
+		</ng-container>
+		<ng-container *ngIf="stockList.length == 0">
+			<p class="no-items" >No items available</p>
+		</ng-container>
+	</ion-list>
+</ion-content>

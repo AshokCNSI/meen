@@ -50,7 +50,34 @@ export class AuthenticateService {
     return this.afAuth.user
   }
   
+  userID : string;
+  emailID : string;
+  isAdmin : boolean;
   read_menu() {
     return this.firestore.collection('menu').snapshotChanges();
+  }
+  
+  setUserID(value : string) {
+	  this.userID = value;
+  }
+  
+  getUserID() {
+	  return this.userID;
+  }
+  
+  setEmailID(value : string) {
+	  this.emailID = value;
+  }
+  
+  getEmailID() {
+	  return this.emailID;
+  }
+  
+  setIsAdmin(value : boolean) {
+	  this.isAdmin = value;
+  }
+  
+  getIsAdmin() {
+	  return this.isAdmin;
   }
 }

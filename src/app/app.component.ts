@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
   public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
   public menuList = [];
   userEmail = null;
-  
+ 
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -44,43 +44,50 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+	
     const path = window.location.pathname.split('folder/')[1];
     if (path !== undefined) {
       //this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
     }
-	let menuRes = this.db.list('/menu', ref => ref.orderByChild('order'));
-	let availableStocks = this.db.list('/menu', ref => ref.orderByChild('order'));
-	menuRes.snapshotChanges().subscribe(res => {
-      this.menuList = [];
-      res.forEach(item => {
-        let a = item.payload.toJSON();
-        a['$key'] = item.key;
-		if(this.userEmail == null && a.type == 'C') {
-			this.menuList.push(a);
-		} 
-      })
-    });
+	let menuRes = this.db.list('/menu', ref => ref.orderByChild('order'));	
 	
 	this.authService.userDetails().subscribe(res => { 
       console.log('res', res);
       if (res !== null) {
         this.userEmail = res.email;
-		menuRes.snapshotChanges().subscribe(res => {
-		  this.menuList = [];
-		  res.forEach(item => {
-			let a = item.payload.toJSON();
-			a['$key'] = item.key;
-			if(this.userEmail == null && a.type == 'C') {
-				this.menuList.push(a);
-			} else if(this.userEmail != null && this.userEmail == 'admin@meen.org' && (a.type == 'C' || a.type == 'A')) {
-				this.menuList.push(a);
-			} else if(this.userEmail != null && this.userEmail != 'admin@meen.org' && (a.type == 'C' || a.type == 'D')) {
-				this.menuList.push(a);
+		if(this.userEmail != null) {
+			this.authService.setUserID(res.uid);
+			this.authService.setEmailID(res.email);
+			if(this.userEmail == 'admin@meen.org') {
+				console.log('user logged in as Admin');
+				this.authService.setIsAdmin(true);
+			} else {
+				this.authService.setIsAdmin(false);
 			}
-		  })
-		});
+			menuRes.snapshotChanges().subscribe(res => {
+			  this.menuList = [];
+			  res.forEach(item => {
+				let a = item.payload.toJSON();
+				a['$key'] = item.key;
+				if(this.userEmail != null && this.userEmail == 'admin@meen.org' && (a['type'] == 'C' || a['type'] == 'A')) {
+					this.menuList.push(a);
+				} else if(this.userEmail != null && this.userEmail != 'admin@meen.org' && (a['type'] == 'C' || a['type'] == 'D')) {
+					this.menuList.push(a);
+				}
+			  })
+			});
+		}
       } else {
-       
+		menuRes.snapshotChanges().subscribe(res => {
+			  this.menuList = [];
+			  res.forEach(item => {
+				let a = item.payload.toJSON();
+				a['$key'] = item.key;
+				if(this.userEmail == null && a['type'] == 'C') {
+					this.menuList.push(a);
+				} 
+			  })
+			});
       }
     }, err => {
       console.log('err', err);
@@ -91,7 +98,7 @@ export class AppComponent implements OnInit {
 	  this.authService.logoutUser()
       .then(res => {
         console.log(res);
-		this.userEmail = null;
+		this.userEmail = null;		
         this.navController.navigateBack('');
       })
       .catch(error => {

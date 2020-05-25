@@ -1,194 +1,158 @@
-[
-  {
+{
+  "10000": {
     "available": "Y",
     "category": "CF",
-    "details": "",
-    "image-path": "",
+    "details": "Ashok",
+    "discount": "Y",
+    "discountprice": 10,
+    "fishsize": "l",
+    "imagepath": "https://5.imimg.com/data5/CK/AT/MY-48934556/chinese-pomfret-fish-250x250.jpg",
     "price": 100,
-    "size": [
-      "s",
-      "m",
-      "b"
-    ],
-    "stock": "",
-    "title": "Pomfret / Yeri Vaval",
-    "discount" : "Y",
-    "discount-price" : 10
+    "productcode": "10000",
+    "stock": 100,
+    "title": "Pomfret / Yeri Vaval"
   },
-  {
+  "10001": {
+    "available": "N",
+    "category": "CF",
+    "details": "",
+    "discount": "Y",
+    "discountprice": 10,
+    "fishsize": "s",
+    "imagepath": "",
+    "price": 100,
+    "productcode": "10001",
+    "stock": 100,
+    "title": "Rohu fish / Kendai fish"
+  },
+  "10002": {
+    "available": "N",
+    "category": "CF",
+    "details": "",
+    "discount": "Y",
+    "discountprice": 10,
+    "fishsize": "s,,,m",
+    "imagepath": "",
+    "price": 100,
+    "productcode": "10002",
+    "stock": 100,
+    "title": "Karimeen"
+  },
+  "10003": {
     "available": "Y",
     "category": "CF",
     "details": "",
-    "image-path": "",
-    "price": "100",
-    "size": [
-      "s",
-      "m",
-      "b"
-    ],
-    "stock": "",
-    "title": "Rohu fish / Kendai fish",
-    "discount" : "Y",
-    "discount-price" : 10
+    "discount": "Y",
+    "discountprice": 10,
+    "fishsize": "s,m",
+    "imagepath": "",
+    "price": 100,
+    "productcode": "10003",
+    "stock": 100,
+    "title": "Catla fish / Katla Kendai"
   },
-  {
+  "10004": {
     "available": "Y",
     "category": "CF",
     "details": "",
-    "image-path": "",
-    "price": "100",
-    "size": [
-      "s",
-      "m",
-      "b"
-    ],
-    "stock": "",
-    "title": "Karimeen",
-    "discount" : "Y",
-    "discount-price" : 10
+    "discount": "Y",
+    "discountprice": 10,
+    "fishsize": "s,m",
+    "imagepath": "",
+    "price": 100,
+    "productcode": "10004",
+    "stock": 100,
+    "title": "Indian Basa Fish"
   },
-  {
+  "10005": {
     "available": "Y",
     "category": "CF",
     "details": "",
-    "image-path": "",
-    "price": "100",
-    "size": [
-      "s",
-      "m",
-      "b"
-    ],
-    "stock": "",
-    "title": "Catla fish / Katla Kendai",
-    "discount" : "Y",
-    "discount-price" : 10
+    "discount": "Y",
+    "discountprice": 10,
+    "fishsize": "s,m",
+    "imagepath": "",
+    "price": 100,
+    "productcode": "10005",
+    "stock": 100,
+    "title": "Cobia / Nei meen Boneless"
   },
-  {
-    "available": "Y",
-    "category": "CF",
-    "details": "",
-    "image-path": "",
-    "price": "100",
-    "size": [
-      "s",
-      "m",
-      "b"
-    ],
-    "stock": "",
-    "title": "Indian Basa Fish",
-    "discount" : "Y",
-    "discount-price" : 10
+  "10006": {
+    "available": "N",
+    "category": "SF",
+    "details": "Ashok",
+    "discount": "N",
+    "discountprice": 10000000,
+    "fishsize": "s,,,l",
+    "imagepath": "https://www.yaathithfarms.com/wp-content/uploads/2019/10/mathi-meen.png",
+    "price": 1000,
+    "productcode": "10006",
+    "stock": 1000,
+    "title": "Mathi Saal"
   },
-  {
-    "available": "Y",
-    "category": "CF",
-    "details": "",
-    "image-path": "",
-    "price": "100",
-    "size": [
-      "s",
-      "m",
-      "b"
-    ],
-    "stock": "",
-    "title": "Cobia / Nei meen Boneless",
-    "discount" : "Y",
-    "discount-price" : 10
-  },
-  {
+  "10007": {
     "available": "Y",
     "category": "SF",
-    "details": "",
-    "image-path": "",
-    "price": "100",
-    "size": [
-      "s",
-      "m",
-      "b"
-    ],
-    "stock": "",
-    "title": "Mathi",
-    "discount" : "Y",
-    "discount-price" : 10
+    "details": "Wonderful fish",
+    "discount": "Y",
+    "discountprice": 10,
+    "fishsize": "m",
+    "imagepath": "https://upload.wikimedia.org/wikipedia/commons/4/41/Rastrelliger_kanagurta_JNC2855.JPG",
+    "price": 100,
+    "productcode": "10007",
+    "stock": 100,
+    "title": "Aylai Meen"
   },
-  {
-    "available": "Y",
+  "10008": {
+    "available": "N",
     "category": "SF",
     "details": "",
-    "image-path": "",
-    "price": "100",
-    "size": [
-      "s",
-      "m",
-      "b"
-    ],
-    "stock": "",
-    "title": "Aylai fish",
-    "discount" : "Y",
-    "discount-price" : 10
+    "discount": "Y",
+    "discountprice": 10,
+    "fishsize": "s,,,,,,,,,,,,,,,m",
+    "imagepath": "",
+    "price": 100,
+    "productcode": "10008",
+    "stock": 100,
+    "title": "Red Mullet / Nagarai"
   },
-  {
+  "10009": {
     "available": "Y",
     "category": "SF",
-    "details": "",
-    "image-path": "",
-    "price": "100",
-    "size": [
-      "s",
-      "m",
-      "b"
-    ],
-    "stock": "",
-    "title": "Red Mullet / Nagarai",
-    "discount" : "Y",
-    "discount-price" : 10
+    "details": "https://tvm.biggro.com/content/images/thumbs/0017361_vaala-fish_550.jpeg",
+    "discount": "Y",
+    "discountprice": 10,
+    "fishsize": "s,,,,,,,m",
+    "imagepath": "https://tvm.biggro.com/content/images/thumbs/0017361_vaala-fish_550.jpeg",
+    "price": 100,
+    "productcode": "10009",
+    "stock": 100,
+    "title": "Vaala meen"
   },
-  {
-    "available": "Y",
-    "category": "SF",
-    "details": "",
-    "image-path": "",
-    "price": "100",
-    "size": [
-      "s",
-      "m",
-      "b"
-    ],
-    "stock": "",
-    "title": "Vaala meen",
-    "discount" : "Y",
-    "discount-price" : 10
-  },
-  {
-    "available": "Y",
+  "10010": {
+    "available": "N",
     "category": "CF",
     "details": "",
-    "image-path": "",
-    "price": "100",
-    "size": [
-      "s",
-      "m",
-      "b"
-    ],
-    "stock": "",
-    "title": "Rock Lobster",
-    "discount" : "Y",
-    "discount-price" : 10
+    "discount": "N",
+    "discountprice": 10,
+    "fishsize": "s,,,,,,,m",
+    "imagepath": "",
+    "price": 100,
+    "productcode": "10010",
+    "stock": 100,
+    "title": "Rock Lobster"
   },
-  {
+  "10011": {
     "available": "Y",
     "category": "CF",
-    "details": "",
-    "image-path": "",
-    "price": "100",
-    "size": [
-      "s",
-      "m",
-      "b"
-    ],
-    "stock": "",
-    "title": "Murrel fish",
-    "discount" : "Y",
-    "discount-price" : 10
+    "details": "https://horticare.co.in/images/murrel-fish.png",
+    "discount": "Y",
+    "discountprice": 10,
+    "fishsize": "s,,,m",
+    "imagepath": "https://horticare.co.in/images/murrel-fish.png",
+    "price": 100,
+    "productcode": "10011",
+    "stock": 100,
+    "title": "Murrel fish"
   }
-]
+}

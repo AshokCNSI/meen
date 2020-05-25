@@ -1,0 +1,35 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Home</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<ion-row class="second-menu">
+		<ion-col [routerLink]="['/stock/SF']">
+		<img style="margin: auto;width: 40%;" src="assets/icon/fish_icons/sea-food.png"><br>
+		  Sea Fish
+		</ion-col>
+		<ion-col [routerLink]="['/stock/CF']">
+		<img style="margin: auto;width: 40%;" src="assets/icon/fish_icons/fresh-water.png"><br>
+		  Fresh Water Fish
+		</ion-col>
+		<ion-col [routerLink]="['/stock/PR']">
+		<img style="margin: auto;width: 40%;" src="assets/icon/fish_icons/prawn.png"><br>
+		  Prawn
+		</ion-col>
+		<ion-col [routerLink]="['/stock/CR']">
+		<img style="margin: auto;width: 40%;" src="assets/icon/fish_icons/crab.png"><br>
+		  Crab
+		</ion-col>
+	</ion-row>
+	<ion-slides #mySlider (ionSlideWillChange)="onSlideChangeStart($event)" (ionSlideDidChange)="onSlideChanged($event)" (ionSlidesDidLoad)="slidesDidLoad(mySlider)" pager="false">
+		<ion-slide *ngFor="let p of discountList;" style="width:50%;height:300px;" (click)="nagivateProdcut(p.$key,p.productcode)">
+			<img src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+			<p class="slide-text"><b>{{p.title}}</b><br>Discount upto {{p.discountprice}}%</p>
+		</ion-slide>
+	  </ion-slides>
+</ion-content>

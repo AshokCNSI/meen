@@ -20,10 +20,19 @@ import * as firebase from 'firebase';
 
 export class RegisterPage implements OnInit {
 
-  constructor(public alertCtrl: AlertController, public fAuth: AngularFireAuth, public formBuilder: FormBuilder, private navController: NavController, private router: Router) { }
+  constructor(
+  public alertCtrl: AlertController, 
+  public fAuth: AngularFireAuth, 
+  public formBuilder: FormBuilder, 
+  private navController: NavController, 
+  private router: Router) { }
 
   ngOnInit() {
-
+	
+  }
+  
+  ionViewWillLeave() {
+    
   }
   
   isSubmitted = false;
@@ -67,5 +76,5 @@ export class RegisterPage implements OnInit {
 		});
 	  }
   }
-
+	
 }

@@ -7,7 +7,6 @@ import { NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AuthenticateService } from '../authentication.service';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -19,10 +18,19 @@ import { AuthenticateService } from '../authentication.service';
 })
 export class LoginPage implements OnInit {
 
-  constructor(public alertCtrl: AlertController, public fAuth: AngularFireAuth, public formBuilder: FormBuilder, private navController: NavController, private router: Router, private authService: AuthenticateService) { }
+  constructor(public alertCtrl: AlertController, 
+  public fAuth: AngularFireAuth, 
+  public formBuilder: FormBuilder, 
+  private navController: NavController, 
+  private router: Router, 
+  private authService: AuthenticateService) { }
 
   ngOnInit() {
 	  
+  }
+  
+  ionViewWillLeave() {
+    
   }
   
   isSubmitted = false;
@@ -55,7 +63,7 @@ export class LoginPage implements OnInit {
 		  
 		this.authService.loginUser(this.formData.value.email, this.formData.value.password)
 		  .then(res => {
-			this.navController.navigateRoot('/folder/inbox');
+			this.navController.navigateRoot('/home');
 		  }, error => {
 			this.presentAlert('Error',error.message);
 		  })

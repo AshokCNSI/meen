@@ -11,7 +11,7 @@
 		  <ion-label *ngIf="userEmail != null">Welome {{userEmail}}</ion-label>
         </ion-item>
 		 <ion-menu-toggle auto-hide="false" *ngFor="let p of menuList; let i = index">
-            <ion-item (click)="selectedIndex = i" routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" [class.selected]="selectedIndex == i">
+            <ion-item (click)="selectedIndex = i" routerDirection="root" [routerLink]="[p.path]" lines="none" detail="false" [class.selected]="selectedIndex == i">
               <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
               <ion-label>{{ p.title }}</ion-label>
             </ion-item>
@@ -24,29 +24,5 @@
       </ion-content>
     </ion-menu>
     <ion-router-outlet id="main-content"></ion-router-outlet>
-	<ion-tabs>
-	  <ion-tab-bar slot="bottom">
-		<ion-tab-button tab="schedule">
-		  <ion-icon name="river-fish" style="font-size: 35px;"></ion-icon>
-		  <ion-label>Fresh Fish</ion-label>
-		  <ion-badge>6</ion-badge>
-		</ion-tab-button>
-
-		<ion-tab-button tab="speakers">
-		  <ion-icon name="sea-fish" style="font-size: 35px;"></ion-icon>
-		  <ion-label>Sea Fish</ion-label>
-		</ion-tab-button>
-
-		<ion-tab-button tab="map">
-		  <ion-icon name="crab" style="font-size: 35px;"></ion-icon>
-		  <ion-label>Crabs</ion-label>
-		</ion-tab-button>
-
-		<ion-tab-button tab="about" large>
-		  <ion-icon name="prawn" style="font-size: 35px;"></ion-icon>
-		  <ion-label>Prawns</ion-label>
-		</ion-tab-button>
-	  </ion-tab-bar>
-	</ion-tabs>
   </ion-split-pane>
 </ion-app>

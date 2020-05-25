@@ -1,0 +1,26 @@
+<ion-header translucent>
+  <ion-toolbar>
+	<ion-buttons slot="start">
+		<ion-back-button defaultHref="home"></ion-back-button>
+	</ion-buttons>
+    <ion-title>{{isAdmin ? '' : 'My'}} Orders</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<ng-container *ngFor="let p of orderList;">
+	<ion-item (click)="routeStockDetail(p.index,p.productcode)">
+		  <ion-avatar slot="start">
+			<img alt="M" src="{{p.product.imagepath}}">
+		  </ion-avatar>
+		  <ion-label>
+			<h2>{{p.product.title}}</h2>
+			<h3>RS.{{p.product.price}}</h3>
+			<p>Quantity: {{p.quantity}} in Kg</p>
+		  </ion-label>
+	</ion-item>
+</ng-container>
+<ng-container *ngIf="orderList.length == 0">
+	<p class="no-items">No items available</p>
+</ng-container>
+</ion-content>

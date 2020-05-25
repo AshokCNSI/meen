@@ -18,18 +18,4 @@
     <strong class="capitalize">{{ folder }}</strong>
     <p>Explore <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components {{userEmail}}</a></p>
   </div>
-
-  <ion-slides #mySlider (ionSlideWillChange)="onSlideChangeStart($event)" (ionSlideDidChange)="onSlideChanged($event)" (ionSlidesDidLoad)="slidesDidLoad(mySlider)" pager="false">
-    
-    <ion-slide style="background-color: green;">
-      <h2>Slide 1</h2>
-    </ion-slide>
-    <ion-slide style="background-color: blue;">
-      <h2>Slide 2</h2>
-    </ion-slide>
-    <ion-slide style="background-color: red;">
-      <h2>Slide 3</h2>
-    </ion-slide>
-  </ion-slides>
-
 </ion-content>
