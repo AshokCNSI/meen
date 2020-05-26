@@ -9,6 +9,7 @@
 
 <ion-content>
 <ng-container *ngFor="let p of cartList;">
+<ion-item-sliding>
 	<ion-item (click)="routeStockDetail(p.index,p.productcode)">
 		  <ion-avatar slot="start">
 			<img alt="M" src="{{p.product.imagepath}}">
@@ -17,8 +18,16 @@
 			<h2>{{p.product.title}}</h2>
 			<h3>RS.{{p.product.price}}</h3>
 			<p>Quantity: {{p.quantity}} in Kg</p>
+		    <p>Date: {{p.modifieddate |  date:'MM/dd/yyyy'}}</p>
 		  </ion-label>
 	</ion-item>
+	<ion-item-options>
+      <ion-item-option color="danger" (click)="deleteThisItem(p.index)">
+        <ion-icon slot="start" name="trash"></ion-icon>
+        Delete
+      </ion-item-option>
+    </ion-item-options>
+</ion-item-sliding>
 </ng-container>
 <ng-container *ngIf="cartList.length == 0">
 	<p class="no-items">No items available</p>

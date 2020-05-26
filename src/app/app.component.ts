@@ -11,6 +11,8 @@ import * as firebase from 'firebase';
 import { AuthenticateService } from './authentication.service';
 import { NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { Network } from '@ionic-native/network/ngx';
+
 
 @Component({
   selector: 'app-root',
@@ -31,7 +33,8 @@ export class AppComponent implements OnInit {
 	private authService: AuthenticateService,
 	private navController: NavController, 
 	private router: Router,
-	private db: AngularFireDatabase
+	private db: AngularFireDatabase,
+	private network: Network
   ) {
     this.initializeApp();
   }
@@ -42,9 +45,32 @@ export class AppComponent implements OnInit {
       this.splashScreen.hide();
     });
   }
-
+  
   ngOnInit() {
-	
+	// watch network for a disconnection
+	let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
+	  this.navController.navigateRoot('/network');
+	});
+
+	// stop disconnect watch
+	disconnectSubscription.unsubscribe();
+
+
+	// watch network for a connection
+	let connectSubscription = this.network.onConnect().subscribe(() => {
+	  console.log('network connected!');
+	  // We just got a connection but we need to wait briefly
+	   // before we determine the connection type. Might need to wait.
+	  // prior to doing any api requests as well.
+	  setTimeout(() => {
+		if (this.network.type === 'wifi') {
+		  console.log('we got a wifi connection, woohoo!');
+		}
+	  }, 3000);
+	});
+
+	// stop connect watch
+	connectSubscription.unsubscribe();
     const path = window.location.pathname.split('folder/')[1];
     if (path !== undefined) {
       //this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());

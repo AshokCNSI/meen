@@ -33,12 +33,12 @@
         "order": 2,
         "type": "A"
     },
-    {
-        "title": "Stock",
+	{
+        "title": "Products",
         "path": "/stock/0",
         "icon": "basket",
         "order": 3,
-        "type": "A"
+        "type": "C"
     },
     {
         "title": "Cutomers",

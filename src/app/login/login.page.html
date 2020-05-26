@@ -46,6 +46,16 @@
          <ion-button type="submit">Delight me in.</ion-button>
       </ion-col>
    </ion-row>
+   <ion-row style="text-align:center;">
+   <ion-col style="text-align:center;">
+	  <ion-label>
+         Don't have an account?.
+      </ion-label><br><br>
+	  <ion-label [routerLink]="['/register']">
+          <b>Click here to Sign up now.</b>
+      </ion-label>
+	  </ion-col>
+   </ion-row>
    <div *ngIf="isSubmitted && errorControl.email.errors?.required"
 		class="validator-error">
 	  Enter your Email.

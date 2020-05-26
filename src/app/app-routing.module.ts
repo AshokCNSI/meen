@@ -57,6 +57,10 @@ const routes: Routes = [
   {
     path: 'mycart',
     loadChildren: () => import('./mycart/mycart.module').then( m => m.MycartPageModule)
+  },
+  {
+    path: 'network',
+    loadChildren: () => import('./network/network.module').then( m => m.NetworkPageModule)
   }
 
 ];

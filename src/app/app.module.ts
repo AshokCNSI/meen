@@ -14,6 +14,8 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFireStorageModule } from '@angular/fire/storage';
+import { Network } from '@ionic-native/network/ngx';
+
 
 // environment
 import { environment } from '../environments/environment';
@@ -32,6 +34,7 @@ import { environment } from '../environments/environment';
   ],
   providers: [
     StatusBar,
+	Network,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],

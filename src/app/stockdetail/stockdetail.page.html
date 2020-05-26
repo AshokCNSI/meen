@@ -216,8 +216,32 @@
 		<ion-select-option value="DE">Delievered</ion-select-option>
 	  </ion-select>
 	</ion-item>
+	<ion-card>
+  <ion-card-header>
+    <ion-card-subtitle>Customer Name : <b>{{firstname}} {{lastname}}</b></ion-card-subtitle>
+    <ion-card-title>Mobile: {{mobilenumber}}</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    {{street1}}
+	{{street2}}
+	{{district}}-{{state}}
+	{{pincode}}
+  </ion-card-content>
+</ion-card>
 </ng-container>
 <ng-container *ngIf="oldStatus == 'DE' && isAdmin">
 	<p class="no-items" >Delievered Successfully.</p>
+	<ion-card>
+  <ion-card-header>
+    <ion-card-subtitle>Customer Name : <b>{{firstname}} {{lastname}}</b></ion-card-subtitle>
+    <ion-card-title>Mobile: {{mobilenumber}}</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    {{street1}}
+	{{street2}}
+	{{district}}-{{state}}
+	{{pincode}}
+  </ion-card-content>
+</ion-card>
 </ng-container>
 </ion-content>

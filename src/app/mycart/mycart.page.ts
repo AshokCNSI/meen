@@ -39,7 +39,6 @@ export class MycartPage implements OnInit {
   isAdmin : boolean = false;
   cartList = [];
   ngOnInit() {
-	  
 	  this.isAdmin = this.authService.getIsAdmin();
 				
 	  let getCartDetail = this.db.list('/orders', ref => ref.orderByChild('createdby').equalTo(this.authService.getUserID()));
@@ -49,7 +48,7 @@ export class MycartPage implements OnInit {
 			  res.forEach(item => {
 				let a = item.payload.toJSON();
 				a['index'] = item.key;
-				let getStockDetail = this.db.object('/stock/'+a.productcode);
+			  let getStockDetail = this.db.object('/stock/'+a['productcode']);
 				getStockDetail.snapshotChanges().subscribe(resp => { 
 					a['product'] = resp.payload.toJSON();
 				});
@@ -72,7 +71,7 @@ export class MycartPage implements OnInit {
 				this.navController.navigateRoot('/stock');
 			} else if(status == 'Cart'){
 				this.navController.navigateRoot('/mycart');
-			}
+			} 
 	  }}]
     });
     await alert.present();
@@ -80,5 +79,11 @@ export class MycartPage implements OnInit {
   
   routeStockDetail(index,productcode){
 	  this.navController.navigateRoot('/stockdetail',{queryParams : {index : index, productcode : productcode, status : 'AC'}});
+  }
+  
+  deleteThisItem(index) {
+	  firebase.database().ref('/orders/'+index).remove().then(data => {
+		  this.presentAlert('Delete','Item has been successfully deleted.');
+	  })
   }
 }

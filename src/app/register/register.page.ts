@@ -47,7 +47,7 @@ export class RegisterPage implements OnInit {
           text: 'Ok',
           handler: () => {
             if(status == 'Success') {
-				this.navController.navigateRoot('/folder/inbox');
+				this.navController.navigateRoot('/home');
 			}
 	  }}]
     });

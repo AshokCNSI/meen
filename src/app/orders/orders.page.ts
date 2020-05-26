@@ -47,7 +47,7 @@ export class OrdersPage implements OnInit {
 				  res.forEach(item => {
 					let a = item.payload.toJSON();
 					a['index'] = item.key;
-					let getStockDetail = this.db.object('/stock/'+a.productcode);
+					let getStockDetail = this.db.object('/stock/'+a['productcode']);
 					getStockDetail.snapshotChanges().subscribe(resp => { 
 						a['product'] = resp.payload.toJSON();
 					});
@@ -64,7 +64,7 @@ export class OrdersPage implements OnInit {
 				  res.forEach(item => {
 					let a = item.payload.toJSON();
 					a['index'] = item.key;
-					let getStockDetail = this.db.object('/stock/'+a.productcode);
+				  let getStockDetail = this.db.object('/stock/'+a['productcode']);
 					getStockDetail.snapshotChanges().subscribe(resp => { 
 						a['product'] = resp.payload.toJSON();
 					});
@@ -73,6 +73,8 @@ export class OrdersPage implements OnInit {
 					}
 				  })
 			  }
+			  	this.orderList.sort(this.comp);
+
 		});
 	  }
   }
@@ -96,5 +98,9 @@ export class OrdersPage implements OnInit {
   
   routeStockDetail(index,productcode){
 	  this.navController.navigateRoot('/stockdetail',{queryParams : {index : index, productcode : productcode, status : 'ORD'}});
+  }
+  
+  comp(a, b) {
+	return new Date(b.modifieddate).getTime() - new Date(a.modifieddate).getTime();
   }
 }

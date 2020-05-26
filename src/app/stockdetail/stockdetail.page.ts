@@ -66,6 +66,19 @@ export class StockdetailPage implements OnInit {
   backUrl : string;
   oldStatus : string;
   ordervisibility : boolean = false;
+  isUserLoggedIn : boolean = false;
+  isProfileCreated : boolean = false;
+  productVisibility : string;
+  firstname: string; 
+  lastname : string;
+  mobilenumber : number;
+  street1 : string;
+  street2 : string;
+  district : string;
+  state : string;
+  pincode : number;
+  index : string;
+  
   async presentAlert(status, msg) {
     const alert = await this.alertCtrl.create({
       header: status,
@@ -81,6 +94,10 @@ export class StockdetailPage implements OnInit {
 				this.navController.navigateRoot('/mycart');
 			} else if(status == 'Status'){
 				this.navController.navigateRoot('/orders');
+			} else if(status == 'Login'){
+				this.navController.navigateRoot('/login');
+			} else if(status == 'Profile'){
+				this.navController.navigateRoot('/profile');
 			}
 	  }}]
     });
@@ -88,6 +105,16 @@ export class StockdetailPage implements OnInit {
   }
   
   ngOnInit() {
+		firebase.auth().onAuthStateChanged(user => {
+		  if (user) {
+			  this.isUserLoggedIn = true;
+		  } 
+		});
+		firebase.database().ref('/profile/'+this.authService.getUserID()).once('value').then((snapshot) => {
+		  if(snapshot.child('mobilenumber').val() == null) {
+			  this.isProfileCreated = true;
+		  }
+		});
 		this.activatedRoute.queryParams.subscribe(params => {
 		  this.productcode = params['productcode'];
 		  this.productVisibility = params['status'];
@@ -116,6 +143,16 @@ export class StockdetailPage implements OnInit {
 					  this.price = snapshot.child('price').val();
 					  this.details = snapshot.child('details').val();
 					  this.imagepath = snapshot.child('imagepath').val();
+				  });
+				  firebase.database().ref('/profile/'+snapshot.child('createdby').val()).once('value').then((snapshot) => {
+					  this.firstname = snapshot.child('firstname').val();
+					  this.lastname = snapshot.child('lastname').val();
+					  this.mobilenumber = snapshot.child('mobilenumber').val();
+					  this.street1 = snapshot.child('street1').val();
+					  this.street2 = snapshot.child('street2').val();
+					  this.district = snapshot.child('district').val();
+					  this.state = snapshot.child('state').val();
+					  this.pincode = snapshot.child('pincode').val();
 				  });
 			  });
 		  } else {
@@ -203,36 +240,36 @@ export class StockdetailPage implements OnInit {
   }
   
   addToCart() {
+	  if(this.isUserLoggedIn) {
 	  this.isSubmitted = true;
 	  if (!this.orderData.valid) {
 		return false;
-	  } else {		 
-		return new Promise<any>((resolve, reject) => {
-		 this.db.list('/orders').push({
-		    "productcode": this.productcode,
+	  } else {		
+		firebase.database().ref('/orders').push({
+			"productcode": this.productcode,
 			"quantity": this.orderData.value.quantity,
 			"masala": this.orderData.value.masala,
 			"cookingpurpose": this.orderData.value.cookingpurpose,
 			"currentstatus": "AC",
 			"description" : this.orderData.value.description,
-			"createddate":new Date(),
+			"createddate" : Date(),
 			"createdby":this.authService.getUserID(),
-			"modifieddate":new Date(),
+			"modifieddate": Date(),
 			"modifiedby":this.authService.getUserID()
-		 })
-		 .then(
+		  }).then(
 		   res => 
 		   {
 			   this.presentAlert('Cart','Product added to cart successfully.');
-			   resolve(res);
-		   },
-		   err => reject(err)
+		   }
 		 )
-	   })
 	  }
+	 } else {
+		 this.presentAlert('Login','We are advising you to Login to make sure all the transactions are safe with us.');
+	 }
   }
   
   orderConfirm() {
+	  if(!this.isProfileCreated) {
 	  this.isSubmitted = true;
 	  if (!this.orderData.valid) {
 		return false;
@@ -253,6 +290,9 @@ export class StockdetailPage implements OnInit {
 		   }
 		 )
 		}
+	  } else {
+		  this.presentAlert('Profile','We are advising you to update profile to make sure all the transactions are safe with us.');
+	  }
   }
   
   updateStatus() {
