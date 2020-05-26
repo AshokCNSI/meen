@@ -8,6 +8,9 @@
 </ion-header>
 
 <ion-content>
+<ion-searchbar animated showCancelButton="focus" cancelButtonText="Custom Cancel"
+    (ionInput)="filterList($event)"></ion-searchbar>
+
 	<ion-row class="second-menu">
 		<ion-col [routerLink]="['/stock/SF']">
 		<img style="margin: auto;width: 40%;" src="assets/icon/fish_icons/sea-food.png"><br>

@@ -56,4 +56,8 @@ export class HomePage implements OnInit {
   nagivateProdcut(index, productcode) {
 	  this.navController.navigateRoot('/stockdetail', {queryParams : {index : index, productcode : productcode, status : 'R'}});
   }
+  
+  filterList(event) {
+	  this.navController.navigateRoot('/stock/0', {queryParams : {search : 'Y', val : event.srcElement.value}});
+  }
 }

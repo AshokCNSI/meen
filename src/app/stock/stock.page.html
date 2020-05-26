@@ -8,6 +8,11 @@
 </ion-header>
 
 <ion-content>
+<ng-container *ngIf="search != null">
+<ion-searchbar animated showCancelButton="always" debounce="500" (ionCancel)="onCancel($event)" cancelButtonText="Custom Cancel"
+    (ionInput)="filterList($event)" [value]="searchVal"></ion-searchbar>
+</ng-container>
+
 	<ion-list *ngIf="categoryID == 0 || categoryID == 'SF'">
 		<ion-list-header>
 		  Sea Fish
