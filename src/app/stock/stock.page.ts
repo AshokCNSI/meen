@@ -29,7 +29,7 @@ fullStocksCategory : AngularFireList<any>;
 userEmail : string;
 isAdmin : boolean = false;
 search : string;
-
+searchVal : string;
   ngOnInit() {
 	  this.activatedRoute.queryParams.subscribe(params => {
 		  this.search = params['search'];

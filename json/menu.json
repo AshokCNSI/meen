@@ -6,13 +6,6 @@
         "type": "C"
     },
     {
-        "title": "Discounts",
-        "path": "/discounts",
-        "icon": "megaphone",
-        "order": 6,
-        "type": "C"
-    },
-    {
         "title": "Notification",
         "path": "/notification",
         "icon": "notifications",

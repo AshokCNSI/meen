@@ -15,6 +15,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { Network } from '@ionic-native/network/ngx';
+import { CallNumber } from '@ionic-native/call-number/ngx';
 
 
 // environment
@@ -35,6 +36,7 @@ import { environment } from '../environments/environment';
   providers: [
     StatusBar,
 	Network,
+	CallNumber,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],

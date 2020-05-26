@@ -1,6 +1,9 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>help</ion-title>
+  <ion-buttons slot="start">
+		<ion-back-button defaultHref="/home"></ion-back-button>
+	</ion-buttons>
+    <ion-title>Help</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -15,47 +18,34 @@
    This organization is entirely based on online fishing cart. People can order desired variety of fish meats in specified custom. First time in tamilnadu we are introducing online cart specially for local and sea foods. We can proudly say there are abudent people get jobs in this Industry.
   </ion-card-content>
 </ion-card>
-	<ion-card>
-  <ion-card-header>
-    
-    <ion-card-title>Ashok Kumar</ion-card-title>
-  </ion-card-header>
-
-  <ion-card-content>
-    Mobile Number: +91 9942570269
-  </ion-card-content>
-</ion-card>	  
 <ion-card>
-  <ion-card-header>
-    
-    <ion-card-title>Sathish Kumar</ion-card-title>
-  </ion-card-header>
-
+  <ion-item>
+	<ion-icon name="call" slot="start"></ion-icon>
+	<ion-label>Ashokkumar</ion-label>
+	<ion-button fill="outline" slot="end" (click)="callforDetail('+91 9942570269')">Call</ion-button>
+  </ion-item>
   <ion-card-content>
-    Mobile Number: +91 9659834006
+	Mobile Number: +91 9942570269
   </ion-card-content>
 </ion-card>
 <ion-card>
-  <ion-card-header>
-    
-    <ion-card-title>Manoj Kumar</ion-card-title>
-  </ion-card-header>
-
+  <ion-item>
+	<ion-icon name="call" slot="start"></ion-icon>
+	<ion-label>Sathiskkumar</ion-label>
+	<ion-button fill="outline" slot="end" (click)="callforDetail('+91 9659834006')">Call</ion-button>
+  </ion-item>
   <ion-card-content>
-    Mobile Number: +91 9659831400
+	Mobile Number: +91 9659834006
   </ion-card-content>
-  <ion-icon name="call-outline"></ion-icon>
-
-</ion-card>	  
+</ion-card>
 <ion-card>
-  <ion-card-header>
-    
-    <ion-card-title>Sankar</ion-card-title>
-  </ion-card-header>
-
+  <ion-item>
+	<ion-icon name="call" slot="start"></ion-icon>
+	<ion-label>Manojkumar</ion-label>
+	<ion-button fill="outline" slot="end" (click)="callforDetail('+91 9659831400')">Call</ion-button>
+  </ion-item>
   <ion-card-content>
-    Mobile Number: +91 6381678847
-    
+	Mobile Number: +91 9659831400
   </ion-card-content>
-</ion-card>	  
+</ion-card>
 </ion-content>
