@@ -22,28 +22,32 @@ export class StockPage implements OnInit {
   private navController: NavController,
   private router : ActivatedRoute
   ) { }
+@ViewChild('search') search : any;
 
 categoryID : number;
 fullStocks : AngularFireList<any>;
 fullStocksCategory : AngularFireList<any>;
 userEmail : string;
 isAdmin : boolean = false;
-search : string;
+searchInput : string;
 searchVal : string;
   ngOnInit() {
 	  this.activatedRoute.queryParams.subscribe(params => {
-		  this.search = params['search'];
+		  this.searchInput = params['search'];
 		  this.searchVal = params['val'];
-			firebase.database().ref('/stock').orderByChild('title').startAt(this.searchVal).endAt(this.searchVal+"\uf8ff").once('value').then((snapshot) => {
+		  if(this.searchInput != null) {
+			  firebase.database().ref('/stock').once('value').then((snapshot) => {
 				  this.stockList = [];
 				  snapshot.forEach(item => {
 					this.stockList.push(item.toJSON());
 				  })
+				  this.search.setFocus();
 			  });
+		  }
 		});
 	  this.categoryID = this.activatedRoute.snapshot.params['id'];  
 	  this.fullStocks = this.db.list('/stock', ref => ref.orderByChild('category'));
-	  if(this.categoryID == 0 && this.search == null) {
+	  if(this.categoryID == 0 && this.searchInput == null) {
 		 this.fullStocks = this.db.list('/stock', ref => ref.orderByChild('category'));
 		 this.fullStocks.snapshotChanges().subscribe(res => {
 		  this.stockList = [];
@@ -53,7 +57,7 @@ searchVal : string;
 			this.stockList.push(a);
 		  })
 		});
-	  } else if(this.search == null){
+	  } else if(this.searchInput == null){
 		 this.fullStocksCategory = this.db.list('/stock', ref => ref.orderByChild('category').equalTo(this.categoryID));
 		 this.fullStocksCategory.snapshotChanges().subscribe(res => {
 		  this.stockList = [];
@@ -106,6 +110,10 @@ searchVal : string;
   
   onCancel(event) {
 	this.navController.navigateRoot('/home');
+  }
+  
+  openSearch() {
+	  this.searchInput = " ";
   }
 
 }

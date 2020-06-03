@@ -3,17 +3,13 @@
 	<ion-buttons slot="start">
 		<ion-back-button defaultHref="{{backUrl}}"></ion-back-button>
 	</ion-buttons>
-    <ion-title>{{isAdmin ? 'Stock' : 'Products'}} Detail</ion-title>
-	<ion-buttons slot="end" *ngIf="isAdmin && productVisibility == 'R'">
-		<button (click)="saveStock()">
-            Save
-        </button>
-	</ion-buttons>
-	<ion-buttons slot="end" *ngIf="isAdmin && (productVisibility != 'AC' && productVisibility != 'R' && oldStatus!='DE')">
-		<button (click)="updateStatus()">
-            Update Status
-        </button>
-	</ion-buttons>
+    <ion-title>{{authService.getUserType() == 'SA' || authService.getUserType() == 'A' ? 'Stock' : 'Products'}} Detail</ion-title>
+	<ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" (click)="saveStock()" *ngIf="isAdmin && productVisibility == 'R'">
+        <ion-icon name="push-outline"></ion-icon>
+    </ion-buttons>
+	<ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" (click)="updateStatus()" *ngIf="isAdmin && (productVisibility != 'AC' && productVisibility != 'R' && oldStatus!='DE')">
+        <ion-icon name="arrow-up-circle-outline"></ion-icon>
+    </ion-buttons>
   </ion-toolbar>
   
 </ion-header>
@@ -22,7 +18,7 @@
 <ion-content>
 
 <ion-card>
-	<img src="{{imagepath}}" />
+	<img alt="M" style="width:100%;height:200px;" src="{{imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
 	<ion-card-header>
 	  <ion-card-subtitle>{{title}}</ion-card-subtitle>
 	  <ion-card-title>{{title}}</ion-card-title>
@@ -142,7 +138,7 @@
 	</div>
 <form [formGroup]="orderData" id="orderData" (ngSubmit)="productVisibility == 'AC' ? orderConfirm() : addToCart()" novalidate>
 		<ion-item>
-		  <ion-label position="floating">How much you need?</ion-label>
+		  <ion-label position="floating">How much you need in Kg?</ion-label>
 		  <ion-input type="number" formControlName="quantity" [(ngModel)]="quantity" required disabled="{{ordervisibility}}"></ion-input>
 		</ion-item>
 		<ion-item>
@@ -167,18 +163,117 @@
 		  <ion-label position="floating">Any Description</ion-label>
 		  <ion-textarea formControlName="description" [(ngModel)]="description" disabled="{{ordervisibility}}"></ion-textarea>
 		</ion-item>
+		<ng-container *ngIf="productVisibility != 'R'">
+		<ion-item-divider>
+		  <ion-label>
+			Delievery Address
+		  </ion-label>
+		</ion-item-divider>
+		  <ion-card>
+		  <ion-item>
+			<ion-avatar slot="start">
+				<img src="./assets/avatar/avatar.png">
+			 </ion-avatar>
+			<ion-label>{{firstname}} {{lastname}}</ion-label>
+		  </ion-item>
+
+		  <ion-card-content>
+			<ion-label><b>Mobile </b>{{mobilenumber}}</ion-label><br/>
+			<ion-label>
+			{{street1}} 
+			{{street2}} 
+			{{district}} 
+			{{state}} 
+			{{pincode}}
+			</ion-label>
+		  </ion-card-content>
+		</ion-card>
+		<ion-list *ngIf="productVisibility == 'AC'">
+			<ion-item-divider>
+			  <ion-label>
+				Price Details
+			  </ion-label>
+			</ion-item-divider>
+			<ion-item>
+			  <ion-label>Actual Price </ion-label>
+			  <ion-note slot="end">&#x20b9;{{price + discountprice}}</ion-note>
+			</ion-item>
+			<ion-item>
+			  <ion-label>Selling price</ion-label>
+			  <ion-note slot="end">&#x20b9;{{price}}</ion-note>
+			</ion-item>
+			<ion-item>
+			  <ion-label>Discount price</ion-label>
+			  <ion-note slot="end">&#x20b9;{{discountprice}}</ion-note>
+			</ion-item>
+			<ion-item>
+			  <ion-label>Total price in quality</ion-label>
+			  <ion-note slot="end">&#x20b9;{{price * quantity}}</ion-note>
+			</ion-item>
+			<ion-item>
+			  <ion-label>Delivery charge</ion-label>
+			  <ion-note slot="end">&#x20b9;{{delieverycharge}}</ion-note>
+			</ion-item>
+			<ion-item>
+			  <ion-label>Masala charge &#x20b9;{{masalacharge}} per kg</ion-label>
+			  <ion-note slot="end">{{masala == 'Y' ? quantity * masalacharge : 0}}</ion-note>
+			</ion-item>
+			<ion-item>
+			  <ion-label>You need to pay</ion-label>
+			  <ion-note slot="end">&#x20b9;{{price * quantity + delieverycharge + (masala == 'Y' ? quantity * masalacharge : 0)}}</ion-note>
+			</ion-item>
+		</ion-list>
+		<ion-list *ngIf="productVisibility != 'AC'">
+			<ion-item-divider>
+			  <ion-label>
+				Price Details
+			  </ion-label>
+			</ion-item-divider>
+			<ion-item>
+			  <ion-label>Actual Price </ion-label>
+			  <ion-note slot="end">&#x20b9;{{oactualprice}}</ion-note>
+			</ion-item>
+			<ion-item>
+			  <ion-label>Sold price</ion-label>
+			  <ion-note slot="end">&#x20b9;{{osellingprice}}</ion-note>
+			</ion-item>
+			<ion-item>
+			  <ion-label>Discount price</ion-label>
+			  <ion-note slot="end">&#x20b9;{{odiscountprice}}</ion-note>
+			</ion-item>
+			<ion-item>
+			  <ion-label>Total price in quality</ion-label>
+			  <ion-note slot="end">&#x20b9;{{ototalprice}}</ion-note>
+			</ion-item>
+			<ion-item>
+			  <ion-label>Delivery charge</ion-label>
+			  <ion-note slot="end">&#x20b9;{{odeliverycharge}}</ion-note>
+			</ion-item>
+			<ion-item>
+			  <ion-label>Masala charge &#x20b9;{{omasalacharge}} per kg</ion-label>
+			  <ion-note slot="end">{{omasalatotalcharge}}</ion-note>
+			</ion-item>
+			<ion-item>
+			  <ion-label>You have to pay</ion-label>
+			  <ion-note slot="end">&#x20b9;{{ofinalprice}}</ion-note>
+			</ion-item>
+		</ion-list>
+		</ng-container>
 		<ion-row>
 		<ng-container *ngIf="productVisibility == 'R'">
 		  <ion-col style="text-align:center;">
-			 <ion-button type="submit">Add to Cart</ion-button>
+			 <ion-button expand="block" color="danger" type="submit">Add to Cart</ion-button>
 		  </ion-col>
 		</ng-container>
 		<ng-container *ngIf="productVisibility == 'AC'">
 		  <ion-col style="text-align:center;">
-			 <ion-button type="submit">Confirm Order</ion-button>
+			 <ion-button expand="block" color="warning" (click)="cancelOrder()">Cancel Order</ion-button>
+		  </ion-col>
+		  <ion-col style="text-align:center;">
+			 <ion-button expand="block" color="success" type="submit">Confirm Order</ion-button>
 		  </ion-col>
 		</ng-container>
-	   </ion-row>
+		</ion-row>
 	</form>
 </ng-container>
 <ng-container *ngIf="productVisibility != 'AC' && productVisibility != 'R'">
@@ -206,6 +301,14 @@
 			  <ion-progress-bar value="1" buffer="0.5"></ion-progress-bar>
 			  </ion-list-header>
 		  </ng-container>
+		  <ng-container *ngIf="productVisibility == 'CL'">
+		  <ion-list-header>
+			  <ion-label>
+				Cancelled
+			  </ion-label>
+			  <ion-progress-bar value="1" buffer="0.5"></ion-progress-bar>
+			  </ion-list-header>
+		  </ng-container>
 	</ng-container>
 <ng-container *ngIf="(productVisibility != 'AC' && productVisibility != 'R' && productVisibility != 'DE') && isAdmin">
 	<ion-item>
@@ -216,32 +319,8 @@
 		<ion-select-option value="DE">Delievered</ion-select-option>
 	  </ion-select>
 	</ion-item>
-	<ion-card>
-  <ion-card-header>
-    <ion-card-subtitle>Customer Name : <b>{{firstname}} {{lastname}}</b></ion-card-subtitle>
-    <ion-card-title>Mobile: {{mobilenumber}}</ion-card-title>
-  </ion-card-header>
-  <ion-card-content>
-    {{street1}}
-	{{street2}}
-	{{district}}-{{state}}
-	{{pincode}}
-  </ion-card-content>
-</ion-card>
 </ng-container>
 <ng-container *ngIf="oldStatus == 'DE' && isAdmin">
 	<p class="no-items" >Delievered Successfully.</p>
-	<ion-card>
-  <ion-card-header>
-    <ion-card-subtitle>Customer Name : <b>{{firstname}} {{lastname}}</b></ion-card-subtitle>
-    <ion-card-title>Mobile: {{mobilenumber}}</ion-card-title>
-  </ion-card-header>
-  <ion-card-content>
-    {{street1}}
-	{{street2}}
-	{{district}}-{{state}}
-	{{pincode}}
-  </ion-card-content>
-</ion-card>
 </ng-container>
 </ion-content>

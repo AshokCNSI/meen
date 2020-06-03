@@ -45,7 +45,10 @@ export class ProfilePage implements OnInit {
   district : string;
   state : string;
   pincode : number;
-
+  spinnerShow = false;
+  usertype : string;
+  rolename : string;
+  
   async presentAlert(status, msg) {
     const alert = await this.alertCtrl.create({
       header: status,
@@ -65,6 +68,16 @@ export class ProfilePage implements OnInit {
 			  this.district = snapshot.child('district').val();
 			  this.state = snapshot.child('state').val();
 			  this.pincode = snapshot.child('pincode').val();
+			  this.usertype = snapshot.child('usertype').val();
+			  if(this.usertype == 'A') {
+				  this.rolename = 'Administrator';
+			  } else if(this.usertype == 'SA') {
+				  this.rolename = 'Super Administrator';
+			  } else if(this.usertype == 'C') {
+				  this.rolename = 'Client';
+			  } else if(this.usertype == 'S') {
+				  this.rolename = 'Seller';
+			  }
 		  });
   }
   
@@ -87,9 +100,9 @@ export class ProfilePage implements OnInit {
 	  this.isSubmitted = true;
 	  if (!this.profileData.valid) {
 		return false;
-	  } else {		 
-		return new Promise<any>((resolve, reject) => {
-		 firebase.database().ref('/profile/'+this.authService.getUserID()).set({
+	  } else {
+		this.spinnerShow = true;
+		firebase.database().ref('/profile/'+this.authService.getUserID()).update({
 			   firstname: this.profileData.value.firstname,
 			   lastname: this.profileData.value.lastname,
 			   mobilenumber: this.profileData.value.mobilenumber,
@@ -97,17 +110,20 @@ export class ProfilePage implements OnInit {
 			   street2: this.profileData.value.street2,
 			   district: this.profileData.value.district,
 			   state: this.profileData.value.state,
-			   pincode: this.profileData.value.pincode
-		 })
-		 .then(
+			   pincode: this.profileData.value.pincode,
+			   usertype: this.authService.getUserType(),
+			   "modifieddate": Date(),
+			   "modifiedby":this.authService.getUserID()
+		  }).then(
 		   res => 
 		   {
-			   this.presentAlert('Success','Profile updated successfully.');
-			   resolve(res);
-		   },
-		   err => reject(err)
-		 )
-	   })
+			   this.spinnerShow = false;
+			   this.authService.setUserName(this.profileData.value.firstname+" "+this.profileData.value.lastname);
+			   this.navController.navigateRoot('/home');
+		   }
+		 ).catch(error => {
+			this.presentAlert('Error',error);
+		  });		  
 	  }
   }
 }

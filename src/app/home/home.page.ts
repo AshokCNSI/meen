@@ -17,16 +17,29 @@ export class HomePage implements OnInit {
   public discountList = [];
   @ViewChild('mySlider') slider: IonSlides;
   userEmail : string;
-  
+  isUserLoggedIn : boolean = false;
   constructor(
   private activatedRoute: ActivatedRoute, 
   public fAuth: AngularFireAuth, 
   private authService: AuthenticateService,
   private db: AngularFireDatabase,
   private navController: NavController
-  ) { }
+  ) { 
+	
+  }
 
   ngOnInit() {
+	  this.authService.userDetails().subscribe(res => { 
+		  if (res !== null) {
+			this.userEmail = res.email;
+			if(this.userEmail != null && this.userEmail != 'admin@meen.org') {
+				this.isUserLoggedIn = true;
+			} 
+		  } else {
+			  this.isUserLoggedIn = false;
+		  }
+	  });
+	  
 	  let discountStocks = this.db.list('/stock', ref => ref.orderByChild('discount').equalTo("Y"));
 	  discountStocks.snapshotChanges().subscribe(res => {
       this.discountList = [];

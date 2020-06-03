@@ -1,73 +1,67 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
+		<ion-back-button defaultHref="/"></ion-back-button>
+	</ion-buttons>
     <ion-title>{{isAdmin ? 'Stock' : 'Products'}}</ion-title>
+	<ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" (click)="openSearch()">
+        <ion-icon name="search"></ion-icon>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-<ng-container *ngIf="search != null">
-<ion-searchbar animated showCancelButton="always" debounce="500" (ionCancel)="onCancel($event)" cancelButtonText="Custom Cancel"
-    (ionInput)="filterList($event)" [value]="searchVal"></ion-searchbar>
+<ng-container *ngIf="searchInput != null">
+<ion-searchbar #search animated showCancelButton="always" debounce="500" (ionCancel)="onCancel($event)" cancelButtonText="Custom Cancel"
+    (ionInput)="filterList($event)" [value]="searchVal" autofocus="true"></ion-searchbar>
 </ng-container>
 
 	<ion-list *ngIf="categoryID == 0 || categoryID == 'SF'">
 		<ion-list-header>
 		  Sea Fish
 		</ion-list-header>
-		<ng-container *ngFor="let p of stockList;">
-			<ion-item *ngIf="p.category=='SF'" (click)="routeStockDetail(p.$key,p.productcode)">
-				  <ion-avatar slot="start">
-					<img alt="M" src="{{p.imagepath}}">
-				  </ion-avatar>
-				  <ion-label>
-					<h2>{{p.title}}</h2>
-					<h3>RS.{{p.price}}</h3>
-					<p>{{p.details}}</p>
-				  </ion-label>
-			</ion-item>
+		<ng-container *ngFor="let p of stockList; let i = index;">
+			<ion-row *ngIf="p.category=='SF'">
+				<ion-col>
+					<ion-card [disabled]="(p.available == 'N' && !isAdmin) ? true : false" (click)="routeStockDetail(p.$key,p.productcode)">
+						<img alt="M" style="width:100%;height:200px;" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+						<ion-card-header>
+						  <ion-card-title style="text-overflow: ellipsis;display: inline-block;  width:180px;  white-space: nowrap;    overflow: hidden !important;">{{p.title}}</ion-card-title>
+						  <ion-card-subtitle>Price: &#x20b9;{{p.price}} <span style="font-size:10px;">&#x20b9;{{p.price + p.discountprice}}</span></ion-card-subtitle>
+						</ion-card-header>
+						
+						<ion-card-content>
+							<ion-label style="border:1px solid; border-radius:5px;padding:5px;">&#x20b9;{{p.discountprice}} off</ion-label>
+					    </ion-card-content>
+					</ion-card>
+				</ion-col>
+			</ion-row>
 		</ng-container>
 		<ng-container *ngIf="stockList.length == 0">
 			<p class="no-items">No items available</p>
 		</ng-container>
 	</ion-list>
+	
 	<ion-list *ngIf="categoryID == 0 || categoryID == 'CF'">
 		<ion-list-header>
 		  Fresh Fish
 		</ion-list-header>
 		<ng-container *ngFor="let p of stockList;">
-			<ion-item *ngIf="p.category=='CF'" (click)="routeStockDetail(p.$key,p.productcode)">
-				  <ion-avatar slot="start">
-					<img alt="M" src="{{p.imagepath}}">
-				  </ion-avatar>
-				  <ion-label>
-					<h2>{{p.title}}</h2>
-					<h3>RS.{{p.price}}</h3>
-					<p>{{p.details}}</p>
-				  </ion-label>
-			</ion-item>
-		</ng-container>
-		<ng-container *ngIf="stockList.length == 0">
-			<p class="no-items">No items available</p>
-		</ng-container>
-	</ion-list>
-	<ion-list *ngIf="categoryID == 0 || categoryID == 'PR'">
-		<ion-list-header>
-		  Crabs
-		</ion-list-header>
-		<ng-container *ngFor="let p of stockList;">
-			<ion-item *ngIf="p.category=='CR'" (click)="routeStockDetail(p.$key,p.productcode)">
-				  <ion-avatar slot="start">
-					<img alt="M" src="{{p.imagepath}}">
-				  </ion-avatar>
-				  <ion-label>
-					<h2>{{p.title}}</h2>
-					<h3>RS.{{p.price}}</h3>
-					<p>{{p.details}}</p>
-				  </ion-label>
-			</ion-item>
+			<ion-row *ngIf="p.category=='CF'">
+				<ion-col>
+					<ion-card [disabled]="(p.available == 'N' && !isAdmin) ? true : false" (click)="routeStockDetail(p.$key,p.productcode)">
+						<img alt="M" style="width:100%;height:200px;" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+						<ion-card-header>
+						  <ion-card-title style="text-overflow: ellipsis;display: inline-block;  width:180px;  white-space: nowrap;    overflow: hidden !important;">{{p.title}}</ion-card-title>
+						  <ion-card-subtitle>Price: &#x20b9;{{p.price}} <span style="font-size:10px;">&#x20b9;{{p.price + p.discountprice}}</span></ion-card-subtitle>
+						</ion-card-header>
+						
+						<ion-card-content>
+							<ion-label style="border:1px solid; border-radius:5px;padding:5px;">&#x20b9;{{p.discountprice}} off</ion-label>
+					    </ion-card-content>
+					</ion-card>
+				</ion-col>
+			</ion-row>
 		</ng-container>
 		<ng-container *ngIf="stockList.length == 0">
 			<p class="no-items">No items available</p>
@@ -75,19 +69,49 @@
 	</ion-list>
 	<ion-list *ngIf="categoryID == 0 || categoryID == 'CR'">
 		<ion-list-header>
+		  Crabs
+		</ion-list-header>
+		<ng-container *ngFor="let p of stockList;">
+			<ion-row *ngIf="p.category=='CR'">
+				<ion-col>
+					<ion-card [disabled]="(p.available == 'N' && !isAdmin) ? true : false" (click)="routeStockDetail(p.$key,p.productcode)">
+						<img alt="M" style="width:100%;height:200px;" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+						<ion-card-header>
+						  <ion-card-title style="text-overflow: ellipsis;display: inline-block;  width:180px; white-space: nowrap;    overflow: hidden !important;">{{p.title}}</ion-card-title>
+						  <ion-card-subtitle>Price: &#x20b9;{{p.price}} <span style="font-size:10px;">&#x20b9;{{p.price + p.discountprice}}</span></ion-card-subtitle>
+						</ion-card-header>
+						
+						<ion-card-content>
+							<ion-label style="border:1px solid; border-radius:5px;padding:5px;">&#x20b9;{{p.discountprice}} off</ion-label>
+					    </ion-card-content>
+					</ion-card>
+				</ion-col>
+			</ion-row>
+		</ng-container>
+		<ng-container *ngIf="stockList.length == 0">
+			<p class="no-items">No items available</p>
+		</ng-container>
+	</ion-list>
+	<ion-list *ngIf="categoryID == 0 || categoryID == 'PR'">
+		<ion-list-header>
 		  Prawns
 		</ion-list-header>
 		<ng-container *ngFor="let p of stockList;">
-			<ion-item *ngIf="p.category=='PR'" (click)="routeStockDetail(p.$key,p.productcode)">
-				  <ion-avatar slot="start">
-					<img alt="M" src="{{p.imagepath}}">
-				  </ion-avatar>
-				  <ion-label>
-					<h2>{{p.title}}</h2>
-					<h3>RS.{{p.price}}</h3>
-					<p>{{p.details}}</p>
-				  </ion-label>
-			</ion-item>
+			<ion-row *ngIf="p.category=='PR'">
+				<ion-col>
+					<ion-card [disabled]="(p.available == 'N' && !isAdmin) ? true : false" (click)="routeStockDetail(p.$key,p.productcode)">
+						<img alt="M" style="width:100%;height:200px;" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+						<ion-card-header>
+						  <ion-card-title style="text-overflow: ellipsis;display: inline-block;  width:180px; white-space: nowrap;    overflow: hidden !important;">{{p.title}}</ion-card-title>
+						  <ion-card-subtitle>Price: &#x20b9;{{p.price}} <span style="font-size:10px;">&#x20b9;{{p.price + p.discountprice}}</span></ion-card-subtitle>
+						</ion-card-header>
+						
+						<ion-card-content>
+							<ion-label style="border:1px solid; border-radius:5px;padding:5px;">&#x20b9;{{p.discountprice}} off</ion-label>
+					    </ion-card-content>
+					</ion-card>
+				</ion-col>
+			</ion-row>
 		</ng-container>
 		<ng-container *ngIf="stockList.length == 0">
 			<p class="no-items" >No items available</p>

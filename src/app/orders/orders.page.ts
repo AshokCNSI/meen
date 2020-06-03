@@ -39,7 +39,9 @@ export class OrdersPage implements OnInit {
   orderList = [];
   isAdmin : boolean = false;
   ngOnInit() {
-	  this.isAdmin = this.authService.getIsAdmin();
+	  if(this.authService.getUserType() == 'SA' || this.authService.getUserType() == 'A') {
+		  this.isAdmin = true;
+	  }
 	  if(this.isAdmin) {
 		  this.db.list('/orders').snapshotChanges().subscribe(res => { 
 			  if(res != null) {
@@ -68,7 +70,7 @@ export class OrdersPage implements OnInit {
 					getStockDetail.snapshotChanges().subscribe(resp => { 
 						a['product'] = resp.payload.toJSON();
 					});
-					if(a['currentstatus'] == 'ORD' || a['currentstatus'] == 'INP' || a['currentstatus'] == 'DE') {
+					if(a['currentstatus'] == 'ORD' || a['currentstatus'] == 'INP' || a['currentstatus'] == 'DE' || a['currentstatus'] == 'CL') {
 						this.orderList.push(a);
 					}
 				  })

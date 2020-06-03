@@ -3,89 +3,120 @@
 	<ion-buttons slot="start">
 		<ion-back-button defaultHref="/home"></ion-back-button>
 	</ion-buttons>
-    <ion-title>My Profile</ion-title>
+    <ion-title>My Profile As {{rolename}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-	<div *ngIf="isSubmitted && errorControl.firstname.errors?.required"
-		class="validator-error">
-	  Firstname is required.
+	<div class="spin" *ngIf="spinnerShow">
+		<ion-spinner name="lines"></ion-spinner>
 	</div>
-	<div *ngIf="isSubmitted && errorControl.lastname.errors?.required"
-		class="validator-error">
-	  Lastname is required.
-	</div>
-	<div *ngIf="isSubmitted && errorControl.mobilenumber.errors?.required"
-	class="validator-error">
-	  Mobilenumber is required.
-	</div>
-	<div *ngIf="isSubmitted && errorControl.mobilenumber.errors?.maxlength"
-	class="validator-error">
-	  Mobilenumber is invalid.
-	</div>
-	<div *ngIf="isSubmitted && errorControl.mobilenumber.errors?.minlength"
-	class="validator-error">
-	  Mobilenumber is invalid.
-	</div>
-	<div *ngIf="isSubmitted && errorControl.mobilenumber.errors?.pattern"
-	class="validator-error">
-	  Mobilenumber is allowed only numbers.
-	</div>
-	<div *ngIf="isSubmitted && errorControl.street1.errors?.required"
-	class="validator-error">
-	  Street1 is required.
-	</div>
-	<div *ngIf="isSubmitted && errorControl.district.errors?.required"
-	class="validator-error">
-	  District is required.
-	</div>
-	<div *ngIf="isSubmitted && errorControl.state.errors?.required"
-	class="validator-error">
-	  State is required.
-	</div>
-	<div *ngIf="isSubmitted && errorControl.pincode.errors?.required"
-	class="validator-error">
-	  Pincode is required.
-	</div>
-	<div *ngIf="isSubmitted && errorControl.pincode.errors?.pattern"
-	class="validator-error">
-	  Pincode is allowed only numbers.
-	</div>
+
 	<form [formGroup]="profileData" id="profileData" (ngSubmit)="addProfile()" novalidate>
-		
-		<ion-item>
-		  <ion-label position="floating">First Name</ion-label>
-		  <ion-input type="text" formControlName="firstname" [(ngModel)]="firstname" required></ion-input>
-		</ion-item>
-		<ion-item>
-		  <ion-label position="floating">Last Name</ion-label>
-		  <ion-input type="text" formControlName="lastname" [(ngModel)]="lastname" required></ion-input>
-		</ion-item>
-		<ion-item>
-		  <ion-label position="floating">Mobile Number</ion-label>
-		  <ion-input type="text" formControlName="mobilenumber" [(ngModel)]="mobilenumber" required></ion-input>
-		</ion-item>
-		<ion-item>
-		  <ion-label position="floating">Street 1</ion-label>
-		  <ion-input type="text" formControlName="street1" [(ngModel)]="street1" required></ion-input>
-		</ion-item>
-		<ion-item>
-		  <ion-label position="floating">Street 2</ion-label>
-		  <ion-input type="text" formControlName="street2" [(ngModel)]="street2"></ion-input>
-		</ion-item>
-		<ion-item>
-		  <ion-label position="floating">District</ion-label>
-		  <ion-input type="text" formControlName="district" [(ngModel)]="district" required></ion-input>
-		</ion-item>
-		<ion-item>
-		  <ion-label position="floating">State</ion-label>
-		  <ion-input type="text" formControlName="state" [(ngModel)]="state" required></ion-input>
-		</ion-item>
-		<ion-item>
-		  <ion-label position="floating">Pincode</ion-label>
-		  <ion-input type="number" formControlName="pincode" [(ngModel)]="pincode" required></ion-input>
-		</ion-item>
+		<ion-row>
+			<ion-col>
+				<ion-item>
+				  <ion-label position="floating">First Name<span>*</span></ion-label>
+				  <ion-input type="text" formControlName="firstname" [(ngModel)]="firstname" required></ion-input>
+				</ion-item>
+				<div *ngIf="isSubmitted && errorControl.firstname.errors?.required"
+					class="validator-error">
+				  <ion-icon name="alert-circle-outline"></ion-icon>  Firstname is required.
+				</div>
+			</ion-col>
+			<ion-col>
+				<ion-item>
+				  <ion-label position="floating">Last Name<span>*</span></ion-label>
+				  <ion-input type="text" formControlName="lastname" [(ngModel)]="lastname" required></ion-input>
+				</ion-item>
+				<div *ngIf="isSubmitted && errorControl.lastname.errors?.required"
+					class="validator-error">
+				  <ion-icon name="alert-circle-outline"></ion-icon>  Lastname is required.
+				</div>
+			</ion-col>
+		</ion-row>
+		<ion-row>
+			<ion-col>
+				<ion-item>
+				  <ion-label position="floating">Mobile Number<span>*</span></ion-label>
+				  <ion-input type="text" formControlName="mobilenumber" [(ngModel)]="mobilenumber" required></ion-input>
+				</ion-item>
+				<div *ngIf="isSubmitted && errorControl.mobilenumber.errors?.required"
+				class="validator-error">
+				  <ion-icon name="alert-circle-outline"></ion-icon>  Mobilenumber is required.
+				</div>
+				<div *ngIf="isSubmitted && errorControl.mobilenumber.errors?.maxlength"
+				class="validator-error">
+				  <ion-icon name="alert-circle-outline"></ion-icon>  Mobilenumber is invalid.
+				</div>
+				<div *ngIf="isSubmitted && errorControl.mobilenumber.errors?.minlength"
+				class="validator-error">
+				  <ion-icon name="alert-circle-outline"></ion-icon>  Mobilenumber is invalid.
+				</div>
+				<div *ngIf="isSubmitted && errorControl.mobilenumber.errors?.pattern"
+				class="validator-error">
+				  <ion-icon name="alert-circle-outline"></ion-icon>  Mobilenumber is allowed only numbers.
+				</div>
+			</ion-col>
+		</ion-row>
+		<ion-row>
+			<ion-col>
+				<ion-item>
+				  <ion-label position="floating">Street 1<span>*</span></ion-label>
+				  <ion-input type="text" formControlName="street1" [(ngModel)]="street1" required></ion-input>
+				</ion-item>
+				<div *ngIf="isSubmitted && errorControl.street1.errors?.required"
+				class="validator-error">
+				  <ion-icon name="alert-circle-outline"></ion-icon>  Address Line 1 is required.
+				</div>
+			</ion-col>
+		</ion-row>
+		<ion-row>
+			<ion-col>
+				<ion-item>
+				  <ion-label position="floating">Street 2</ion-label>
+				  <ion-input type="text" formControlName="street2" [(ngModel)]="street2"></ion-input>
+				</ion-item>
+			</ion-col>
+		</ion-row>
+		<ion-row>
+			<ion-col>
+				<ion-item>
+				  <ion-label position="floating">District<span>*</span></ion-label>
+				  <ion-input type="text" formControlName="district" [(ngModel)]="district" required></ion-input>
+				</ion-item>
+				<div *ngIf="isSubmitted && errorControl.district.errors?.required"
+				class="validator-error">
+				  <ion-icon name="alert-circle-outline"></ion-icon>  District is required.
+				</div>
+			</ion-col>
+			<ion-col>
+				<ion-item>
+				  <ion-label position="floating">State<span>*</span></ion-label>
+				  <ion-input type="text" formControlName="state" [(ngModel)]="state" required></ion-input>
+				</ion-item>
+				<div *ngIf="isSubmitted && errorControl.state.errors?.required"
+				class="validator-error">
+				  <ion-icon name="alert-circle-outline"></ion-icon>  State is required.
+				</div>
+			</ion-col>
+		</ion-row>
+		<ion-row>
+			<ion-col>
+				<ion-item>
+				  <ion-label position="floating">Pincode<span>*</span></ion-label>
+				  <ion-input type="number" formControlName="pincode" [(ngModel)]="pincode" required></ion-input>
+				</ion-item>
+				<div *ngIf="isSubmitted && errorControl.pincode.errors?.required"
+				class="validator-error">
+				  <ion-icon name="alert-circle-outline"></ion-icon>  Pincode is required.
+				</div>
+				<div *ngIf="isSubmitted && errorControl.pincode.errors?.pattern"
+				class="validator-error">
+				  <ion-icon name="alert-circle-outline"></ion-icon>  Pincode is allowed only numbers.
+				</div>
+			</ion-col>
+		</ion-row>
 	   <ion-row>
 		  <ion-col style="text-align:center;">
 			 <ion-button type="submit">Update my Profile</ion-button>

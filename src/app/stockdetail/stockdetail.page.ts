@@ -10,6 +10,7 @@ import * as firebase from 'firebase';
 import { filter } from 'rxjs/operators';
 import { RouterserviceService } from '../routerservice.service';
 import { AuthenticateService } from '../authentication.service';
+import { prop } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +48,8 @@ export class StockdetailPage implements OnInit {
   stockDetail = [];
   stockDetailS = [];
   isSubmitted = false;
+  delieverycharge : number;
+  masalacharge : number;
   title: string; 
   available : string;
   discount : number;
@@ -78,6 +81,14 @@ export class StockdetailPage implements OnInit {
   state : string;
   pincode : number;
   index : string;
+	ofinalprice:number;
+	oactualprice:number;
+	osellingprice:number;
+	odiscountprice:number;
+	ototalprice:number;
+	odeliverycharge:number;
+	omasalacharge:number;
+	omasalatotalcharge : number;
   
   async presentAlert(status, msg) {
     const alert = await this.alertCtrl.create({
@@ -105,6 +116,8 @@ export class StockdetailPage implements OnInit {
   }
   
   ngOnInit() {
+	  this.delieverycharge = prop.delieverycharge;
+	  this.masalacharge = prop.masalacharge;
 		firebase.auth().onAuthStateChanged(user => {
 		  if (user) {
 			  this.isUserLoggedIn = true;
@@ -135,12 +148,22 @@ export class StockdetailPage implements OnInit {
 				  this.cookingpurpose = snapshot.child('cookingpurpose').val();
 				  this.productVisibility = snapshot.child('currentstatus').val();
 				  this.oldStatus = snapshot.child('currentstatus').val();
+				  
+				  this.ofinalprice = snapshot.child('finalprice').val();
+				  this.oactualprice = snapshot.child('actualprice').val();
+				  this.osellingprice = snapshot.child('sellingprice').val();
+				  this.odiscountprice = snapshot.child('discountprice').val();
+				  this.ototalprice = snapshot.child('totalprice').val();
+				  this.odeliverycharge = snapshot.child('deliverycharge').val();
+				  this.omasalacharge = snapshot.child('masalacharge').val();
+				  this.omasalatotalcharge = snapshot.child('masalatotalcharge').val();
 				  if(this.productVisibility != 'AC') {
 					  this.ordervisibility = true;
 				  }
 				  firebase.database().ref('/stock/'+snapshot.child('productcode').val()).once('value').then((snapshot) => {
 					  this.title = snapshot.child('title').val();
 					  this.price = snapshot.child('price').val();
+					  this.discountprice = snapshot.child('discountprice').val();
 					  this.details = snapshot.child('details').val();
 					  this.imagepath = snapshot.child('imagepath').val();
 				  });
@@ -170,18 +193,10 @@ export class StockdetailPage implements OnInit {
 			  });
 		  }
 	  
-		this.authService.userDetails().subscribe(res => { 
-			  if (res !== null) {
-				  this.uid = res.uid;
-				if(res.email == 'admin@meen.org') {
-					this.isAdmin = true;
-				}
-			  } else {
-				
-			  }
-		}, err => {
-		  console.log('err', err);
-		});
+		if(this.authService.getUserType() == 'SA' || this.authService.getUserType() == 'A') {
+			this.isAdmin = true;
+		}
+			  
   }
   
   formData = this.formBuilder.group({
@@ -282,7 +297,15 @@ export class StockdetailPage implements OnInit {
 			"currentstatus": "ORD",
 			"description" : this.orderData.value.description,
 			"modifieddate":new Date(),
-			"modifiedby":this.authService.getUserID()
+			"modifiedby":this.authService.getUserID(),
+			"finalprice":(this.price * this.quantity + prop.delieverycharge),
+			"actualprice":(this.price + this.discountprice),
+			"sellingprice":(this.price),
+			"discountprice":(this.discountprice),
+			"totalprice":(this.price * this.quantity),
+			"deliverycharge":(prop.delieverycharge),
+			"masalacharge":(prop.masalacharge),
+			"masalatotalcharge":(this.masala == 'Y' ? this.quantity * this.masalacharge : 0)
 		  }).then(
 		   res => 
 		   {
@@ -304,6 +327,27 @@ export class StockdetailPage implements OnInit {
 	   res => 
 	   {
 		   this.presentAlert('Status','Status updated successfully.');
+	   }
+	 )
+  }
+  
+  cancelOrder() {
+	  firebase.database().ref('/orders/'+this.index).update({
+		"currentstatus": 'CL',
+		"modifieddate":new Date(),
+		"modifiedby":this.authService.getUserID(),
+		"finalprice":(this.price * this.quantity + prop.delieverycharge),
+		"actualprice":(this.price + this.discountprice),
+		"sellingprice":(this.price),
+		"discountprice":(this.discountprice),
+		"totalprice":(this.price * this.quantity),
+		"deliverycharge":(prop.delieverycharge),
+		"masalacharge":(prop.masalacharge),
+		"masalatotalcharge":(this.masala == 'Y' ? this.quantity * this.masalacharge : 0)
+	  }).then(
+	   res => 
+	   {
+		   this.presentAlert('Status','Order cancelled successfully.');
 	   }
 	 )
   }

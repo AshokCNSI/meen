@@ -1,5 +1,7 @@
 import { Component, OnInit, Injectable } from '@angular/core';
 import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
+import * as firebase from 'firebase';
+
 import { AngularFireAuth } from '@angular/fire/auth';
 import{ Validators, FormBuilder, FormGroup, FormControl }from'@angular/forms';
 import { AlertController } from '@ionic/angular';

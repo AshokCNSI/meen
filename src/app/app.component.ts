@@ -13,7 +13,6 @@ import { NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Network } from '@ionic-native/network/ngx';
 
-
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -37,17 +36,14 @@ export class AppComponent implements OnInit {
 	private network: Network
   ) {
     this.initializeApp();
-  }
+	// let status bar overlay webview
+	this.statusBar.overlaysWebView(false);
 
-  initializeApp() {
-    this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
-    });
-  }
-  
-  ngOnInit() {
+	// set status bar to white
+	this.statusBar.backgroundColorByHexString('#ffffff');
+	
 	// watch network for a disconnection
+	
 	let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
 	  this.navController.navigateRoot('/network');
 	});
@@ -71,60 +67,60 @@ export class AppComponent implements OnInit {
 
 	// stop connect watch
 	connectSubscription.unsubscribe();
+  }
+
+  initializeApp() {
+    this.platform.ready().then(() => {
+      this.statusBar.styleDefault();
+      this.splashScreen.hide();
+    });
+  }
+  
+  ngOnInit() {
+	
     const path = window.location.pathname.split('folder/')[1];
     if (path !== undefined) {
       //this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
     }
 	let menuRes = this.db.list('/menu', ref => ref.orderByChild('order'));	
-	
 	this.authService.userDetails().subscribe(res => { 
-      console.log('res', res);
-      if (res !== null) {
-        this.userEmail = res.email;
-		if(this.userEmail != null) {
-			this.authService.setUserID(res.uid);
-			this.authService.setEmailID(res.email);
-			if(this.userEmail == 'admin@meen.org') {
-				console.log('user logged in as Admin');
-				this.authService.setIsAdmin(true);
-			} else {
-				this.authService.setIsAdmin(false);
+	  if (res !== null) {
+		this.authService.setUserName(res.email);
+		this.authService.setUserID(res.uid);
+		this.authService.setEmailID(res.email);
+		this.authService.setIsUserLoggedIn(true);
+		firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
+			if(snapshot != null) {
+				this.authService.setUserType(snapshot.child('usertype').val());  
+				this.authService.setUserName(snapshot.child('firstname').val()+" "+snapshot.child('lastname').val());
 			}
-			menuRes.snapshotChanges().subscribe(res => {
-			  this.menuList = [];
-			  res.forEach(item => {
-				let a = item.payload.toJSON();
-				a['$key'] = item.key;
-				if(this.userEmail != null && this.userEmail == 'admin@meen.org' && (a['type'] == 'C' || a['type'] == 'A')) {
-					this.menuList.push(a);
-				} else if(this.userEmail != null && this.userEmail != 'admin@meen.org' && (a['type'] == 'C' || a['type'] == 'D')) {
-					this.menuList.push(a);
-				}
-			  })
-			});
-		}
-      } else {
-		menuRes.snapshotChanges().subscribe(res => {
-			  this.menuList = [];
-			  res.forEach(item => {
-				let a = item.payload.toJSON();
-				a['$key'] = item.key;
-				if(this.userEmail == null && a['type'] == 'C') {
-					this.menuList.push(a);
-				} 
-			  })
-			});
-      }
-    }, err => {
-      console.log('err', err);
-    })
+		});
+	  } else {
+		 this.authService.setIsUserLoggedIn(false); 
+	  }
+	}, err => {
+	  console.log('err', err);
+	});
+	
+	menuRes.snapshotChanges().subscribe(res => {
+	  this.menuList = [];
+	  res.forEach(item => {
+		let a = item.payload.toJSON();
+		a['$key'] = item.key;
+		this.menuList.push(a);
+	  })
+	});
   }
   
   logout() {
 	  this.authService.logoutUser()
       .then(res => {
         console.log(res);
-		this.userEmail = null;		
+		this.authService.setUserID(null);
+		this.authService.setEmailID(null);
+		this.authService.setIsUserLoggedIn(false);
+		this.authService.setUserType(null);  
+		this.authService.setUserName(null);  
         this.navController.navigateBack('');
       })
       .catch(error => {

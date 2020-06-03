@@ -14,6 +14,11 @@ export const environment = {
     appId: "1:159230424582:web:22e4c90aad70aba3dab587",
     measurementId: "G-Y2YEERMK45"
   }
+}
+
+export const prop = {
+  delieverycharge: 20,
+  masalacharge: 25
 };
 
 /*

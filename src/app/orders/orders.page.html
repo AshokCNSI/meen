@@ -13,7 +13,7 @@
   Current items
 </ion-list-header>
 <ng-container *ngFor="let p of orderList;">
-	<ion-item (click)="routeStockDetail(p.index,p.productcode)" *ngIf="p.currentstatus != 'DE'">
+	<ion-item (click)="routeStockDetail(p.index,p.productcode)" *ngIf="p.currentstatus != 'DE' && p.currentstatus != 'CL'">
 		  <ion-avatar slot="start">
 			<img alt="M" src="{{p.product.imagepath}}">
 		  </ion-avatar>
@@ -62,6 +62,30 @@
 				<p>Order Status: <b>Delievered</b></p>
 			  </ng-container>
 			  <p>Date: {{p.modifieddate |  date:'MM/dd/yyyy'}}</p>
+		  </ion-label>
+	</ion-item>
+</ng-container>
+<ng-container *ngIf="orderList.length == 0">
+	<p class="no-items">No items available</p>
+</ng-container>
+</ion-list>
+
+<ion-list>
+<ion-list-header>
+	  Cancelled items
+</ion-list-header>
+
+<ng-container *ngFor="let p of orderList;">
+	<ion-item (click)="routeStockDetail(p.index,p.productcode)" *ngIf="p.currentstatus == 'CL'">
+		  <ion-avatar slot="start">
+			<img alt="M" src="{{p.product.imagepath}}">
+		  </ion-avatar>
+		  <ion-label>
+			<h2>{{p.product.title}}</h2>
+			<h3>RS.{{p.product.price}}</h3>
+			<p>Quantity: {{p.quantity}} in Kg</p>
+			<p>Order Status: <b>Cancelled</b></p> 
+			<p>Date: {{p.modifieddate |  date:'MM/dd/yyyy'}}</p>
 		  </ion-label>
 	</ion-item>
 </ng-container>

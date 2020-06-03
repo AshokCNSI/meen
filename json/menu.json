@@ -1,0 +1,50 @@
+[{
+        "title": "Home",
+        "path": "/home",
+        "icon": "home",
+        "order": 1,
+        "type": "C"
+    },
+    {
+        "title": "Help",
+        "path": "/help",
+        "icon": "information",
+        "order": 8,
+        "type": "C"
+    },
+    {
+        "title": "Profile",
+        "path": "/profile",
+        "icon": "people",
+        "order": 2,
+        "type": "A"
+    },
+    {
+        "title": "User Management",
+        "path": "/customers",
+        "icon": "happy",
+        "order": 4,
+        "type": "A"
+    },
+    {
+        "title": "Orders",
+        "path": "/orders",
+        "icon": "cart",
+        "order": 5,
+        "type": "A"
+    },
+    {
+        "title": "My Profile",
+        "path": "/profile",
+        "icon": "people",
+        "order": 2,
+        "type": "D"
+    },
+    {
+        "title": "My orders",
+        "path": "/orders",
+        "icon": "basket",
+        "order": 3,
+        "type": "D"
+    }
+]
