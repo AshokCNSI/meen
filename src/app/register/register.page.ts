@@ -7,6 +7,7 @@ import { NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import * as firebase from 'firebase';
 import { AuthenticateService } from '../authentication.service';
+import {  MenuController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -27,10 +28,12 @@ export class RegisterPage implements OnInit {
   private authService: AuthenticateService,
   public formBuilder: FormBuilder, 
   private navController: NavController, 
-  private router: Router) { }
+  private router: Router,
+  private menuCtrl : MenuController) { }
 
   ngOnInit() {
 	this.usertype = "C";
+	this.menuCtrl.enable(false);
   }
   
   ionViewWillLeave() {
@@ -117,15 +120,16 @@ export class RegisterPage implements OnInit {
 	   district: this.formData.value.district,
 	   state: this.formData.value.state,
 	   pincode: this.formData.value.pincode,
-	   "createddate" : Date(),
-	   "createdby":this.authService.getUserID(),
-	   "modifieddate" : Date(),
-	   "modifiedby":this.authService.getUserID(),
+	   createddate : Date(),
+	   createdby:uid,
+	   modifieddate : Date(),
+	   modifiedby:uid,
 	 })
 	 .then(
 	   res => 
 	   {
 		   this.spinnerShow = false;
+		   this.authService.setUserName(this.formData.value.firstname+" "+this.formData.value.lastname);	
 		   this.authService.userDetails().subscribe(res => { 
 			  if (res !== null) {
 				this.authService.setUserID(res.uid);
@@ -133,7 +137,7 @@ export class RegisterPage implements OnInit {
 				this.authService.setIsUserLoggedIn(true);
 				firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
 					if(snapshot != null) {
-						this.authService.setUserType(snapshot.child('usertype').val());  
+						this.authService.setUserType(snapshot.child('usertype').val()); 					
 					}
 				});
 			  } else {

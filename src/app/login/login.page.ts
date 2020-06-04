@@ -8,6 +8,7 @@ import { AlertController } from '@ionic/angular';
 import { NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AuthenticateService } from '../authentication.service';
+import {  MenuController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -25,10 +26,11 @@ export class LoginPage implements OnInit {
   public formBuilder: FormBuilder, 
   private navController: NavController, 
   private router: Router, 
-  private authService: AuthenticateService) { }
+  private authService: AuthenticateService,
+  private menuCtrl : MenuController) { }
 
   ngOnInit() {
-	  
+	  this.menuCtrl.enable(false);
   }
   
   ionViewWillLeave() {

@@ -12,6 +12,7 @@ import { AuthenticateService } from './authentication.service';
 import { NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Network } from '@ionic-native/network/ngx';
+import {  MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-root',
@@ -33,8 +34,10 @@ export class AppComponent implements OnInit {
 	private navController: NavController, 
 	private router: Router,
 	private db: AngularFireDatabase,
-	private network: Network
+	private network: Network,
+	private menuCtrl : MenuController
   ) {
+	
     this.initializeApp();
 	// let status bar overlay webview
 	this.statusBar.overlaysWebView(false);
@@ -77,7 +80,7 @@ export class AppComponent implements OnInit {
   }
   
   ngOnInit() {
-	
+	this.menuCtrl.enable(true);
     const path = window.location.pathname.split('folder/')[1];
     if (path !== undefined) {
       //this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());

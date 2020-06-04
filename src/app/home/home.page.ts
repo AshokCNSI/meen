@@ -5,6 +5,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AuthenticateService } from '../authentication.service';
 import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
 import { NavController } from '@ionic/angular';
+import {  MenuController } from '@ionic/angular';
 
 import { IonSlides } from '@ionic/angular';
 @Component({
@@ -25,13 +26,14 @@ export class HomePage implements OnInit {
   public fAuth: AngularFireAuth, 
   private authService: AuthenticateService,
   private db: AngularFireDatabase,
-  private navController: NavController
+  private navController: NavController,
+  private menuCtrl : MenuController
   ) { 
 	
   }
 
   ngOnInit() {
-	  
+	  this.menuCtrl.enable(true);
 	  this.authService.userDetails().subscribe(res => { 
 		if (res !== null) {
 			this.authService.setUserName(res.email);
