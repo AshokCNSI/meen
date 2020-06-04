@@ -19,7 +19,11 @@
               <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
               <ion-label>{{ p.title }}</ion-label>
             </ion-item>
-			 <ion-item (click)="selectedIndex = i" *ngIf="(authService.getUserType() == 'A' || authService.getUserType() == 'SA') && (p.type == 'A')" routerDirection="root" [routerLink]="[p.path]" lines="none" detail="false" [class.selected]="selectedIndex == i">
+			<ion-item (click)="selectedIndex = i" *ngIf="authService.getUserType() == 'A' && (p.type == 'A')" routerDirection="root" [routerLink]="[p.path]" lines="none" detail="false" [class.selected]="selectedIndex == i">
+              <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+              <ion-label>{{ p.title }}</ion-label>
+            </ion-item>
+			<ion-item (click)="selectedIndex = i" *ngIf="authService.getUserType() == 'SA' && (p.type == 'SA')" routerDirection="root" [routerLink]="[p.path]" lines="none" detail="false" [class.selected]="selectedIndex == i">
               <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
               <ion-label>{{ p.title }}</ion-label>
             </ion-item>

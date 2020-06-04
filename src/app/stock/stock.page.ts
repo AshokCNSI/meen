@@ -69,18 +69,9 @@ searchVal : string;
 		});
 	  }
 	  
-	  this.authService.userDetails().subscribe(res => { 
-		  if (res !== null) {
-			this.userEmail = res.email;
-			if(this.userEmail == 'admin@meen.org') {
-				this.isAdmin = true;
-			}
-		  } else {
-			
-		  }
-    }, err => {
-      console.log('err', err);
-    });
+	if(this.authService.getUserType() == 'SA' || this.authService.getUserType() == 'A') {
+		this.isAdmin = true;
+	}
 	  
   }
   

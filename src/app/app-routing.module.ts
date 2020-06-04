@@ -61,6 +61,10 @@ const routes: Routes = [
   {
     path: 'network',
     loadChildren: () => import('./network/network.module').then( m => m.NetworkPageModule)
+  },
+  {
+    path: 'properties',
+    loadChildren: () => import('./properties/properties.module').then( m => m.PropertiesPageModule)
   }
 
 ];

@@ -18,6 +18,8 @@ export class HomePage implements OnInit {
   @ViewChild('mySlider') slider: IonSlides;
   userEmail : string;
   isUserLoggedIn : boolean = false;
+  spinnerShow = false;
+  isAdmin : boolean = false;
   constructor(
   private activatedRoute: ActivatedRoute, 
   public fAuth: AngularFireAuth, 
@@ -29,17 +31,32 @@ export class HomePage implements OnInit {
   }
 
   ngOnInit() {
-	  this.authService.userDetails().subscribe(res => { 
-		  if (res !== null) {
-			this.userEmail = res.email;
-			if(this.userEmail != null && this.userEmail != 'admin@meen.org') {
-				this.isUserLoggedIn = true;
-			} 
-		  } else {
-			  this.isUserLoggedIn = false;
-		  }
-	  });
 	  
+	  this.authService.userDetails().subscribe(res => { 
+		if (res !== null) {
+			this.authService.setUserName(res.email);
+			this.authService.setUserID(res.uid);
+			this.authService.setEmailID(res.email);
+			this.authService.setIsUserLoggedIn(true);
+			firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
+				if(snapshot != null) {
+					this.authService.setUserType(snapshot.child('usertype').val());  
+					this.authService.setUserName(snapshot.child('firstname').val()+" "+snapshot.child('lastname').val());
+					if(this.authService.getUserType() == 'SA' || this.authService.getUserType() == 'A') {
+					  this.isAdmin = true;
+				  }
+				}
+			});
+		  } else {
+			 this.authService.setIsUserLoggedIn(false); 
+		  }
+		  this.isUserLoggedIn = this.authService.getIsUserLoggedIn();
+		  
+		}, err => {
+		  console.log('err', err);
+		});
+		
+	  this.spinnerShow = true;
 	  let discountStocks = this.db.list('/stock', ref => ref.orderByChild('discount').equalTo("Y"));
 	  discountStocks.snapshotChanges().subscribe(res => {
       this.discountList = [];
@@ -48,6 +65,7 @@ export class HomePage implements OnInit {
         a['$key'] = item.key;
 		this.discountList.push(a);
       })
+	  this.spinnerShow = false;
     });
   }
 

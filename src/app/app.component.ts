@@ -49,7 +49,7 @@ export class AppComponent implements OnInit {
 	});
 
 	// stop disconnect watch
-	disconnectSubscription.unsubscribe();
+	//disconnectSubscription.unsubscribe();
 
 
 	// watch network for a connection
@@ -66,7 +66,7 @@ export class AppComponent implements OnInit {
 	});
 
 	// stop connect watch
-	connectSubscription.unsubscribe();
+	//connectSubscription.unsubscribe();
   }
 
   initializeApp() {
@@ -83,24 +83,6 @@ export class AppComponent implements OnInit {
       //this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
     }
 	let menuRes = this.db.list('/menu', ref => ref.orderByChild('order'));	
-	this.authService.userDetails().subscribe(res => { 
-	  if (res !== null) {
-		this.authService.setUserName(res.email);
-		this.authService.setUserID(res.uid);
-		this.authService.setEmailID(res.email);
-		this.authService.setIsUserLoggedIn(true);
-		firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
-			if(snapshot != null) {
-				this.authService.setUserType(snapshot.child('usertype').val());  
-				this.authService.setUserName(snapshot.child('firstname').val()+" "+snapshot.child('lastname').val());
-			}
-		});
-	  } else {
-		 this.authService.setIsUserLoggedIn(false); 
-	  }
-	}, err => {
-	  console.log('err', err);
-	});
 	
 	menuRes.snapshotChanges().subscribe(res => {
 	  this.menuList = [];

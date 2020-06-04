@@ -7,13 +7,16 @@
 	<ion-buttons slot="secondary" style="font-size: 25px;margin: 10px;" [routerLink]="['/notification']">
         <ion-icon name="notifications-circle-outline"></ion-icon>
     </ion-buttons>
-	<ion-buttons *ngIf="isUserLoggedIn" slot="primary" style="font-size: 25px;margin: 10px;" [routerLink]="['/mycart']">
+	<ion-buttons *ngIf="isUserLoggedIn && !isAdmin" slot="primary" style="font-size: 25px;margin: 10px;" [routerLink]="['/mycart']">
         <ion-icon name="cart"></ion-icon>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+	<div class="spin" *ngIf="spinnerShow">
+		<ion-spinner name="lines"></ion-spinner>
+	</div>
 <ion-searchbar animated showCancelButton="focus" cancelButtonText="Custom Cancel"
     (ionFocus)="filterList($event)"></ion-searchbar>
 

@@ -1,0 +1,50 @@
+{
+  "fishpiecetype": [
+    {
+      "name": "Fry",
+      "code": "FR"
+    },
+    {
+      "name": "Gravy",
+      "code": "GA"
+    },
+    {
+      "name": "Tawa Fry",
+      "code": "TA"
+    },
+    {
+      "name": "Chilli",
+      "code": "CH"
+    },
+    {
+      "name": "Cross cut",
+      "code": "CR"
+    },
+    {
+      "name": "Fillet",
+      "code": "FI"
+    }
+  ],
+  "prop": {
+    "deliverycharge": 20,
+    "masalacharge": 20
+  },
+  "fishcategory" : [
+    {
+      "name": "Fresh Fish",
+      "code": "CF"
+    },
+    {
+      "name": "Sea Fish",
+      "code": "SF"
+    },
+    {
+      "name": "Prawns",
+      "code": "PR"
+    },
+    {
+      "name": "Crabs",
+      "code": "CR"
+    }
+  ]
+}

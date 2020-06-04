@@ -116,8 +116,10 @@ export class StockdetailPage implements OnInit {
   }
   
   ngOnInit() {
-	  this.delieverycharge = prop.delieverycharge;
-	  this.masalacharge = prop.masalacharge;
+	  firebase.database().ref('/properties/prop').once('value').then((snapshot) => {
+		  this.delieverycharge = snapshot.child('delieverycharge').val();
+		  this.masalacharge = snapshot.child('masalacharge').val();
+	  });
 		firebase.auth().onAuthStateChanged(user => {
 		  if (user) {
 			  this.isUserLoggedIn = true;
@@ -298,13 +300,13 @@ export class StockdetailPage implements OnInit {
 			"description" : this.orderData.value.description,
 			"modifieddate":new Date(),
 			"modifiedby":this.authService.getUserID(),
-			"finalprice":(this.price * this.quantity + prop.delieverycharge),
+			"finalprice":(this.price * this.quantity + this.delieverycharge),
 			"actualprice":(this.price + this.discountprice),
 			"sellingprice":(this.price),
 			"discountprice":(this.discountprice),
 			"totalprice":(this.price * this.quantity),
-			"deliverycharge":(prop.delieverycharge),
-			"masalacharge":(prop.masalacharge),
+			"deliverycharge":(this.delieverycharge),
+			"masalacharge":(this.masalacharge),
 			"masalatotalcharge":(this.masala == 'Y' ? this.quantity * this.masalacharge : 0)
 		  }).then(
 		   res => 
