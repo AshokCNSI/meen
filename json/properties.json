@@ -29,7 +29,7 @@
     "deliverycharge": 20,
     "masalacharge": 20
   },
-  "fishcategory" : [
+  "fishcategory": [
     {
       "name": "Fresh Fish",
       "code": "CF"
@@ -45,6 +45,54 @@
     {
       "name": "Crabs",
       "code": "CR"
+    }
+  ],
+  "location": {
+    "TN": [
+      {
+        "location_name": "Erode",
+        "location_code": "ED",
+        "available": true
+      },
+      {
+        "location_name": "Tirupur",
+        "location_code": "TR",
+        "available": true
+      },
+      {
+        "location_name": "Coimbatore",
+        "location_code": "CO",
+        "available": false
+      },
+      {
+        "location_name": "Chennai",
+        "location_code": "CH",
+        "available": false
+      }
+    ],
+	"AN": [
+      {
+        "location_name": "Guntoor",
+        "location_code": "GU",
+        "available": true
+      },
+      {
+        "location_name": "Nellore",
+        "location_code": "NE",
+        "available": true
+      }
+    ]
+  },
+  "States": [
+    {
+      "state_name": "Tamilnadu",
+      "state_code": "TN",
+      "available": true
+    },
+	{
+      "state_name": "Andhra",
+      "state_code": "AN",
+      "available": true
     }
   ]
 }

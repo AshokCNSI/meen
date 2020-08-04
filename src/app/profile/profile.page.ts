@@ -1,4 +1,4 @@
-import { Component, OnInit, Injectable } from '@angular/core';
+import { Component, OnInit, Injectable, Input } from '@angular/core';
 import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { ActivatedRoute, NavigationEnd, NavigationStart  } from '@angular/router';
@@ -79,6 +79,24 @@ export class ProfilePage implements OnInit {
 				  this.rolename = 'Seller';
 			  }
 		  });
+	firebase.database().ref('/properties/States').orderByChild('state_name').once('value').then((snapshot) => {
+		  this.stateList = [];
+		  snapshot.forEach(item => {
+			let a = item.toJSON();
+			this.stateList.push(a);
+		  })
+
+	  });
+	firebase.database().ref('/properties/location/'+this.state).orderByChild('location_name').once('value').then((snapshot) => {
+		  this.locationList = [];
+		  snapshot.forEach(item => {
+			let a = item.toJSON();
+			if(a['available'] == true) {
+				this.locationList.push(a);
+			}
+		  })
+
+	  });
   }
   
   profileData = this.formBuilder.group({
@@ -126,4 +144,18 @@ export class ProfilePage implements OnInit {
 		  });		  
 	  }
   }
+  
+  selectState($event) {
+	  this.state = $event.target.value;
+	  firebase.database().ref('/properties/location/'+this.state).once('value').then((snapshot) => {
+		  this.locationList = [];
+		  snapshot.forEach(item => {
+			let a = item.toJSON();
+			if(a['available'] == true) {
+				this.locationList.push(a);
+			}
+		  })
+	  });
+  }
+  
 }

@@ -34,6 +34,14 @@ export class RegisterPage implements OnInit {
   ngOnInit() {
 	this.usertype = "C";
 	this.menuCtrl.enable(false);
+	firebase.database().ref('/properties/States').orderByChild('state_name').once('value').then((snapshot) => {
+		  this.stateList = [];
+		  snapshot.forEach(item => {
+			let a = item.toJSON();
+			this.stateList.push(a);
+		  })
+
+	  });
   }
   
   ionViewWillLeave() {
@@ -48,13 +56,17 @@ export class RegisterPage implements OnInit {
   usertype : string;
   firstname: string; 
   lastname : string;
+  shopname : string;
   mobilenumber : number;
   street1 : string;
   street2 : string = "";
+  stateCode : string = "";
   district : string;
   state : string;
   pincode : number;
   spinnerShow = false;
+  stateList = [];
+  locationList = [];
   
   async presentAlert(status, msg) {
     const alert = await this.alertCtrl.create({
@@ -76,6 +88,7 @@ export class RegisterPage implements OnInit {
 	   password: ['', [Validators.required, Validators.minLength(8)]],
 	   firstname: ['', [Validators.required]],
 	   lastname: ['', [Validators.required]],
+	   shopname: ['', []],
 	   usertype: ['', [Validators.required]],
 	   mobilenumber: ['', Validators.compose([Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern('^[0-9]+$')])],
 	   street1: ['', [Validators.required]],
@@ -113,6 +126,7 @@ export class RegisterPage implements OnInit {
     firebase.database().ref('/profile/'+uid).set({
 	   firstname: this.formData.value.firstname,
 	   lastname: this.formData.value.lastname,
+	   shopname: this.formData.value.shopname,
 	   usertype: this.usertype,
 	   mobilenumber: this.formData.value.mobilenumber,
 	   street1: this.formData.value.street1,
@@ -153,6 +167,19 @@ export class RegisterPage implements OnInit {
 		   this.presentAlert('Error',err);
 	   }
 	 )
+  }
+  
+  selectState($event) {
+	  this.state = $event.target.value;
+	  firebase.database().ref('/properties/location/'+this.state).once('value').then((snapshot) => {
+		  this.locationList = [];
+		  snapshot.forEach(item => {
+			let a = item.toJSON();
+			if(a['available'] == true) {
+				this.locationList.push(a);
+			}
+		  })
+	  });
   }
 	
 }

@@ -82,22 +82,28 @@
 		<ion-row>
 			<ion-col>
 				<ion-item>
-				  <ion-label position="floating">District<span>*</span></ion-label>
-				  <ion-input type="text" formControlName="district" [(ngModel)]="district" required></ion-input>
-				</ion-item>
-				<div *ngIf="isSubmitted && errorControl.district.errors?.required"
-				class="validator-error">
-				  <ion-icon name="alert-circle-outline"></ion-icon>  District is required.
-				</div>
-			</ion-col>
-			<ion-col>
-				<ion-item>
-				  <ion-label position="floating">State<span>*</span></ion-label>
-				  <ion-input type="text" formControlName="state" [(ngModel)]="state" required></ion-input>
+				  <ion-label>State<span>*</span></ion-label>
+				  <ion-select formControlName="state" [(ngModel)]="state" interface="action-sheet" required [selectedText]="state" [selectOptions]="state" (ionChange)="selectState($event)">
+						<ion-select-option *ngFor="let entry of stateList" value="{{entry.state_code}}">{{entry.state_name}}</ion-select-option>
+					</ion-select>
 				</ion-item>
 				<div *ngIf="isSubmitted && errorControl.state.errors?.required"
 				class="validator-error">
 				  <ion-icon name="alert-circle-outline"></ion-icon>  State is required.
+				</div>
+			</ion-col>
+		</ion-row>
+		<ion-row>
+			<ion-col>
+				<ion-item>
+				  <ion-label>District<span>*</span></ion-label>
+				  <ion-select formControlName="district" [(ngModel)]="district" interface="action-sheet" required [selectedText]="district" [selectOptions]="district">
+						<ion-select-option *ngFor="let entry of locationList" value="{{entry.location_code}}">{{entry.location_name}}</ion-select-option>
+					</ion-select>
+				</ion-item>
+				<div *ngIf="isSubmitted && errorControl.district.errors?.required"
+				class="validator-error">
+				  <ion-icon name="alert-circle-outline"></ion-icon>  District is required.
 				</div>
 			</ion-col>
 		</ion-row>
