@@ -41,6 +41,20 @@
 	<ion-item>
 		<ion-button fill="outline" slot="end" [routerLink]="['/stock/0']">View All</ion-button>
 	  </ion-item>
+	 <ion-card>
+	  <ion-card-header>
+		<ion-card-title>My Location</ion-card-title>
+	  </ion-card-header>
+
+	  <ion-card-content>
+	  <ion-label>{{current_location}}</ion-label>
+	  </ion-card-content>
+	</ion-card>
+		<ion-row>
+		  <ion-col style="text-align:center;">
+			 <ion-button (click)="updateMyLocation()">Update my Location</ion-button>
+		  </ion-col>
+	   </ion-row>
 	<ion-slides #mySlider (ionSlideWillChange)="onSlideChangeStart($event)" (ionSlideDidChange)="onSlideChanged($event)" (ionSlidesDidLoad)="slidesDidLoad(mySlider)" pager="false">
 		<ion-slide *ngFor="let p of discountList;" style="width:50%;height:300px;" (click)="nagivateProdcut(p.$key,p.productcode)">
 			<img src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">

@@ -48,6 +48,8 @@ export class ProfilePage implements OnInit {
   spinnerShow = false;
   usertype : string;
   rolename : string;
+  locationList = [];
+  stateList = [];
   
   async presentAlert(status, msg) {
     const alert = await this.alertCtrl.create({
@@ -87,7 +89,7 @@ export class ProfilePage implements OnInit {
 		  })
 
 	  });
-	firebase.database().ref('/properties/location/'+this.state).orderByChild('location_name').once('value').then((snapshot) => {
+	firebase.database().ref('/properties/location/'+this.state).once('value').then((snapshot) => {
 		  this.locationList = [];
 		  snapshot.forEach(item => {
 			let a = item.toJSON();

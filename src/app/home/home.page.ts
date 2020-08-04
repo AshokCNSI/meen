@@ -6,6 +6,10 @@ import { AuthenticateService } from '../authentication.service';
 import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
 import { NavController } from '@ionic/angular';
 import {  MenuController } from '@ionic/angular';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
+import { Diagnostic } from '@ionic-native/diagnostic/ngx';
+
 
 import { IonSlides } from '@ionic/angular';
 @Component({
@@ -21,18 +25,27 @@ export class HomePage implements OnInit {
   isUserLoggedIn : boolean = false;
   spinnerShow = false;
   isAdmin : boolean = false;
+  current_location : string = "";
+  
   constructor(
   private activatedRoute: ActivatedRoute, 
   public fAuth: AngularFireAuth, 
   private authService: AuthenticateService,
   private db: AngularFireDatabase,
   private navController: NavController,
-  private menuCtrl : MenuController
+  private menuCtrl : MenuController,
+  private geolocation: Geolocation,
+  private nativeGeocoder: NativeGeocoder,
+  private diagnostic: Diagnostic
   ) { 
-	
+		
   }
 
   ngOnInit() {
+	  let options: NativeGeocoderOptions = {
+		useLocale: true,
+		maxResults: 5
+	};
 	  this.menuCtrl.enable(true);
 	  this.authService.userDetails().subscribe(res => { 
 		if (res !== null) {
@@ -69,6 +82,28 @@ export class HomePage implements OnInit {
       })
 	  this.spinnerShow = false;
     });
+	
+	this.diagnostic.isLocationEnabled()
+	  .then((state) => {
+		if (state){
+		  this.geolocation.getCurrentPosition().then((resp) => {
+				console.log(resp.coords.latitude);
+				console.log(resp.coords.longitude);
+				this.current_location = resp.coords.longitude+ "--"+ resp.coords.longitude;
+				this.nativeGeocoder.reverseGeocode(resp.coords.latitude, resp.coords.longitude, options)
+				.then((result: NativeGeocoderResult[]) => this.current_location = this.current_location + this.generateAddress(result[0]))
+				.catch((error: any) => this.current_location = 'No address found. Please enable location service and click update my location.');
+			}).catch((error) => {
+			  this.current_location = 'No address found. Please enable location service and click update my location.'
+			});
+		} else {
+		  this.current_location = 'No address found. Please enable location service and click update my location.';
+		}
+	  }).catch(e => this.current_location = 'No address found. Please enable location service and click update my location.');
+  
+	this.nativeGeocoder.forwardGeocode('Berlin', options)
+	.then((result: NativeGeocoderResult[]) => console.log('The coordinates are latitude=' + result[0].latitude + ' and longitude=' + result[0].longitude))
+	.catch((error: any) => console.log(error));
   }
 
   onSlideChanged(e) {
@@ -92,5 +127,43 @@ export class HomePage implements OnInit {
   
   filterList(event) {
 	  this.navController.navigateRoot('/stock/0', {queryParams : {search : 'Y', val : event.srcElement.value}});
+  }
+  
+  updateMyLocation() {
+	 let options: NativeGeocoderOptions = {
+		useLocale: true,
+		maxResults: 5
+	};
+	this.diagnostic.isLocationEnabled()
+	  .then((state) => {
+		if (state){
+		  this.geolocation.getCurrentPosition().then((resp) => {
+				console.log(resp.coords.latitude);
+				console.log(resp.coords.longitude);
+				this.current_location = resp.coords.longitude+ "--"+ resp.coords.longitude;
+				this.nativeGeocoder.reverseGeocode(resp.coords.latitude, resp.coords.longitude, options)
+				.then((result: NativeGeocoderResult[]) => this.current_location = this.current_location + this.generateAddress(result[0]))
+				.catch((error: any) => this.current_location = 'No address found. Please enable location service and click update my location.');
+			}).catch((error) => {
+			  this.current_location = 'No address found. Please enable location service and click update my location.'
+			});
+		} else {
+		  this.current_location = 'No address found. Please enable location service and click update my location.';
+		}
+	  }).catch(e => this.current_location = 'No address found. Please enable location service and click update my location.');
+  }
+  
+  generateAddress(addressObj) {
+    let obj = [];
+    let address = "";
+    for (let key in addressObj) {
+      obj.push(addressObj[key]);
+    }
+    obj.reverse();
+    for (let val in obj) {
+      if (obj[val].length)
+        address += obj[val] + ', ';
+    }
+    return address.slice(0, -2);
   }
 }
