@@ -3,7 +3,10 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Home</ion-title>
+    <ion-title>
+	Home
+	<p class="subtitle" [routerLink]="['/locationmap']">{{current_location}}</p>
+	</ion-title>
 	<ion-buttons slot="secondary" style="font-size: 25px;margin: 10px;" [routerLink]="['/notification']">
         <ion-icon name="notifications-circle-outline"></ion-icon>
     </ion-buttons>
@@ -41,20 +44,6 @@
 	<ion-item>
 		<ion-button fill="outline" slot="end" [routerLink]="['/stock/0']">View All</ion-button>
 	  </ion-item>
-	 <ion-card>
-	  <ion-card-header>
-		<ion-card-title>My Location</ion-card-title>
-	  </ion-card-header>
-
-	  <ion-card-content>
-	  <ion-label>{{current_location}}</ion-label>
-	  </ion-card-content>
-	</ion-card>
-		<ion-row>
-		  <ion-col style="text-align:center;">
-			 <ion-button (click)="updateMyLocation()">Update my Location</ion-button>
-		  </ion-col>
-	   </ion-row>
 	<ion-slides #mySlider (ionSlideWillChange)="onSlideChangeStart($event)" (ionSlideDidChange)="onSlideChanged($event)" (ionSlidesDidLoad)="slidesDidLoad(mySlider)" pager="false">
 		<ion-slide *ngFor="let p of discountList;" style="width:50%;height:300px;" (click)="nagivateProdcut(p.$key,p.productcode)">
 			<img src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
@@ -72,4 +61,6 @@
 		All delieveries are inclusive delievery charges. Click view to contact dealer for online order.
 	  </ion-card-content>
 	</ion-card>
+	
+	
 </ion-content>

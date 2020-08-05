@@ -14,6 +14,10 @@ import { Router } from '@angular/router';
 import { Network } from '@ionic-native/network/ngx';
 import {  MenuController } from '@ionic/angular';
 
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
+import { Diagnostic } from '@ionic-native/diagnostic/ngx';
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -35,7 +39,10 @@ export class AppComponent implements OnInit {
 	private router: Router,
 	private db: AngularFireDatabase,
 	private network: Network,
-	private menuCtrl : MenuController
+	private menuCtrl : MenuController,
+	private geolocation: Geolocation,
+	private nativeGeocoder: NativeGeocoder,
+	private diagnostic: Diagnostic
   ) {
 	
     this.initializeApp();
@@ -67,7 +74,13 @@ export class AppComponent implements OnInit {
 		}
 	  }, 3000);
 	});
-
+	
+	this.diagnostic.isLocationEnabled()
+	  .then((state) => {
+		if (!state){
+		  this.navController.navigateRoot('/locationfinder');
+		}
+	  }).catch(e => console.log(e));
 	// stop connect watch
 	//connectSubscription.unsubscribe();
   }

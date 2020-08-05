@@ -1,0 +1,39 @@
+<ion-content>
+	<ion-row>
+      <ion-col>
+         <div class="vertical-center">
+            <div class="center">
+               <img src="assets/logo/logo.png"/>
+            </div>
+         </div>
+      </ion-col>
+   </ion-row>
+   <ion-row>
+      <ion-col>
+         <ion-item lines="none" class="font-size-25px">
+            <ion-label>Location not <b>found</b>.</ion-label>
+         </ion-item>
+      </ion-col>
+   </ion-row>
+   <ion-row>
+   		 <ion-label>Please enable Location Service and start using the app.</ion-label>
+   </ion-row>
+   <ion-searchbar #search animated debounce="500"
+    (keyup)="filtermap($event)" [value]="searchVal" placeholder="Search Address"></ion-searchbar>
+	<ion-card>
+		<ion-item>
+			<ion-icon name="map" slot="start"></ion-icon>
+			<ion-label>My Location</ion-label>
+			<ion-button fill="outline" slot="end" (click)="locateMe()" style="color: white;">Locate me</ion-button>
+		</ion-item>
+		<ion-card-content>
+			{{current_location}}
+		</ion-card-content>
+	</ion-card>
+
+	<ion-row>
+	  <ion-col style="text-align:center;">
+		 <ion-button (click)="updateMyLocation()">Update my location</ion-button>
+	  </ion-col>
+   </ion-row>
+</ion-content>

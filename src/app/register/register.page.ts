@@ -56,7 +56,6 @@ export class RegisterPage implements OnInit {
   usertype : string;
   firstname: string; 
   lastname : string;
-  shopname : string;
   mobilenumber : number;
   street1 : string;
   street2 : string = "";
@@ -88,7 +87,6 @@ export class RegisterPage implements OnInit {
 	   password: ['', [Validators.required, Validators.minLength(8)]],
 	   firstname: ['', [Validators.required]],
 	   lastname: ['', [Validators.required]],
-	   shopname: ['', []],
 	   usertype: ['', [Validators.required]],
 	   mobilenumber: ['', Validators.compose([Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern('^[0-9]+$')])],
 	   street1: ['', [Validators.required]],
@@ -126,7 +124,6 @@ export class RegisterPage implements OnInit {
     firebase.database().ref('/profile/'+uid).set({
 	   firstname: this.formData.value.firstname,
 	   lastname: this.formData.value.lastname,
-	   shopname: this.formData.value.shopname,
 	   usertype: this.usertype,
 	   mobilenumber: this.formData.value.mobilenumber,
 	   street1: this.formData.value.street1,

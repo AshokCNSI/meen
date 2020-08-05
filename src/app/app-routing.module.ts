@@ -65,6 +65,14 @@ const routes: Routes = [
   {
     path: 'properties',
     loadChildren: () => import('./properties/properties.module').then( m => m.PropertiesPageModule)
+  },
+  {
+    path: 'locationmap',
+    loadChildren: () => import('./locationmap/locationmap.module').then( m => m.LocationmapPageModule)
+  },
+  {
+    path: 'locationfinder',
+    loadChildren: () => import('./locationfinder/locationfinder.module').then( m => m.LocationfinderPageModule)
   }
 
 ];
