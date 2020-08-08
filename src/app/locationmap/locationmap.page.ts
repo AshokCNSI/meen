@@ -138,7 +138,7 @@ export class LocationmapPage implements OnInit {
 			this.locationService.setLatitude(this.current_lat);
 			this.locationService.setLongitude(this.current_long);
 			this.locationService.setCurrentLocation(this.current_location);
-			this.router.navigate(['/home']);
+			this.navController.navigateRoot('/home');
 	} else {
 		this.presentAlert('Error','No address found');
 	}
