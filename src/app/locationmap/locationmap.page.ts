@@ -1,8 +1,13 @@
 import { Component, OnInit, Injectable, Input } from '@angular/core';
+import {  MenuController } from '@ionic/angular';
+
+import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { ActivatedRoute, NavigationEnd, NavigationStart  } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import * as firebase from 'firebase';
 import { filter } from 'rxjs/operators';
 import { RouterserviceService } from '../routerservice.service';
 import { AuthenticateService } from '../authentication.service';
@@ -22,6 +27,7 @@ export class LocationmapPage implements OnInit {
 
   constructor(
   public alertCtrl: AlertController, 
+  public menuCtrl : MenuController,
   private navController: NavController, 
   private router: Router,
   private activatedRoute: ActivatedRoute,
@@ -31,9 +37,27 @@ export class LocationmapPage implements OnInit {
   private nativeGeocoder: NativeGeocoder,
   private diagnostic: Diagnostic,
   private locationService: LocationserviceService) { }
-
+	
+  isHidden = false;
   ngOnInit() {
-	  let options: NativeGeocoderOptions = {
+	
+	this.authService.userDetails().subscribe(res => { 
+	  if (res !== null) {
+		firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
+			if(snapshot != null) {
+				if(snapshot.child('latitude').val() == null 
+					|| snapshot.child('latitude').val() == undefined 
+					|| snapshot.child('latitude').val() == "") {
+					this.isHidden = true;
+					this.menuCtrl.enable(false);
+				} 
+			}
+		});
+	  } 
+	}, err => {
+	  console.log('err', err);
+	});
+	let options: NativeGeocoderOptions = {
 		useLocale: true,
 		maxResults: 5
 	};
@@ -47,8 +71,14 @@ export class LocationmapPage implements OnInit {
 				.then((result: NativeGeocoderResult[]) => {
 					this.current_location = this.generateAddress(result[0]);
 				})
-				.catch((error: any) => this.current_location = 'No address found.');
+				.catch((error: any) => {
+					this.current_lat = "";
+					this.current_long = "";
+					this.current_location = 'No address found.';
+				});
 			}).catch((error) => {
+				this.current_lat = "";
+				this.current_long = "";
 			  this.current_location = 'No address found.'
 			});
 	  } else {
@@ -84,11 +114,21 @@ export class LocationmapPage implements OnInit {
 						this.current_long = result[0].longitude;
 						this.current_location = this.generateAddress(result[0]);
 					})
-					.catch((error: any) => console.log(error));
+					.catch((error: any) => {
+						this.current_lat = "";
+						this.current_long = "";
+						this.current_location = 'No address found.';
+					});
 				} else {
+					this.current_lat = "";
+					this.current_long = "";
 					this.current_location = 'No address found. Please enable location service and click update my location.';
 				}
-			}).catch(e => this.current_location = 'No address found. Please enable location service and click update my location.');
+			}).catch(e => {
+				this.current_lat = "";
+				this.current_long = "";
+				this.current_location = 'No address found. Please enable location service and click update my location.'
+				});
 			}
 	}
   
@@ -107,14 +147,26 @@ export class LocationmapPage implements OnInit {
 				.then((result: NativeGeocoderResult[]) => {
 					this.current_location = this.generateAddress(result[0]);
 				})
-				.catch((error: any) => this.current_location = 'No address found. Please enable location service and click Home page to update the address to start using the app.');
+				.catch((error: any) => {
+					this.current_lat = "";
+					this.current_long = "";
+					this.current_location = 'No address found. Please enable location service and click Home page to update the address to start using the app.';
+					});
 			}).catch((error) => {
+				this.current_lat = "";
+				this.current_long = "";
 			  this.current_location = 'No address found. Please enable location service and click Home page to update the address to start using the app.'
 			});
 		} else {
+			this.current_lat = "";
+			this.current_long = "";
 		  this.current_location = 'No address found. Please enable location service and click Home page to update the address to start using the app.';
 		}
-	  }).catch(e => this.current_location = 'No address found. Please enable location service and click Home page to update the address to start using the app.');
+	  }).catch(e => {
+			this.current_lat = "";
+			this.current_long = "";
+		  this.current_location = 'No address found. Please enable location service and click Home page to update the address to start using the app.';
+	  });
   }
   
   generateAddress(addressObj) {
@@ -135,10 +187,30 @@ export class LocationmapPage implements OnInit {
 	if(this.current_lat != undefined && this.current_lat != "" 
 		&& this.current_long != undefined && this.current_long != ""
 		&& this.current_location != undefined && this.current_location != "") {
+			if(this.authService.getUserID() != null && this.authService.getUserID() != undefined && this.authService.getUserID() != "") {
+				firebase.database().ref('/profile/'+this.authService.getUserID()).update({
+				   "latitude" : this.current_lat,
+				   "longitude" : this.current_long,
+				   "lastlocation" : this.current_location,
+				   "modifieddate": Date(),
+				   "modifiedby":this.authService.getUserID()
+			  }).then(
+			   res => 
+			   {
+				    this.locationService.setLatitude(this.current_lat);
+					this.locationService.setLongitude(this.current_long);
+					this.locationService.setCurrentLocation(this.current_location);
+					this.navController.navigateRoot('/home');
+			   }
+			 ).catch(error => {
+				this.presentAlert('Error',error);
+			  });	
+		} else {
 			this.locationService.setLatitude(this.current_lat);
 			this.locationService.setLongitude(this.current_long);
 			this.locationService.setCurrentLocation(this.current_location);
 			this.navController.navigateRoot('/home');
+		}
 	} else {
 		this.presentAlert('Error','No address found');
 	}

@@ -73,6 +73,22 @@ const routes: Routes = [
   {
     path: 'locationfinder',
     loadChildren: () => import('./locationfinder/locationfinder.module').then( m => m.LocationfinderPageModule)
+  },
+  {
+    path: 'myaddress',
+    loadChildren: () => import('./myaddress/myaddress.module').then( m => m.MyaddressPageModule)
+  },
+  {
+    path: 'myassignments',
+    loadChildren: () => import('./myassignments/myassignments.module').then( m => m.MyassignmentsPageModule)
+  },
+  {
+    path: 'mysellingproducts',
+    loadChildren: () => import('./mysellingproducts/mysellingproducts.module').then( m => m.MysellingproductsPageModule)
+  },
+  {
+    path: 'addproduct',
+    loadChildren: () => import('./addproduct/addproduct.module').then( m => m.AddproductPageModule)
   }
 
 ];

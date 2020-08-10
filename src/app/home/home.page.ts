@@ -1,4 +1,8 @@
 import { Component, OnInit, ViewChild  } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { PopoverController } from '@ionic/angular';
+import { LocationpopoverComponent } from '../locationpopover/locationpopover.component';
+
 import * as firebase from 'firebase';
 import { ActivatedRoute } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -6,6 +10,7 @@ import { AlertController } from '@ionic/angular';
 
 import { AuthenticateService } from '../authentication.service';
 import { LocationserviceService } from '../locationservice.service';
+import { LoadingService } from '../loading.service';
 
 import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
 import { NavController } from '@ionic/angular';
@@ -38,6 +43,9 @@ export class HomePage implements OnInit {
   
   constructor(
   public alertCtrl: AlertController,
+  public modalController: ModalController,
+  public popoverController : PopoverController,
+  public loading: LoadingService,
   private activatedRoute: ActivatedRoute, 
   public fAuth: AngularFireAuth, 
   private authService: AuthenticateService,
@@ -61,7 +69,10 @@ export class HomePage implements OnInit {
     await alert.present();
   }
   ngOnInit() {
+	  
 	  this.menuCtrl.enable(true);
+	  //this.presentPopover();
+	  this.loading.present();
 	  this.authService.userDetails().subscribe(res => { 
 		if (res !== null) {
 			this.authService.setUserName(res.email);
@@ -74,11 +85,12 @@ export class HomePage implements OnInit {
 					this.authService.setUserName(snapshot.child('firstname').val()+" "+snapshot.child('lastname').val());
 					if(this.authService.getUserType() == 'SA' || this.authService.getUserType() == 'A') {
 					  this.isAdmin = true;
-				  }
+					}
 				}
 			});
 		  } else {
 			  this.authService.setIsUserLoggedIn(false);
+			  this.setCurrentLocationFn();
 		  }
 		  this.isUserLoggedIn = this.authService.getIsUserLoggedIn();
 		  
@@ -86,7 +98,6 @@ export class HomePage implements OnInit {
 		  console.log('err', err);
 		});
 		
-	  this.spinnerShow = true;
 	  let discountStocks = this.db.list('/stock', ref => ref.orderByChild('discount').equalTo("Y"));
 	  discountStocks.snapshotChanges().subscribe(res => {
       this.discountList = [];
@@ -95,34 +106,15 @@ export class HomePage implements OnInit {
         a['$key'] = item.key;
 		this.discountList.push(a);
       })
-	  this.spinnerShow = false;
+	  this.loading.dismiss();
     });
 	
   }
   
   ionViewWillEnter() {
-	
-	let options: NativeGeocoderOptions = {
-		useLocale: true,
-		maxResults: 5
-	};
-	
-	  if(this.locationService.getLatitude() == undefined || this.locationService.getLatitude() == "") {
-		  this.geolocation.getCurrentPosition().then((resp) => {
-				this.locationService.setLatitude((resp.coords.latitude).toString());
-				this.locationService.setLongitude((resp.coords.longitude).toString());
-				this.nativeGeocoder.reverseGeocode(resp.coords.latitude, resp.coords.longitude, options)
-				.then((result: NativeGeocoderResult[]) => {
-					this.current_location = this.generateAddress(result[0]);
-					this.locationService.setCurrentLocation(this.current_location);
-				})
-				.catch((error: any) => this.current_location = 'No address found.');
-			}).catch((error) => {
-			  this.current_location = 'No address found.'
-			});
-	  } else {
-		  this.current_location = this.locationService.getCurrentLocation();
-	  }
+	this.loading.present();
+	this.menuCtrl.enable(true);
+	this.setCurrentLocationFn();
   }
 
 	generateAddress(addressObj) {
@@ -159,5 +151,70 @@ export class HomePage implements OnInit {
   
   filterList(event) {
 	  this.navController.navigateRoot('/stock/0', {queryParams : {search : 'Y', val : event.srcElement.value}});
+  }
+  
+  async presentPopover() {
+    const popover = await this.popoverController.create({
+      component: LocationpopoverComponent,
+      cssClass: 'location-popover',
+	  backdropDismiss: true
+    });
+    return await popover.present();
+  }
+  
+  setCurrentLocationFn() {
+	  let options: NativeGeocoderOptions = {
+		useLocale: true,
+		maxResults: 5
+	};
+	this.authService.userDetails().subscribe(res => { 
+		if (res !== null) {
+			firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
+				if(snapshot != null) {
+					if(snapshot.child('latitude').val() == null 
+						|| snapshot.child('latitude').val() == undefined 
+						|| snapshot.child('latitude').val() == "") {
+						this.navController.navigateRoot('/locationmap');
+					} else {
+						this.locationService.setLatitude(snapshot.child('latitude').val());
+						this.locationService.setLongitude(snapshot.child('longitude').val());
+						this.locationService.setCurrentLocation(snapshot.child('lastlocation').val());
+						this.current_location = snapshot.child('lastlocation').val();
+					}
+				}
+			});
+		  } else {
+			  if(this.locationService.getLatitude() == undefined || this.locationService.getLatitude() == "" 
+				|| this.locationService.getLongitude() == undefined || this.locationService.getLongitude() == ""
+				|| this.locationService.getCurrentLocation() == undefined || this.locationService.getCurrentLocation() == "") {
+				  this.geolocation.getCurrentPosition().then((resp) => {
+						this.locationService.setLatitude((resp.coords.latitude).toString());
+						this.locationService.setLongitude((resp.coords.longitude).toString());
+						this.nativeGeocoder.reverseGeocode(resp.coords.latitude, resp.coords.longitude, options)
+						.then((result: NativeGeocoderResult[]) => {
+							this.current_location = this.generateAddress(result[0]);
+							this.locationService.setCurrentLocation(this.current_location);
+						})
+						.catch((error: any) => {
+							this.locationService.setLatitude("");
+							this.locationService.setLongitude("");
+							this.locationService.setCurrentLocation("");
+							this.current_location = 'No address found.';
+						});
+					}).catch((error: any) => {
+						this.locationService.setLatitude("");
+						this.locationService.setLongitude("");
+						this.locationService.setCurrentLocation("");
+						this.current_location = 'No address found.';
+					});
+			  } else {
+				  this.current_location = this.locationService.getCurrentLocation();
+			  }
+		  }	
+		  this.loading.dismiss();		  
+		}, err => {
+		  console.log('err', err);
+		  this.loading.dismiss();	
+		});
   }
 }

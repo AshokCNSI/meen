@@ -1,4 +1,4 @@
-[{
+[	{
         "title": "Home",
         "path": "/home",
         "icon": "home",
@@ -17,14 +17,35 @@
         "path": "/profile",
         "icon": "people",
         "order": 2,
+        "type": "CU"
+    },
+	{
+        "title": "Profile",
+        "path": "/profile",
+        "icon": "people",
+        "order": 2,
         "type": "A"
+    },
+	{
+        "title": "Profile",
+        "path": "/profile",
+        "icon": "people",
+        "order": 2,
+        "type": "SA"
+    },
+	{
+        "title": "Profile",
+        "path": "/profile",
+        "icon": "people",
+        "order": 2,
+        "type": "D"
     },
     {
         "title": "User Management",
         "path": "/customers",
         "icon": "happy",
         "order": 4,
-        "type": "A"
+        "type": "SA"
     },
     {
         "title": "Orders",
@@ -34,8 +55,8 @@
         "type": "A"
     },
     {
-        "title": "My Profile",
-        "path": "/profile",
+        "title": "My Assignments",
+        "path": "/assignments",
         "icon": "people",
         "order": 2,
         "type": "D"
@@ -45,21 +66,28 @@
         "path": "/orders",
         "icon": "basket",
         "order": 3,
-        "type": "D"
+        "type": "CU"
     },
 	{
-        "title": "Profile",
-        "path": "/profile",
-        "icon": "people",
-        "order": 2,
-        "type": "SA"
+        "title": "My orders",
+        "path": "/orders",
+        "icon": "basket",
+        "order": 3,
+        "type": "S"
     },
-    {
-        "title": "User Management",
-        "path": "/customers",
-        "icon": "happy",
-        "order": 4,
-        "type": "SA"
+	{
+        "title": "My Cart",
+        "path": "/mycart",
+        "icon": "cart",
+        "order": 3,
+        "type": "CU"
+    },
+	{
+        "title": "My Addresses",
+        "path": "/myaddress",
+        "icon": "mail",
+        "order": 3,
+        "type": "CU"
     },
     {
         "title": "Orders",
@@ -74,5 +102,12 @@
         "icon": "build",
         "order": 6,
         "type": "SA"
+    },
+	{
+        "title": "My Products",
+        "path": "/mysellingproducts",
+        "icon": "newspaper",
+        "order": 6,
+        "type": "S"
     }
 ]

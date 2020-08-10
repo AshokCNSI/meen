@@ -41,12 +41,6 @@ export class LocationfinderPage implements OnInit {
 
   ngOnInit() {
 	  this.menuCtrl.enable(false);
-	  this.diagnostic.isLocationEnabled()
-	  .then((state) => {
-		if (!state){
-		  this.current_location = 'No address found.';
-		}
-	  }).catch(e => this.current_location = 'No address found.');
   }
   
   async presentAlert(status, msg) {
@@ -58,81 +52,14 @@ export class LocationfinderPage implements OnInit {
     await alert.present();
   }
   
-  current_location : string = "";
-  current_lat : string = "";
-  current_long : string = "";
-  
-  filtermap(event) {
-		let options: NativeGeocoderOptions = {
-			useLocale: true,
-			maxResults: 5
-		};
-		if(event.srcElement.value != null && event.srcElement.value != '') {
-			this.diagnostic.isLocationEnabled()
-			  .then((state) => {
-				if (state){
-					this.nativeGeocoder.forwardGeocode(event.srcElement.value, options)
-					.then((result: NativeGeocoderResult[]) => {
-						this.locationService.setLatitude(result[0].latitude);
-						this.locationService.setLongitude(result[0].longitude);
-						this.locationService.setCurrentLocation(this.generateAddress(result[0]));
-						this.current_location = this.generateAddress(result[0]);
-					})
-					.catch((error: any) => console.log(error));
-				} else {
-					this.current_location = 'No address found. Please enable location service and click update my location.';
-				}
-			}).catch(e => this.current_location = 'No address found. Please enable location service and click update my location.');
-			}
-	}
-  
-  locateMe() {
-	 let options: NativeGeocoderOptions = {
-		useLocale: true,
-		maxResults: 5
-	};
-	this.diagnostic.isLocationEnabled()
-	  .then((state) => {
-		if (state){
-		  this.geolocation.getCurrentPosition().then((resp) => {
-				this.locationService.setLatitude((resp.coords.latitude).toString());
-				this.locationService.setLongitude((resp.coords.longitude).toString());
-				this.nativeGeocoder.reverseGeocode(resp.coords.latitude, resp.coords.longitude, options)
-				.then((result: NativeGeocoderResult[]) => {
-					this.current_location = this.generateAddress(result[0]);
-					this.locationService.setCurrentLocation(this.current_location);
-				})
-				.catch((error: any) => this.current_location = 'No address found. Please enable location service and click Home page to update the address to start using the app.');
-			}).catch((error) => {
-			  this.current_location = 'No address found. Please enable location service and click Home page to update the address to start using the app.'
-			});
-		} else {
-		  this.current_location = 'No address found. Please enable location service and click Home page to update the address to start using the app.';
-		}
-	  }).catch(e => this.current_location = 'No address found. Please enable location service and click Home page to update the address to start using the app.');
-  }
-  
-  generateAddress(addressObj) {
-    let obj = [];
-    let address = "";
-    for (let key in addressObj) {
-      obj.push(addressObj[key]);
-    }
-    obj.reverse();
-    for (let val in obj) {
-      if (obj[val].length)
-        address += obj[val] + ', ';
-    }
-    return address.slice(0, -2);
-  }
-  
   updateMyLocation() {
-	if(this.locationService.getLatitude() != undefined && this.locationService.getLatitude() != "" 
-		&& this.locationService.getLongitude() != undefined && this.locationService.getLongitude() != ""
-		&& this.locationService.getCurrentLocation() != undefined && this.locationService.getCurrentLocation() != "") {
-		this.navController.navigateRoot('/home');
-	} else {
-		this.presentAlert('Error','No address found');
-	}
+	  this.diagnostic.isLocationEnabled()
+	  .then((state) => {
+		if (!state){
+		  this.presentAlert('Error','Please try again.');
+		} else {
+		  this.navController.navigateRoot('/home');
+		}
+	  }).catch(e => this.presentAlert('Error','Something went wrong.'));
   }
 }
