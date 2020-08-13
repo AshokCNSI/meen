@@ -30,6 +30,8 @@
 				</ion-card-content>
 				<ion-card-header>
 				  <ion-card-subtitle>Product available Within <b>{{p.distance}}</b> km</ion-card-subtitle>
+				  <ion-card-subtitle *ngIf="p.discount == 'Y' && p.discountprice > 0">Offer available upto &#x20b9; {{p.discountprice}}</ion-card-subtitle>
+				  <ion-card-subtitle *ngIf="p.discount == 'N'">No Offer available</ion-card-subtitle>
 				</ion-card-header>
 			</ion-card>
 		</ion-col>

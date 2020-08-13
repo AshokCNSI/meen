@@ -54,6 +54,7 @@ export class HomePage implements OnInit {
   priceList = [];
   discountPriceList = [];
   visibility: string = 'shown';
+  fishcategortList = [];
   constructor(
   public alertCtrl: AlertController,
   public modalController: ModalController,
@@ -133,12 +134,12 @@ export class HomePage implements OnInit {
 										this.discountPriceList = [];
 										snapshot.forEach(item => {
 											let b = item.toJSON();
-											if(b['discount'] == 'Y') {
+											if(b['discount'] == 'Y' && b['discountprice'] > 0) {
 												this.discountPriceList.push(b['discountprice']);
 											}
 										})
 										if(this.discountPriceList.length > 0) {
-											a['price'] = Math.min.apply(Math, this.discountPriceList);
+											a['price'] = Math.max.apply(Math, this.discountPriceList);
 											this.discountList.push(a);
 										}
 									})
@@ -176,6 +177,15 @@ export class HomePage implements OnInit {
 			}, err => {
 			  console.log('err', err);
 			});
+			
+	firebase.database().ref('/properties/fishcategory').once('value').then((snapshot) => {
+		  this.fishcategortList = [];
+		  snapshot.forEach(item => {
+			let a = item.toJSON();
+			this.fishcategortList.push(a);
+		  })
+
+	  });
   }
   
   ionViewWillEnter() {

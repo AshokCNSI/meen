@@ -46,7 +46,16 @@ productTempList = [];
 						res.forEach(item => {
 							let a = item.payload.toJSON();
 							a['price'] = b['price'];
-							this.stockList.push(a);
+							a['discount'] = b['discount'];
+							a['discountprice'] = b['discountprice'];
+							firebase.database().ref('/profile/'+b['createdby']).once('value').then((snapshot) => {
+								if(snapshot != null) {
+									let distance = this.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
+													snapshot.child('latitude').val(),snapshot.child('longitude').val());
+									a['distance'] = Math.round(distance * 100) / 100;
+									this.stockList.push(a);
+								}
+							});
 						});
 					})
 				}
@@ -64,11 +73,13 @@ productTempList = [];
 						res.forEach(item => {
 							let a = item.payload.toJSON();
 							a['price'] = b['price'];
+							a['discount'] = b['discount'];
+							a['discountprice'] = b['discountprice'];
 							firebase.database().ref('/profile/'+b['createdby']).once('value').then((snapshot) => {
 								if(snapshot != null) {
 									let distance = this.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
 													snapshot.child('latitude').val(),snapshot.child('longitude').val());
-									a['distance'] = distance;
+									a['distance'] = Math.round(distance * 100) / 100;
 									this.stockList.push(a);
 								}
 							});

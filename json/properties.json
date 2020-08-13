@@ -32,19 +32,23 @@
   "fishcategory": [
     {
       "name": "Fresh Fish",
-      "code": "CF"
+      "code": "CF",
+	  "imagepath" : "assets/icon/fish_icons/fresh-water.png"
     },
     {
       "name": "Sea Fish",
-      "code": "SF"
+      "code": "SF",
+	  "imagepath" : "assets/icon/fish_icons/sea-food.png"
     },
     {
       "name": "Prawns",
-      "code": "PR"
+      "code": "PR",
+	  "imagepath" : "assets/icon/fish_icons/prawn.png"
     },
     {
       "name": "Crabs",
-      "code": "CR"
+      "code": "CR",
+	  "imagepath" : "assets/icon/fish_icons/crab.png"
     }
   ],
   "location": {

@@ -26,22 +26,12 @@
 		(ionInput)="filterProductList($event)"  [value]="searchVal" autofocus="true"></ion-searchbar>
 <ng-container [@visibilityChanged]="visibility" style="opacity: 1">
 	<ion-row class="second-menu" >
-		<ion-col [routerLink]="['/stock/SF']">
-		<img style="margin: auto;width: 40%;" src="assets/icon/fish_icons/sea-food.png"><br>
-		  Sea Fish
-		</ion-col>
-		<ion-col [routerLink]="['/stock/CF']">
-		<img style="margin: auto;width: 40%;" src="assets/icon/fish_icons/fresh-water.png"><br>
-		  Fresh Water Fish
-		</ion-col>
-		<ion-col [routerLink]="['/stock/PR']">
-		<img style="margin: auto;width: 40%;" src="assets/icon/fish_icons/prawn.png"><br>
-		  Prawn
-		</ion-col>
-		<ion-col [routerLink]="['/stock/CR']">
-		<img style="margin: auto;width: 40%;" src="assets/icon/fish_icons/crab.png"><br>
-		  Crab
-		</ion-col>
+		<ng-container *ngFor="let p of fishcategortList;">
+			<ion-col [routerLink]="['/stock/'+p.code]">
+			<img style="margin: auto;width: 40%;" src="{{p.imagepath}}"><br>
+			  {{p.name}}
+			</ion-col>
+		</ng-container>
 	</ion-row>
 	<ion-item>
 		<ion-button fill="outline" slot="end" [routerLink]="['/stock/0']">View All</ion-button>
@@ -59,7 +49,7 @@
 		<ng-container *ngIf="productList.length > 0">
 		<ion-row>
 			<ion-col>
-				<ion-card *ngFor="let p of productList; let i = index;" (click)="routeProductDetail(p.index)">
+				<ion-card *ngFor="let p of productList; let i = index;">
 					<img alt="M" class="center" src="{{productList[i].imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
 					<ion-card-header>
 					  <ion-card-subtitle>{{productList[i].title}}</ion-card-subtitle>
