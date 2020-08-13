@@ -18,13 +18,21 @@ import {  MenuController } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
-
+import { map } from 'rxjs/operators';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 import { IonSlides } from '@ionic/angular';
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
+  animations: [
+    trigger('visibilityChanged', [
+      state('shown', style({ opacity: 1 })),
+      state('hidden', style({ opacity: 0 })),
+      transition('* => *', animate('500ms'))
+    ])
+  ]
 })
 export class HomePage implements OnInit {
 	
@@ -40,7 +48,12 @@ export class HomePage implements OnInit {
   enableBackdropDismiss = false;
   showBackdrop = false;
   shouldPropagate = false;
-  
+  productList = [];
+  productTempList = [];
+  userList = [];
+  priceList = [];
+  discountPriceList = [];
+  visibility: string = 'shown';
   constructor(
   public alertCtrl: AlertController,
   public modalController: ModalController,
@@ -72,43 +85,97 @@ export class HomePage implements OnInit {
 	  
 	  this.menuCtrl.enable(true);
 	  //this.presentPopover();
-	  this.loading.present();
-	  this.authService.userDetails().subscribe(res => { 
-		if (res !== null) {
-			this.authService.setUserName(res.email);
-			this.authService.setUserID(res.uid);
-			this.authService.setEmailID(res.email);
-			this.authService.setIsUserLoggedIn(true);
-			firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
-				if(snapshot != null) {
-					this.authService.setUserType(snapshot.child('usertype').val());  
-					this.authService.setUserName(snapshot.child('firstname').val()+" "+snapshot.child('lastname').val());
-					if(this.authService.getUserType() == 'SA' || this.authService.getUserType() == 'A') {
-					  this.isAdmin = true;
+		  //this.loading.present();
+		  this.authService.userDetails().subscribe(res => { 
+			if (res !== null) {
+				this.authService.setUserName(res.email);
+				this.authService.setUserID(res.uid);
+				this.authService.setEmailID(res.email);
+				this.authService.setIsUserLoggedIn(true);
+				firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
+					if(snapshot != null) {
+						this.authService.setUserType(snapshot.child('usertype').val());  
+						this.authService.setUserName(snapshot.child('firstname').val()+" "+snapshot.child('lastname').val());
+						if(this.authService.getUserType() == 'SA' || this.authService.getUserType() == 'A') {
+						  this.isAdmin = true;
+						}
+						let currentLatitude = snapshot.child('latitude').val();
+						let currentLongitude = snapshot.child('longitude').val();
+						if(this.authService.getUserType() == 'C') {
+							
+							this.db.list('/properties/products/').snapshotChanges().subscribe(res => {
+								this.productList = [];
+								this.productTempList = [];
+								res.forEach(item => {
+									let a = item.payload.toJSON();
+									firebase.database().ref('/productsforselling/').orderByChild('productcode').equalTo(a['productcode']).once('value').then((snapshot) => {
+										this.priceList = [];
+										snapshot.forEach(item => {
+											let b = item.toJSON();
+											if(b['available'] == 'Y') {
+												this.priceList.push(b['price']);
+											}
+										})
+										if(this.priceList.length > 0) {
+											a['price'] = Math.min.apply(Math, this.priceList);
+											this.productList.push(a);
+										}
+									})
+									this.productTempList = this.productList;
+								});
+							})
+							
+							this.db.list('/properties/products/').snapshotChanges().subscribe(res => {
+								this.discountList = [];
+								res.forEach(item => {
+									let a = item.payload.toJSON();
+									firebase.database().ref('/productsforselling/').orderByChild('productcode').equalTo(a['productcode']).once('value').then((snapshot) => {
+										this.discountPriceList = [];
+										snapshot.forEach(item => {
+											let b = item.toJSON();
+											if(b['discount'] == 'Y') {
+												this.discountPriceList.push(b['discountprice']);
+											}
+										})
+										if(this.discountPriceList.length > 0) {
+											a['price'] = Math.min.apply(Math, this.discountPriceList);
+											this.discountList.push(a);
+										}
+									})
+								});
+							})
+						} else if(this.authService.getUserType() == 'S') {
+						  firebase.database().ref('/productsforselling/').orderByChild('createdby').equalTo(this.authService.getUserID()).once('value').then((snapshot) => {
+							  this.productList = [];
+							  this.productTempList = [];
+							  snapshot.forEach(item => {
+								let a = item.toJSON();
+								a['index'] = item.key;
+								firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
+									a['title'] = snapshot.child('title').val();
+									a['imagepath'] = snapshot.child('imagepath').val();
+									a['details'] = snapshot.child('details').val();
+									if(a['available'] == 'Y') {
+										this.productList.push(a);
+									}
+								})
+								this.productTempList = this.productList;
+							  })
+							  this.loading.dismiss();
+						  });
+						}
 					}
-				}
+				});
+				
+			  } else {
+				  this.authService.setIsUserLoggedIn(false);
+				  this.setCurrentLocationFn();
+			  }
+			  this.isUserLoggedIn = this.authService.getIsUserLoggedIn();
+			  
+			}, err => {
+			  console.log('err', err);
 			});
-		  } else {
-			  this.authService.setIsUserLoggedIn(false);
-			  this.setCurrentLocationFn();
-		  }
-		  this.isUserLoggedIn = this.authService.getIsUserLoggedIn();
-		  
-		}, err => {
-		  console.log('err', err);
-		});
-		
-	  let discountStocks = this.db.list('/stock', ref => ref.orderByChild('discount').equalTo("Y"));
-	  discountStocks.snapshotChanges().subscribe(res => {
-      this.discountList = [];
-      res.forEach(item => {
-        let a = item.payload.toJSON();
-        a['$key'] = item.key;
-		this.discountList.push(a);
-      })
-	  this.loading.dismiss();
-    });
-	
   }
   
   ionViewWillEnter() {
@@ -216,5 +283,21 @@ export class HomePage implements OnInit {
 		  console.log('err', err);
 		  this.loading.dismiss();	
 		});
+  }
+  
+  routeProductDetail(index) {
+	  this.navController.navigateRoot('/addproduct',{queryParams : {index : index}});
+  }
+  
+  filterProductList(event) {
+	this.visibility = 'hidden';
+	if(event.srcElement.value == null || event.srcElement.value == '') {
+		this.productList = this.productTempList;
+	} else {
+		this.productList = this.productTempList;
+		this.productList = this.productList.filter(function(val) {
+			return val.title.toLowerCase().indexOf((event.srcElement.value).toLowerCase()) > -1;
+		});
+	}
   }
 }

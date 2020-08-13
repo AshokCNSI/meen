@@ -5,7 +5,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AuthenticateService } from '../authentication.service';
 import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
 import { NavController } from '@ionic/angular';
-
+import { LocationserviceService } from '../locationservice.service';
 
 @Component({
   selector: 'app-stock',
@@ -20,7 +20,8 @@ export class StockPage implements OnInit {
   private authService: AuthenticateService,
   private db: AngularFireDatabase,
   private navController: NavController,
-  private router : ActivatedRoute
+  private router : ActivatedRoute,
+  private locationService: LocationserviceService
   ) { }
 @ViewChild('search') search : any;
 
@@ -31,42 +32,53 @@ userEmail : string;
 isAdmin : boolean = false;
 searchInput : string;
 searchVal : string;
+productTempList = [];
   ngOnInit() {
-	  this.activatedRoute.queryParams.subscribe(params => {
-		  this.searchInput = params['search'];
-		  this.searchVal = params['val'];
-		  if(this.searchInput != null) {
-			  firebase.database().ref('/stock').once('value').then((snapshot) => {
-				  this.stockList = [];
-				  snapshot.forEach(item => {
-					this.stockList.push(item.toJSON());
-				  })
-				  this.search.setFocus();
-			  });
-		  }
-		});
 	  this.categoryID = this.activatedRoute.snapshot.params['id'];  
-	  this.fullStocks = this.db.list('/stock', ref => ref.orderByChild('category'));
-	  if(this.categoryID == 0 && this.searchInput == null) {
-		 this.fullStocks = this.db.list('/stock', ref => ref.orderByChild('category'));
-		 this.fullStocks.snapshotChanges().subscribe(res => {
+	  if(this.categoryID == 0) {
+		firebase.database().ref('/productsforselling/').once('value').then((snapshot) => {
 		  this.stockList = [];
-		  res.forEach(item => {
-			let a = item.payload.toJSON();
-			a['$key'] = item.key;
-			this.stockList.push(a);
-		  })
-		});
-	  } else if(this.searchInput == null){
-		 this.fullStocksCategory = this.db.list('/stock', ref => ref.orderByChild('category').equalTo(this.categoryID));
-		 this.fullStocksCategory.snapshotChanges().subscribe(res => {
+		  this.productTempList = [];
+			snapshot.forEach(item => {
+				let b = item.toJSON();
+				if(b['available'] == 'Y') {
+					this.db.list('/properties/products/',ref => ref.orderByChild('productcode').equalTo(b['productcode'])).snapshotChanges().subscribe(res => {
+						res.forEach(item => {
+							let a = item.payload.toJSON();
+							a['price'] = b['price'];
+							this.stockList.push(a);
+						});
+					})
+				}
+			})
+			this.productTempList = this.stockList;
+		})
+	  } else {
+		  firebase.database().ref('/productsforselling/').orderByChild('category').equalTo(this.categoryID).once('value').then((snapshot) => {
 		  this.stockList = [];
-		  res.forEach(item => {
-			let a = item.payload.toJSON();
-			a['$key'] = item.key;
-			this.stockList.push(a);
-		  })
-		});
+		  this.productTempList = [];
+			snapshot.forEach(item => {
+				let b = item.toJSON();
+				if(b['available'] == 'Y') {
+					this.db.list('/properties/products/',ref => ref.orderByChild('productcode').equalTo(b['productcode'])).snapshotChanges().subscribe(res => {
+						res.forEach(item => {
+							let a = item.payload.toJSON();
+							a['price'] = b['price'];
+							firebase.database().ref('/profile/'+b['createdby']).once('value').then((snapshot) => {
+								if(snapshot != null) {
+									let distance = this.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
+													snapshot.child('latitude').val(),snapshot.child('longitude').val());
+									a['distance'] = distance;
+									this.stockList.push(a);
+								}
+							});
+						});
+					});
+					
+				}
+			})
+			this.productTempList = this.stockList;
+		})
 	  }
 	  
 	if(this.authService.getUserType() == 'SA' || this.authService.getUserType() == 'A') {
@@ -81,21 +93,12 @@ searchVal : string;
   
   filterList(event) {
 	if(event.srcElement.value == null || event.srcElement.value == '') {
-		this.fullStocks.snapshotChanges().subscribe(res => {
-		  this.stockList = [];
-		  res.forEach(item => {
-			let a = item.payload.toJSON();
-			a['$key'] = item.key;
-			this.stockList.push(a);
-		  })
-		});
+		this.stockList = this.productTempList;
 	} else {
-	firebase.database().ref('/stock').orderByChild('title').startAt(event.srcElement.value).endAt(event.srcElement.value+"\uf8ff").once('value').then((snapshot) => {
-		  this.stockList = [];
-		  snapshot.forEach(item => {
-			this.stockList.push(item.toJSON());
-		  })
-	  });
+		this.stockList = this.productTempList;
+		this.stockList = this.stockList.filter(function(val) {
+			return val.title.toLowerCase().indexOf((event.srcElement.value).toLowerCase()) > -1;
+		});
 	}
   }
   
@@ -106,5 +109,23 @@ searchVal : string;
   openSearch() {
 	  this.searchInput = " ";
   }
+  
+  getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+	  var R = 6371; // Radius of the earth in km
+	  var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
+	  var dLon = this.deg2rad(lon2-lon1); 
+	  var a = 
+		Math.sin(dLat/2) * Math.sin(dLat/2) +
+		Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * 
+		Math.sin(dLon/2) * Math.sin(dLon/2)
+		; 
+	  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+	  var d = R * c; // Distance in km
+	  return d;
+	}
+
+	deg2rad(deg) {
+	  return deg * (Math.PI/180)
+	}
 
 }

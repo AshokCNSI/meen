@@ -16,105 +16,26 @@
     (ionInput)="filterList($event)" [value]="searchVal" autofocus="true"></ion-searchbar>
 </ng-container>
 
-	<ion-list *ngIf="categoryID == 0 || categoryID == 'SF'">
-		<ion-list-header>
-		  Sea Fish
-		</ion-list-header>
-		<ng-container *ngFor="let p of stockList; let i = index;">
-			<ion-row *ngIf="p.category=='SF'">
-				<ion-col>
-					<ion-card [disabled]="(p.available == 'N' && !isAdmin) ? true : false" (click)="routeStockDetail(p.$key,p.productcode)">
-						<img alt="M" style="width:100%;height:200px;" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
-						<ion-card-header>
-						  <ion-card-title style="text-overflow: ellipsis;display: inline-block;  width:180px;  white-space: nowrap;    overflow: hidden !important;">{{p.title}}</ion-card-title>
-						  <ion-card-subtitle>Price: &#x20b9;{{p.price}} <span style="font-size:10px;">&#x20b9;{{p.price + p.discountprice}}</span></ion-card-subtitle>
-						</ion-card-header>
-						
-						<ion-card-content>
-							<ion-label style="border:1px solid; border-radius:5px;padding:5px;">&#x20b9;{{p.discountprice}} off</ion-label>
-					    </ion-card-content>
-					</ion-card>
-				</ion-col>
-			</ion-row>
-		</ng-container>
-		<ng-container *ngIf="stockList.length == 0">
-			<p class="no-items">No items available</p>
-		</ng-container>
-	</ion-list>
-	
-	<ion-list *ngIf="categoryID == 0 || categoryID == 'CF'">
-		<ion-list-header>
-		  Fresh Fish
-		</ion-list-header>
-		<ng-container *ngFor="let p of stockList;">
-			<ion-row *ngIf="p.category=='CF'">
-				<ion-col>
-					<ion-card [disabled]="(p.available == 'N' && !isAdmin) ? true : false" (click)="routeStockDetail(p.$key,p.productcode)">
-						<img alt="M" style="width:100%;height:200px;" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
-						<ion-card-header>
-						  <ion-card-title style="text-overflow: ellipsis;display: inline-block;  width:180px;  white-space: nowrap;    overflow: hidden !important;">{{p.title}}</ion-card-title>
-						  <ion-card-subtitle>Price: &#x20b9;{{p.price}} <span style="font-size:10px;">&#x20b9;{{p.price + p.discountprice}}</span></ion-card-subtitle>
-						</ion-card-header>
-						
-						<ion-card-content>
-							<ion-label style="border:1px solid; border-radius:5px;padding:5px;">&#x20b9;{{p.discountprice}} off</ion-label>
-					    </ion-card-content>
-					</ion-card>
-				</ion-col>
-			</ion-row>
-		</ng-container>
-		<ng-container *ngIf="stockList.length == 0">
-			<p class="no-items">No items available</p>
-		</ng-container>
-	</ion-list>
-	<ion-list *ngIf="categoryID == 0 || categoryID == 'CR'">
-		<ion-list-header>
-		  Crabs
-		</ion-list-header>
-		<ng-container *ngFor="let p of stockList;">
-			<ion-row *ngIf="p.category=='CR'">
-				<ion-col>
-					<ion-card [disabled]="(p.available == 'N' && !isAdmin) ? true : false" (click)="routeStockDetail(p.$key,p.productcode)">
-						<img alt="M" style="width:100%;height:200px;" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
-						<ion-card-header>
-						  <ion-card-title style="text-overflow: ellipsis;display: inline-block;  width:180px; white-space: nowrap;    overflow: hidden !important;">{{p.title}}</ion-card-title>
-						  <ion-card-subtitle>Price: &#x20b9;{{p.price}} <span style="font-size:10px;">&#x20b9;{{p.price + p.discountprice}}</span></ion-card-subtitle>
-						</ion-card-header>
-						
-						<ion-card-content>
-							<ion-label style="border:1px solid; border-radius:5px;padding:5px;">&#x20b9;{{p.discountprice}} off</ion-label>
-					    </ion-card-content>
-					</ion-card>
-				</ion-col>
-			</ion-row>
-		</ng-container>
-		<ng-container *ngIf="stockList.length == 0">
-			<p class="no-items">No items available</p>
-		</ng-container>
-	</ion-list>
-	<ion-list *ngIf="categoryID == 0 || categoryID == 'PR'">
-		<ion-list-header>
-		  Prawns
-		</ion-list-header>
-		<ng-container *ngFor="let p of stockList;">
-			<ion-row *ngIf="p.category=='PR'">
-				<ion-col>
-					<ion-card [disabled]="(p.available == 'N' && !isAdmin) ? true : false" (click)="routeStockDetail(p.$key,p.productcode)">
-						<img alt="M" style="width:100%;height:200px;" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
-						<ion-card-header>
-						  <ion-card-title style="text-overflow: ellipsis;display: inline-block;  width:180px; white-space: nowrap;    overflow: hidden !important;">{{p.title}}</ion-card-title>
-						  <ion-card-subtitle>Price: &#x20b9;{{p.price}} <span style="font-size:10px;">&#x20b9;{{p.price + p.discountprice}}</span></ion-card-subtitle>
-						</ion-card-header>
-						
-						<ion-card-content>
-							<ion-label style="border:1px solid; border-radius:5px;padding:5px;">&#x20b9;{{p.discountprice}} off</ion-label>
-					    </ion-card-content>
-					</ion-card>
-				</ion-col>
-			</ion-row>
-		</ng-container>
-		<ng-container *ngIf="stockList.length == 0">
-			<p class="no-items" >No items available</p>
-		</ng-container>
-	</ion-list>
+<ng-container *ngIf="stockList.length > 0">
+	<ion-row>
+		<ion-col>
+			<ion-card *ngFor="let p of stockList; let i = index;" (click)="routeProductDetail(p.index)">
+				<img alt="M" class="center" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+				<ion-card-header>
+				  <ion-card-subtitle>{{p.title}}</ion-card-subtitle>
+				  <ion-card-title>&#x20b9; {{p.price}}</ion-card-title>
+				</ion-card-header>
+				<ion-card-content style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+				  {{p.details}}
+				</ion-card-content>
+				<ion-card-header>
+				  <ion-card-subtitle>Product available Within <b>{{p.distance}}</b> km</ion-card-subtitle>
+				</ion-card-header>
+			</ion-card>
+		</ion-col>
+	</ion-row>
+</ng-container>
+<ng-container *ngIf="stockList.length == 0">
+	<p class="no-items">No Products available in your area.</p>
+</ng-container>
 </ion-content>

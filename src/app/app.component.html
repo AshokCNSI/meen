@@ -11,7 +11,10 @@
 			  <ion-button size="small" color="light" [routerLink]="['/login']">Login</ion-button> or
 			  <ion-button size="small" color="light" [routerLink]="['/register']">Register</ion-button>
 		  </ion-label>
-		  <ion-label *ngIf="authService.getIsUserLoggedIn()">Welome {{authService.getUserName()}}</ion-label>
+		  <ion-card-header *ngIf="authService.getIsUserLoggedIn()">
+			  <ion-card-title>{{authService.getUserName()}}</ion-card-title>
+			  <ion-card-subtitle>{{authService.getEmailID()}}</ion-card-subtitle>
+			</ion-card-header>
         </ion-item>
 		 <ion-menu-toggle auto-hide="false" *ngFor="let p of menuList; let i = index">
             <ion-item (click)="selectedIndex = i" *ngIf="authService.getUserType() == 'SA' && (p.type == 'SA')" routerDirection="root" [routerLink]="[p.path]" lines="none" detail="false" [class.selected]="selectedIndex == i">

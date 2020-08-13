@@ -68,7 +68,7 @@ export class AddproductPage implements OnInit {
 	  this.activatedRoute.queryParams.subscribe(params => {
 		  this.index = params['index'];
 		  if(this.index != undefined && this.index != "") {
-			  firebase.database().ref('/productsforselling/'+this.authService.getUserID()+'/'+this.index).once('value').then((snapshot) => {
+			  firebase.database().ref('/productsforselling/'+this.index).once('value').then((snapshot) => {
 				  this.available = snapshot.child('available').val();
 				  this.stock = snapshot.child('stock').val();
 				  this.discountprice = snapshot.child('discountprice').val();
@@ -76,7 +76,7 @@ export class AddproductPage implements OnInit {
 				  this.price = snapshot.child('price').val();
 				  this.fishsize = Array.from(snapshot.child('fishsize').val());
 				  this.subcategory = snapshot.child('productcode').val();
-				  firebase.database().ref('/properties/products/'+snapshot.child('category').val()+'/'+this.subcategory).once('value').then((snapshot) => {
+				  firebase.database().ref('/properties/products/'+this.subcategory).once('value').then((snapshot) => {
 						this.title = snapshot.child('title').val();
 						this.details = snapshot.child('details').val();
 						this.imagepath = snapshot.child('imagepath').val();
@@ -95,7 +95,7 @@ export class AddproductPage implements OnInit {
 
 	  });
 	  
-	  firebase.database().ref('/productsforselling/'+this.authService.getUserID()).once('value').then((snapshot) => {
+	  firebase.database().ref('/productsforselling/').orderByChild('createdby').equalTo(this.authService.getUserID()).once('value').then((snapshot) => {
 		  this.productList = [];
 		  snapshot.forEach(item => {
 			let a = item.toJSON();
@@ -127,7 +127,7 @@ export class AddproductPage implements OnInit {
   }
   
   selectCategory(entry) {
-	  firebase.database().ref('/properties/products/'+this.category).once('value').then((snapshot) => {
+	  firebase.database().ref('/properties/products/').orderByChild('category').equalTo(this.category).once('value').then((snapshot) => {
 		  this.subcategoryList = [];
 		  snapshot.forEach(item => {
 			let a = item.toJSON();
@@ -161,7 +161,7 @@ export class AddproductPage implements OnInit {
 	  } else {	
 		  if(this.index != undefined && this.index != "") {
 			  this.loading.present();
-			  firebase.database().ref('/productsforselling/'+this.authService.getUserID()+'/'+this.index).update({
+			  firebase.database().ref('/productsforselling/'+this.index).update({
 				"available" : this.available,
 				"discount" : this.discount,
 				"discountprice" : this.discountprice,
@@ -183,7 +183,7 @@ export class AddproductPage implements OnInit {
 			});
 		  } else {
 			  this.loading.present();
-			  firebase.database().ref('/productsforselling/'+this.authService.getUserID()).push({
+			  firebase.database().ref('/productsforselling/').push({
 				"available" : this.available,
 				"discount" : this.discount,
 				"discountprice" : this.discountprice,

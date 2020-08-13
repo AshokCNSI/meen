@@ -34,12 +34,12 @@ export class MysellingproductsPage implements OnInit {
   
   ionViewWillEnter() {
 	this.loading.present();
-	  firebase.database().ref('/productsforselling/'+this.authService.getUserID()).once('value').then((snapshot) => {
+	  this.db.list('/productsforselling/', ref => ref.orderByChild('createdby').equalTo(this.authService.getUserID())).snapshotChanges().subscribe(res => {
 		  this.productList = [];
-		  snapshot.forEach(item => {
-			let a = item.toJSON();
+		  res.forEach(item => {
+			let a = item.payload.toJSON();
 			a['index'] = item.key;
-			firebase.database().ref('/properties/products/'+a['category']+'/'+a['productcode']).once('value').then((snapshot) => {
+			firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
 				a['title'] = snapshot.child('title').val();
 				a['imagepath'] = snapshot.child('imagepath').val();
 				a['details'] = snapshot.child('details').val();

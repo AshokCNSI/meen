@@ -20,6 +20,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { ErrorhandlerService } from './errorhandler.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // environment
 import { environment } from '../environments/environment';
@@ -34,7 +35,8 @@ import { environment } from '../environments/environment';
 	AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFireDatabaseModule,
-    AngularFireStorageModule
+    AngularFireStorageModule,
+	BrowserAnimationsModule
   ],
   providers: [
     StatusBar,

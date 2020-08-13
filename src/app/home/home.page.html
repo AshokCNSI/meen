@@ -10,7 +10,7 @@
 	<ion-buttons slot="secondary" style="font-size: 25px;margin: 10px;" [routerLink]="['/notification']">
         <ion-icon name="notifications-circle-outline"></ion-icon>
     </ion-buttons>
-	<ion-buttons *ngIf="isUserLoggedIn && !isAdmin" slot="primary" style="font-size: 25px;margin: 10px;" [routerLink]="['/mycart']">
+	<ion-buttons *ngIf="isUserLoggedIn && authService.getUserType() == 'CU'" slot="primary" style="font-size: 25px;margin: 10px;" [routerLink]="['/mycart']">
         <ion-icon name="cart"></ion-icon>
     </ion-buttons>
   </ion-toolbar>
@@ -20,10 +20,12 @@
 	<div class="spin" *ngIf="spinnerShow">
 		<ion-spinner name="lines"></ion-spinner>
 	</div>
-<ion-searchbar animated showCancelButton="focus" cancelButtonText="Custom Cancel"
-    (ionFocus)="filterList($event)"></ion-searchbar>
-
-	<ion-row class="second-menu">
+	
+<ng-container *ngIf="authService.getUserType() == 'C'">
+	<ion-searchbar animated showCancelButton="always" debounce="500" (ionCancel)="onCancel($event)" cancelButtonText="Custom Cancel"
+		(ionInput)="filterProductList($event)"  [value]="searchVal" autofocus="true"></ion-searchbar>
+<ng-container [@visibilityChanged]="visibility" style="opacity: 1">
+	<ion-row class="second-menu" >
 		<ion-col [routerLink]="['/stock/SF']">
 		<img style="margin: auto;width: 40%;" src="assets/icon/fish_icons/sea-food.png"><br>
 		  Sea Fish
@@ -44,12 +46,32 @@
 	<ion-item>
 		<ion-button fill="outline" slot="end" [routerLink]="['/stock/0']">View All</ion-button>
 	  </ion-item>
-	<ion-slides #mySlider (ionSlideWillChange)="onSlideChangeStart($event)" (ionSlideDidChange)="onSlideChanged($event)" (ionSlidesDidLoad)="slidesDidLoad(mySlider)" pager="false">
-		<ion-slide *ngFor="let p of discountList;" style="width:50%;height:300px;" (click)="nagivateProdcut(p.$key,p.productcode)">
+	  <ion-slides #mySlider (ionSlideWillChange)="onSlideChangeStart($event)" (ionSlideDidChange)="onSlideChanged($event)" (ionSlidesDidLoad)="slidesDidLoad(mySlider)" pager="false">
+		<ion-slide *ngFor="let p of discountList;" style="width:50%;height:300px;">
 			<img src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
-			<p class="slide-text"><b>{{p.title}}</b><br>Discount upto {{p.discountprice}}%</p>
+			<p class="slide-text"><b>{{p.title}}</b><br>Minimum Price &#x20b9;{{p.price}} offer available </p>
 		</ion-slide>
 	  </ion-slides>
+</ng-container>	  
+	  <ng-container *ngIf="productList.length == 0">
+		<p class="no-items">No products available</p>
+		</ng-container>
+		<ng-container *ngIf="productList.length > 0">
+		<ion-row>
+			<ion-col>
+				<ion-card *ngFor="let p of productList; let i = index;" (click)="routeProductDetail(p.index)">
+					<img alt="M" class="center" src="{{productList[i].imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+					<ion-card-header>
+					  <ion-card-subtitle>{{productList[i].title}}</ion-card-subtitle>
+					  <ion-card-title>Price starts from  &#x20b9; {{productList[i].price}}</ion-card-title>
+					</ion-card-header>
+					<ion-card-content style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+					  {{productList[i].details}}
+					</ion-card-content>
+				</ion-card>
+			</ion-col>
+		</ion-row>
+		</ng-container>
 	  <ion-card>
 	  <ion-item>
 		<ion-icon name="information" slot="start"></ion-icon>
@@ -61,6 +83,28 @@
 		All delieveries are exclusive delievery charges. Click view to contact dealer for online order.
 	  </ion-card-content>
 	</ion-card>
-	
-	
+</ng-container>
+<ng-container *ngIf="authService.getUserType() == 'S'">
+<ion-searchbar #search animated showCancelButton="always" debounce="500" (ionCancel)="onCancel($event)" cancelButtonText="Custom Cancel"
+    (ionInput)="filterProductList($event)"  [value]="searchVal" autofocus="true"></ion-searchbar>
+	<ng-container *ngIf="productList.length == 0">
+		<p class="no-items">No products available</p>
+	</ng-container>
+	<ng-container *ngIf="productList.length > 0">
+	<ion-row>
+		<ion-col>
+			<ion-card *ngFor="let p of productList; let i = index;" (click)="routeProductDetail(p.index)">
+				<img alt="M" class="center" src="{{productList[i].imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+				<ion-card-header>
+				  <ion-card-subtitle>{{productList[i].title}}</ion-card-subtitle>
+				  <ion-card-title>&#x20b9; {{productList[i].price}}</ion-card-title>
+				</ion-card-header>
+				<ion-card-content style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+				  {{productList[i].details}}
+				</ion-card-content>
+			</ion-card>
+		</ion-col>
+	</ion-row>
+	</ng-container>
+</ng-container>
 </ion-content>
