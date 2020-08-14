@@ -42,22 +42,29 @@ export class OrdersPage implements OnInit {
 	  if(this.authService.getUserType() == 'SA' || this.authService.getUserType() == 'A') {
 		  this.isAdmin = true;
 	  }
-	  if(this.isAdmin) {
-		  this.db.list('/orders').snapshotChanges().subscribe(res => { 
+	  if(this.authService.getUserType() == 'S') {
+		  console.log(this.authService.getUserID())
+		  this.db.list('/orders', ref => ref.orderByChild('seller').equalTo(this.authService.getUserID())).snapshotChanges().subscribe(res => { 
 			  if(res != null) {
 				  this.orderList = [];
 				  res.forEach(item => {
 					let a = item.payload.toJSON();
 					a['index'] = item.key;
-					let getStockDetail = this.db.object('/stock/'+a['productcode']);
-					getStockDetail.snapshotChanges().subscribe(resp => { 
-						a['product'] = resp.payload.toJSON();
-					});
-					if(a['currentstatus'] == 'ORD' || a['currentstatus'] == 'INP' || a['currentstatus'] == 'DE') {
-						this.orderList.push(a);
-					}
+					a['price'] = a['sellingprice'];
+					firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
+							if(snapshot != null) {
+								a['title'] = snapshot.child('title').val();
+								a['details'] = snapshot.child('details').val();
+								a['imagepath'] = snapshot.child('imagepath').val();
+								if(a['currentstatus'] != 'AC' || a['currentstatus'] == 'INP' || a['currentstatus'] == 'DE' || a['currentstatus'] == 'CL') {
+									this.orderList.push(a);
+								}
+							}
+						})
 				  })
 			  }
+			  	this.orderList.sort(this.comp);
+
 		});
 	} else {
 		  this.db.list('/orders', ref => ref.orderByChild('createdby').equalTo(this.authService.getUserID())).snapshotChanges().subscribe(res => { 
@@ -66,13 +73,17 @@ export class OrdersPage implements OnInit {
 				  res.forEach(item => {
 					let a = item.payload.toJSON();
 					a['index'] = item.key;
-				  let getStockDetail = this.db.object('/stock/'+a['productcode']);
-					getStockDetail.snapshotChanges().subscribe(resp => { 
-						a['product'] = resp.payload.toJSON();
-					});
-					if(a['currentstatus'] == 'ORD' || a['currentstatus'] == 'INP' || a['currentstatus'] == 'DE' || a['currentstatus'] == 'CL') {
-						this.orderList.push(a);
-					}
+					a['price'] = a['sellingprice'];
+					firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
+							if(snapshot != null) {
+								a['title'] = snapshot.child('title').val();
+								a['details'] = snapshot.child('details').val();
+								a['imagepath'] = snapshot.child('imagepath').val();
+								if(a['currentstatus'] == 'ORD' || a['currentstatus'] == 'INP' || a['currentstatus'] == 'DE' || a['currentstatus'] == 'CL') {
+									this.orderList.push(a);
+								}
+							}
+						})
 				  })
 			  }
 			  	this.orderList.sort(this.comp);

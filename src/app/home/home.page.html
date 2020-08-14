@@ -37,7 +37,7 @@
 		<ion-button fill="outline" slot="end" [routerLink]="['/stock/0']">View All</ion-button>
 	  </ion-item>
 	  <ion-slides #mySlider (ionSlideWillChange)="onSlideChangeStart($event)" (ionSlideDidChange)="onSlideChanged($event)" (ionSlidesDidLoad)="slidesDidLoad(mySlider)" pager="false">
-		<ion-slide *ngFor="let p of discountList;" style="width:50%;height:300px;">
+		<ion-slide *ngFor="let p of discountList;" style="width:50%;height:300px;" (click)="nagivateProdcut('D',p.productcode)">
 			<img src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
 			<p class="slide-text"><b>{{p.title}}</b><br>Minimum Price &#x20b9;{{p.price}} offer available </p>
 		</ion-slide>
@@ -49,7 +49,7 @@
 		<ng-container *ngIf="productList.length > 0">
 		<ion-row>
 			<ion-col>
-				<ion-card *ngFor="let p of productList; let i = index;">
+				<ion-card *ngFor="let p of productList; let i = index;" (click)="nagivateProdcut('A',p.productcode)">
 					<img alt="M" class="center" src="{{productList[i].imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
 					<ion-card-header>
 					  <ion-card-subtitle>{{productList[i].title}}</ion-card-subtitle>

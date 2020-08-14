@@ -222,12 +222,8 @@ export class HomePage implements OnInit {
     slides.startAutoplay();
   }
   
-  nagivateProdcut(index, productcode) {
-	  this.navController.navigateRoot('/stockdetail', {queryParams : {index : index, productcode : productcode, status : 'R'}});
-  }
-  
-  filterList(event) {
-	  this.navController.navigateRoot('/stock/0', {queryParams : {search : 'Y', val : event.srcElement.value}});
+  nagivateProdcut(status, productcode) {
+	  this.navController.navigateRoot('/stock/0', {queryParams : {productcode : productcode, status : status}});
   }
   
   async presentPopover() {

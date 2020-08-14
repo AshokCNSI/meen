@@ -10,6 +10,10 @@ import * as firebase from 'firebase';
 import { filter } from 'rxjs/operators';
 import { RouterserviceService } from '../routerservice.service';
 import { AuthenticateService } from '../authentication.service';
+import { LocationserviceService } from '../locationservice.service';
+import { ModalController } from '@ionic/angular';
+import { MyaddressPage } from '../myaddress/myaddress.page';
+
 import { prop } from '../../environments/environment';
 
 @Injectable({
@@ -33,7 +37,9 @@ export class StockdetailPage implements OnInit {
   private db: AngularFireDatabase,
   private activatedRoute: ActivatedRoute,
   private routerService: RouterserviceService,
-  private authService: AuthenticateService
+  private authService: AuthenticateService,
+  private locationService: LocationserviceService,
+  public modalController: ModalController
 ) { 
   
   }
@@ -45,6 +51,7 @@ export class StockdetailPage implements OnInit {
 	//
  uid : string;
   productcode: string;
+  seller : string;
   stockDetail = [];
   stockDetailS = [];
   isSubmitted = false;
@@ -81,14 +88,38 @@ export class StockdetailPage implements OnInit {
   state : string;
   pincode : number;
   index : string;
-	ofinalprice:number;
-	oactualprice:number;
-	osellingprice:number;
-	odiscountprice:number;
-	ototalprice:number;
-	odeliverycharge:number;
-	omasalacharge:number;
-	omasalatotalcharge : number;
+  ofinalprice:number;
+  oactualprice:number;
+  osellingprice:number;
+  odiscountprice:number;
+  ototalprice:number;
+  odeliverycharge:number;
+  omasalacharge:number;
+  omasalatotalcharge : number;
+  dname : string;
+  dindex : string;
+  dmobile : string;
+  dhouseno : string;
+  dstreetname : string;
+  dlandmark : string;
+  async presentModal() {
+    const modal = await this.modalController.create({
+      component: MyaddressPage,
+      cssClass: 'my-custom-class'
+    });
+	modal.onDidDismiss()
+      .then((data) => {
+		  if (data !== null) {
+			this.dindex = data.data.index;
+			this.dname = data.data.name;
+			this.dmobile = data.data.mobile;
+			this.dhouseno = data.data.houseno;
+			this.dstreetname = data.data.streetname;
+			this.dlandmark = data.data.landmark;
+		  }
+    });
+    return await modal.present();
+  }
   
   async presentAlert(status, msg) {
     const alert = await this.alertCtrl.create({
@@ -120,21 +151,13 @@ export class StockdetailPage implements OnInit {
 		  this.delieverycharge = snapshot.child('delieverycharge').val();
 		  this.masalacharge = snapshot.child('masalacharge').val();
 	  });
-		firebase.auth().onAuthStateChanged(user => {
-		  if (user) {
-			  this.isUserLoggedIn = true;
-		  } 
-		});
-		firebase.database().ref('/profile/'+this.authService.getUserID()).once('value').then((snapshot) => {
-		  if(snapshot.child('mobilenumber').val() == null) {
-			  this.isProfileCreated = true;
-		  }
-		});
+		
 		this.activatedRoute.queryParams.subscribe(params => {
 		  this.productcode = params['productcode'];
 		  this.productVisibility = params['status'];
 		  this.index = params['index'];
 		});
+		
 		if(this.productVisibility == 'ORD') {
 			this.backUrl = '/orders';
 		} else if(this.productVisibility == 'AC') {
@@ -142,6 +165,7 @@ export class StockdetailPage implements OnInit {
 		} else {
 			this.backUrl = '/stock/0';
 		}
+		
 		if(this.productVisibility == 'ORD' || this.productVisibility == 'AC') {
 			  firebase.database().ref('/orders/'+this.index).once('value').then((snapshot) => {
 				  this.masala = snapshot.child('masala').val();
@@ -159,59 +183,60 @@ export class StockdetailPage implements OnInit {
 				  this.odeliverycharge = snapshot.child('deliverycharge').val();
 				  this.omasalacharge = snapshot.child('masalacharge').val();
 				  this.omasalatotalcharge = snapshot.child('masalatotalcharge').val();
+				  
 				  if(this.productVisibility != 'AC') {
 					  this.ordervisibility = true;
 				  }
-				  firebase.database().ref('/stock/'+snapshot.child('productcode').val()).once('value').then((snapshot) => {
-					  this.title = snapshot.child('title').val();
-					  this.price = snapshot.child('price').val();
-					  this.discountprice = snapshot.child('discountprice').val();
-					  this.details = snapshot.child('details').val();
-					  this.imagepath = snapshot.child('imagepath').val();
-				  });
-				  firebase.database().ref('/profile/'+snapshot.child('createdby').val()).once('value').then((snapshot) => {
-					  this.firstname = snapshot.child('firstname').val();
-					  this.lastname = snapshot.child('lastname').val();
-					  this.mobilenumber = snapshot.child('mobilenumber').val();
-					  this.street1 = snapshot.child('street1').val();
-					  this.street2 = snapshot.child('street2').val();
-					  this.district = snapshot.child('district').val();
-					  this.state = snapshot.child('state').val();
-					  this.pincode = snapshot.child('pincode').val();
-				  });
+				  if(this.productVisibility == 'ORD') {
+					  this.dindex = snapshot.child('deliveryaddress').val();
+					  firebase.database().ref('/addressbook/'+snapshot.child('deliveryaddress').val()).once('value').then((snapshot) => {
+						if(snapshot != null) {
+							this.dname = snapshot.child('name').val();
+							this.dmobile = snapshot.child('mobile').val();
+							this.dhouseno = snapshot.child('houseno').val();
+							this.dstreetname = snapshot.child('streetname').val();
+							this.dlandmark = snapshot.child('landmark').val();
+						}
+					});
+				  }
+				  firebase.database().ref('/productsforselling/'+snapshot.child('orderedto').val()).once('value').then((snapshot) => {
+					if(snapshot != null) {
+						this.price = snapshot.child('price').val();
+						this.productcode = snapshot.child('productcode').val();
+						this.seller = snapshot.child('createdby').val();
+						this.discountprice = snapshot.child('discountprice').val();
+						firebase.database().ref('/properties/products/'+snapshot.child('productcode').val()).once('value').then((snapshot) => {
+							if(snapshot != null) {
+								this.title = snapshot.child('title').val();
+								this.details = snapshot.child('details').val();
+								this.imagepath = snapshot.child('imagepath').val();
+							}
+						})
+					}
+				});
 			  });
 		  } else {
-			   firebase.database().ref('/stock/'+this.productcode).once('value').then((snapshot) => {
-				  this.title = snapshot.child('title').val();
-				  this.available = snapshot.child('available').val();
-				  this.discount = snapshot.child('discount').val();
-				  this.discountprice = snapshot.child('discountprice').val();
-				  this.price = snapshot.child('price').val();
-				  this.details = snapshot.child('details').val();
-				  this.imagepath = snapshot.child('imagepath').val();
-				  this.fishsize = Array.from(snapshot.child('fishsize').val());
-				  this.category = snapshot.child('category').val();
-				  this.stock = snapshot.child('stock').val();
-			  });
-		  }
-	  
-		if(this.authService.getUserType() == 'SA' || this.authService.getUserType() == 'A') {
-			this.isAdmin = true;
-		}
-			  
+			   firebase.database().ref('/productsforselling/'+this.index).once('value').then((snapshot) => {
+					if(snapshot != null) {
+						this.price = snapshot.child('price').val();
+						this.productcode = snapshot.child('productcode').val();
+						this.seller = snapshot.child('createdby').val();
+						firebase.database().ref('/properties/products/'+snapshot.child('productcode').val()).once('value').then((snapshot) => {
+							if(snapshot != null) {
+								this.title = snapshot.child('title').val();
+								this.details = snapshot.child('details').val();
+								this.imagepath = snapshot.child('imagepath').val();
+							}
+						})
+					}
+				});
+		  }  
   }
   
   formData = this.formBuilder.group({
 	   title: ['', [Validators.required]],
-	   available: ['', [Validators.required]],
-	   discount: ['', [Validators.required]],
-	   discountprice: ['', [Validators.required]],
-	   price: ['', [Validators.required]],
 	   details: ['', []],
-	   imagepath: ['', []],
-	   fishsize: ['', [Validators.required]],
-	   category: ['', [Validators.required]],
-	   stock: ['', [Validators.required]]
+	   imagepath: ['', []]
 	});
   
   orderData = this.formBuilder.group({
@@ -233,18 +258,11 @@ export class StockdetailPage implements OnInit {
 	  if (!this.formData.valid) {
 		return false;
 	  } else {		
-		firebase.database().ref('/stock/'+this.productcode).set({
+		firebase.database().ref('/properties/products/'+this.productcode).set({
 		   productcode : this.productcode,
 		   title: this.title,
-		   available: this.available,
-		   discount: this.discount,
-		   discountprice: this.discountprice,
-		   price: this.price,
 		   details: this.details,
-		   imagepath: this.imagepath,
-		   fishsize: (this.fishsize).toString(),
-		   category: this.category,
-		   stock: this.stock
+		   imagepath: this.imagepath
 		  }).then(
 		   res => 
 		   {
@@ -257,7 +275,7 @@ export class StockdetailPage implements OnInit {
   }
   
   addToCart() {
-	  if(this.isUserLoggedIn) {
+	  if(this.authService.getIsUserLoggedIn()) {
 	  this.isSubmitted = true;
 	  if (!this.orderData.valid) {
 		return false;
@@ -268,17 +286,18 @@ export class StockdetailPage implements OnInit {
 			"masala": this.orderData.value.masala,
 			"cookingpurpose": this.orderData.value.cookingpurpose,
 			"currentstatus": "AC",
+			"orderedto" : this.index,
+			"seller" : this.seller,
+			"order_latitude" : this.locationService.getLatitude(),
+			"order_longitude" : this.locationService.getLongitude(),
+			"order_location" : this.locationService.getCurrentLocation(),
 			"description" : this.orderData.value.description,
 			"createddate" : Date(),
 			"createdby":this.authService.getUserID(),
 			"modifieddate": Date(),
 			"modifiedby":this.authService.getUserID()
-		  }).then(
-		   res => 
-		   {
-			   this.presentAlert('Cart','Product added to cart successfully.');
-		   }
-		 )
+		  }).then(res => { this.presentAlert('Cart','Product added to cart successfully.');})
+			.catch(res => {console.log(res)})
 	  }
 	 } else {
 		 this.presentAlert('Login','We are advising you to Login to make sure all the transactions are safe with us.');
@@ -307,7 +326,8 @@ export class StockdetailPage implements OnInit {
 			"totalprice":(this.price * this.quantity),
 			"deliverycharge":(this.delieverycharge),
 			"masalacharge":(this.masalacharge),
-			"masalatotalcharge":(this.masala == 'Y' ? this.quantity * this.masalacharge : 0)
+			"masalatotalcharge":(this.masala == 'Y' ? this.quantity * this.masalacharge : 0),
+			"deliveryaddress" : this.dindex
 		  }).then(
 		   res => 
 		   {
@@ -352,6 +372,9 @@ export class StockdetailPage implements OnInit {
 		   this.presentAlert('Status','Order cancelled successfully.');
 	   }
 	 )
+  }
+  selectAddress() {
+	this.presentModal();
   }
 
 }

@@ -48,13 +48,23 @@ export class MycartPage implements OnInit {
 			  res.forEach(item => {
 				let a = item.payload.toJSON();
 				a['index'] = item.key;
-			  let getStockDetail = this.db.object('/stock/'+a['productcode']);
-				getStockDetail.snapshotChanges().subscribe(resp => { 
-					a['product'] = resp.payload.toJSON();
+				firebase.database().ref('/productsforselling/'+a['orderedto']).once('value').then((snapshot) => {
+					if(snapshot != null) {
+						a['price'] = snapshot.child('price').val();
+						a['productcode'] = snapshot.child('productcode').val();
+						a['seller'] = snapshot.child('createdby').val();
+						firebase.database().ref('/properties/products/'+snapshot.child('productcode').val()).once('value').then((snapshot) => {
+							if(snapshot != null) {
+								a['title'] = snapshot.child('title').val();
+								a['details'] = snapshot.child('details').val();
+								a['imagepath'] = snapshot.child('imagepath').val();
+								if(a['currentstatus'] == 'AC') {
+									this.cartList.push(a);
+								}
+							}
+						})
+					}
 				});
-				if(a['currentstatus'] == 'AC') {
-					this.cartList.push(a);
-				}
 			  })
 		  }
 	});
