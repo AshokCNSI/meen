@@ -89,6 +89,22 @@ const routes: Routes = [
   {
     path: 'addproduct',
     loadChildren: () => import('./addproduct/addproduct.module').then( m => m.AddproductPageModule)
+  },
+  {
+    path: 'addressbook',
+    loadChildren: () => import('./addressbook/addressbook.module').then( m => m.AddressbookPageModule)
+  },
+  {
+    path: 'queries',
+    loadChildren: () => import('./queries/queries.module').then( m => m.QueriesPageModule)
+  },
+  {
+    path: 'terms',
+    loadChildren: () => import('./terms/terms.module').then( m => m.TermsPageModule)
+  },
+  {
+    path: 'contact',
+    loadChildren: () => import('./contact/contact.module').then( m => m.ContactPageModule)
   }
 
 ];

@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>
 	Home
-	<p class="subtitle" [routerLink]="['/locationmap']">{{current_location}}</p>
+	<p class="subtitle" [routerLink]="['/locationmap']">{{locationService.getCurrentLocation() == "" ? 'No address found' : locationService.getCurrentLocation()}}</p>
 	</ion-title>
 	<ion-buttons slot="secondary" style="font-size: 25px;margin: 10px;" [routerLink]="['/notification']">
         <ion-icon name="notifications-circle-outline"></ion-icon>
@@ -21,7 +21,7 @@
 		<ion-spinner name="lines"></ion-spinner>
 	</div>
 	
-<ng-container *ngIf="authService.getUserType() == 'C'">
+<ng-container *ngIf="!authService.getIsUserLoggedIn() || authService.getUserType() == 'A' || authService.getUserType() == 'SA'  || authService.getUserType() == 'C'">
 	<ion-searchbar animated showCancelButton="always" debounce="500" (ionCancel)="onCancel($event)" cancelButtonText="Custom Cancel"
 		(ionInput)="filterProductList($event)"  [value]="searchVal" autofocus="true"></ion-searchbar>
 <ng-container [@visibilityChanged]="visibility" style="opacity: 1">
@@ -91,6 +91,30 @@
 				</ion-card-header>
 				<ion-card-content style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
 				  {{productList[i].details}}
+				</ion-card-content>
+			</ion-card>
+		</ion-col>
+	</ion-row>
+	</ng-container>
+</ng-container>
+<ng-container *ngIf="authService.getUserType() == 'D'">
+	<ng-container *ngIf="productList.length == 0">
+		<p class="no-items">No Assignments available</p>
+	</ng-container>
+	<ng-container *ngIf="productList.length > 0">
+	<ion-row>
+		<ion-col>
+			<ion-card *ngFor="let p of productList; let i = index;" (click)="routeStockDetail(p.index,p.productcode,p.currentstatus)">
+				<img alt="M" class="center" src="{{productList[i].imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+				<ion-card-header>
+				  <ion-card-subtitle>{{productList[i].title}}</ion-card-subtitle>
+				  <ion-card-title>&#x20b9; {{productList[i].price}}</ion-card-title>
+				</ion-card-header>
+				<ion-card-content style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+				  {{productList[i].details}}
+				</ion-card-content>
+				<ion-card-content style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+				  Pickup available within {{productList[i].distance}} km
 				</ion-card-content>
 			</ion-card>
 		</ion-col>

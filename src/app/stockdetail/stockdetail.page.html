@@ -1,13 +1,13 @@
 <ion-header translucent>
   <ion-toolbar>
-	<ion-buttons slot="start">
-		<ion-back-button defaultHref="{{backUrl}}"></ion-back-button>
+	<ion-buttons style="font-size: 25px;margin: 10px;" slot="start" (click)="location.back()">
+		<ion-icon name="arrow-back-outline"></ion-icon>
 	</ion-buttons>
     <ion-title>{{authService.getUserType() == 'SA' || authService.getUserType() == 'A' ? 'Stock' : 'Products'}} Detail</ion-title>
 	<ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" (click)="saveStock()" *ngIf="isAdmin && productVisibility == 'R'">
         <ion-icon name="push-outline"></ion-icon>
     </ion-buttons>
-	<ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" (click)="updateStatus()" *ngIf="authService.getUserType() == 'S' && (productVisibility != 'AC' && productVisibility != 'R' && oldStatus!='DE')">
+	<ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" (click)="updateStatus()" *ngIf="(authService.getUserType() == 'S' || authService.getUserType() == 'D') && (productVisibility != 'AC' && productVisibility != 'R' && oldStatus!='DE')">
         <ion-icon name="arrow-up-circle-outline"></ion-icon>
     </ion-buttons>
   </ion-toolbar>
@@ -47,7 +47,8 @@
 		</ion-item>
 	</form>
 </ng-container>
-<ng-container *ngIf="(productVisibility != 'R' && productVisibility != 'CL') && (authService.getUserType() == 'C' || authService.getUserType() == 'S')">
+<ng-container *ngIf="((productVisibility != 'R') && (authService.getUserType() == 'C' || authService.getUserType() == 'S'))
+		|| ((authService.getUserType() == 'D'))">
     <ion-item (click)="selectAddress()" *ngIf="(productVisibility == 'AC')">
 		<ion-note slot="start">Delivering to</ion-note>
 		<ion-label *ngIf="!dindex && productVisibility == 'AC'">No Address Selected</ion-label>
@@ -66,7 +67,7 @@
 	  </ion-card-content>
 	</ion-card>
 </ng-container>
-<ng-container *ngIf="(productVisibility == 'R' || productVisibility == 'AC') && (authService.getUserType() == 'C')">
+<ng-container *ngIf="(productVisibility == 'R' || productVisibility == 'AC') && (authService.getUserType() == 'C' || !authService.getIsUserLoggedIn())">
 	<div *ngIf="isSubmitted && errorOrderControl.quantity.errors?.required"
 		class="validator-error">
 	  Enter quantity of the product.
@@ -168,7 +169,7 @@
 		</ion-row>
 	</form>
 </ng-container>
-<ion-list *ngIf="(productVisibility != 'AC' && productVisibility != 'R') && (authService.getUserType() == 'C' || authService.getUserType() == 'S')">
+<ion-list *ngIf="(productVisibility != 'AC' && productVisibility != 'R') && (authService.getUserType() == 'C' || authService.getUserType() == 'S' || authService.getUserType() == 'D')">
 			<ion-item-divider>
 			  <ion-label>
 				Price Details
@@ -204,50 +205,22 @@
 			</ion-item>
 		</ion-list>
 	<ng-container *ngIf="productVisibility != 'AC' && productVisibility != 'R'">
-		  <ng-container *ngIf="productVisibility == 'ORD'">
-		  <ion-list-header>
+		  <ng-container *ngFor="let p of statusList;">
+		  <ion-list-header *ngIf="productVisibility != 'AC' && productVisibility != 'R' && productVisibility == p.code">
 			  <ion-label>
-				Ordered
+				{{p.name}}
 			  </ion-label>
-			  <ion-progress-bar value="0.3" buffer="0.5"></ion-progress-bar>
-			  </ion-list-header>
-		  </ng-container>
-		  <ng-container *ngIf="productVisibility == 'INP'">
-		  <ion-list-header>
-			  <ion-label>
-				In-Progress
-			  </ion-label>
-			  <ion-progress-bar value="0.7" buffer="0.5"></ion-progress-bar>
-			  </ion-list-header>
-		  </ng-container>
-		  <ng-container *ngIf="productVisibility == 'DE'">
-		  <ion-list-header>
-			  <ion-label>
-				Delievered Successfull
-			  </ion-label>
-			  <ion-progress-bar value="1" buffer="0.5"></ion-progress-bar>
-			  </ion-list-header>
-		  </ng-container>
-		  <ng-container *ngIf="productVisibility == 'CL'">
-		  <ion-list-header>
-			  <ion-label>
-				Cancelled
-			  </ion-label>
-			  <ion-progress-bar value="1" buffer="0.5"></ion-progress-bar>
+			  <ion-progress-bar value="{{p.buffer}}" buffer="0.5"></ion-progress-bar>
 			  </ion-list-header>
 		  </ng-container>
 	</ng-container>
-<ng-container *ngIf="(productVisibility != 'AC' && productVisibility != 'R' && productVisibility != 'DE') && (authService.getUserType() == 'S')">
+<ng-container *ngIf="(authService.getUserType() == 'D' && assignedto == authService.getUserID()) || (productVisibility != 'AC' && productVisibility != 'R' && productVisibility != 'DE') && ((authService.getUserType() == 'S' || authService.getUserType() == 'D') && !assignedto)">
 	<ion-item>
 	  <ion-label>Change Order Status</ion-label>
 	  <ion-select [(ngModel)]="productVisibility" interface="action-sheet">
-		<ion-select-option value="ORD">Ordered</ion-select-option>
-		<ion-select-option value="INP">In-Progress</ion-select-option>
-		<ion-select-option value="WFP">Waiting for pickup</ion-select-option>
-		<ion-select-option value="DS">Delivery assigned</ion-select-option>
-		<ion-select-option value="IPD">Item picked for Delivery</ion-select-option>
-		<ion-select-option value="DE">Delievered</ion-select-option>
-		<ion-select-option value="CL">Cancel Order</ion-select-option>
+		<ng-container *ngFor="let p of statusList;">
+			<ion-select-option value="{{p.code}}" *ngIf="((p.code != 'ORD' && p.code != 'DS' && p.code != 'IPD' && p.code != 'DE') && authService.getUserType() == 'S') || ((p.code != 'ORD' && p.code != 'INP' && p.code != 'CL') && authService.getUserType() == 'D')">{{p.name}}</ion-select-option>
+		</ng-container>
 	  </ion-select>
 	</ion-item>
 </ng-container>

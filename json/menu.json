@@ -56,7 +56,7 @@
     },
     {
         "title": "My Assignments",
-        "path": "/assignments",
+        "path": "/myassignments",
         "icon": "people",
         "order": 2,
         "type": "D"
@@ -84,7 +84,7 @@
     },
 	{
         "title": "My Addresses",
-        "path": "/myaddress",
+        "path": "/addressbook",
         "icon": "mail",
         "order": 3,
         "type": "CU"

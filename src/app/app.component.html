@@ -42,7 +42,7 @@
               <ion-label>{{ p.title }}</ion-label>
             </ion-item>
           </ion-menu-toggle>
-		  <ion-item *ngIf="authService.getUserName() != null" (click)="logout()" lines="none" detail="false">
+		  <ion-item *ngIf="authService.getIsUserLoggedIn()" (click)="logout()" lines="none" detail="false">
               <ion-icon slot="start" name="power-outline"></ion-icon>
               <ion-label>Logout</ion-label>
             </ion-item>

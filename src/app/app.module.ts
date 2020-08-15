@@ -8,6 +8,10 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+
+import { LoaderInterceptor } from './loading.interceptor';
+import { LoadingService } from './loading.service';
 
 //  firebase imports, remove what you don't require
 import { AngularFireModule } from '@angular/fire';
@@ -47,7 +51,9 @@ import { environment } from '../environments/environment';
 	NativeGeocoder,
 	Diagnostic,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-	{ provide: ErrorHandler, useClass: ErrorhandlerService }
+	{ provide: ErrorHandler, useClass: ErrorhandlerService },
+	LoadingService,
+    { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

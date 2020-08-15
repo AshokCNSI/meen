@@ -37,13 +37,23 @@ export class OrdersPage implements OnInit {
   
   orderRef: AngularFireObject<any>;
   orderList = [];
+  statusList = [];
   isAdmin : boolean = false;
   ngOnInit() {
 	  if(this.authService.getUserType() == 'SA' || this.authService.getUserType() == 'A') {
 		  this.isAdmin = true;
 	  }
+	  
+	  firebase.database().ref('/properties/status').once('value').then((snapshot) => {
+		  if(snapshot != null) {
+			  snapshot.forEach(item =>{
+				  let a = item.toJSON();
+				  this.statusList.push(a);
+			  })
+		  }
+	  });
+	  
 	  if(this.authService.getUserType() == 'S') {
-		  console.log(this.authService.getUserID())
 		  this.db.list('/orders', ref => ref.orderByChild('seller').equalTo(this.authService.getUserID())).snapshotChanges().subscribe(res => { 
 			  if(res != null) {
 				  this.orderList = [];
@@ -56,7 +66,7 @@ export class OrdersPage implements OnInit {
 								a['title'] = snapshot.child('title').val();
 								a['details'] = snapshot.child('details').val();
 								a['imagepath'] = snapshot.child('imagepath').val();
-								if(a['currentstatus'] != 'AC' || a['currentstatus'] == 'INP' || a['currentstatus'] == 'DE' || a['currentstatus'] == 'CL') {
+								if(a['currentstatus'] != 'AC') {
 									this.orderList.push(a);
 								}
 							}
@@ -79,7 +89,7 @@ export class OrdersPage implements OnInit {
 								a['title'] = snapshot.child('title').val();
 								a['details'] = snapshot.child('details').val();
 								a['imagepath'] = snapshot.child('imagepath').val();
-								if(a['currentstatus'] == 'ORD' || a['currentstatus'] == 'INP' || a['currentstatus'] == 'DE' || a['currentstatus'] == 'CL') {
+								if(a['currentstatus'] != 'AC') {
 									this.orderList.push(a);
 								}
 							}
@@ -109,8 +119,8 @@ export class OrdersPage implements OnInit {
     await alert.present();
   }
   
-  routeStockDetail(index,productcode){
-	  this.navController.navigateRoot('/stockdetail',{queryParams : {index : index, productcode : productcode, status : 'ORD'}});
+  routeStockDetail(index,productcode,status){
+	  this.navController.navigateRoot('/stockdetail',{queryParams : {index : index, productcode : productcode, status : status}});
   }
   
   comp(a, b) {

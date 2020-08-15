@@ -25,6 +25,59 @@
       "code": "FI"
     }
   ],
+  "status": [
+    {
+      "name": "Ordered",
+      "code": "ORD",
+      "buffer": "0.2"
+    },
+    {
+      "name": "In Progress",
+      "code": "INP",
+      "buffer": "0.3"
+    },
+    {
+      "name": "Waiting for pickup",
+      "code": "WFP",
+      "buffer": "0.4"
+    },
+    {
+      "name": "Delivery assigned",
+      "code": "DS",
+      "buffer": "0.6"
+    },
+    {
+      "name": "Item picked for Delivery",
+      "code": "IPD",
+      "buffer": "0.7"
+    },
+    {
+      "name": "Delievered",
+      "code": "DE",
+      "buffer": "1"
+    },
+    {
+      "name": "Cancel Order",
+      "code": "CL",
+      "buffer": "1"
+    }
+  ],
+  "terms": [
+    {
+      "title": "Important Clauses for Your Ecommerce Terms and Conditions",
+      "description": "Every Terms and Conditions agreement is unique. The specific terms you include depend on your unique business needs and practices. However, there are some clauses that you can expect to find in every Terms and Conditions agreement if it's going to do its job properly. Let's look at these recommended clauses and see why they're so important for ecommerce store owners to incorporate into their own agreements."
+    },
+    {
+      "title": "The Introductory Clause",
+      "description": "There's no point in having a Terms and Conditions agreement if no one knows who it applies to. Create a short introductory clause to outline who the agreement is between, what the agreement actually is, and when it's triggered.Ecommerce website Etsy has a great example of an introductory clause. It spells out exactly who the consumer has an agreement with - it varies depending on the consumer's physical location. The agreement is triggered if the consumer uses any Etsy service, even if they're just browsing the site."
+    }
+  ],
+  "contact": [
+    {
+      "title": "Customer Service",
+      "description": "Thanks for choosing the Meen application. We will give you the best and satisfy the needs of your taste. If any enquiry or feedback, please post comments in the your queries which is there in help section."
+    }
+  ],
   "prop": {
     "delieverycharge": 20,
     "masalacharge": 20
@@ -33,22 +86,22 @@
     {
       "name": "Fresh Fish",
       "code": "CF",
-	  "imagepath" : "assets/icon/fish_icons/fresh-water.png"
+      "imagepath": "assets/icon/fish_icons/fresh-water.png"
     },
     {
       "name": "Sea Fish",
       "code": "SF",
-	  "imagepath" : "assets/icon/fish_icons/sea-food.png"
+      "imagepath": "assets/icon/fish_icons/sea-food.png"
     },
     {
       "name": "Prawns",
       "code": "PR",
-	  "imagepath" : "assets/icon/fish_icons/prawn.png"
+      "imagepath": "assets/icon/fish_icons/prawn.png"
     },
     {
       "name": "Crabs",
       "code": "CR",
-	  "imagepath" : "assets/icon/fish_icons/crab.png"
+      "imagepath": "assets/icon/fish_icons/crab.png"
     }
   ],
   "location": {

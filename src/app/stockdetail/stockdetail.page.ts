@@ -13,6 +13,7 @@ import { AuthenticateService } from '../authentication.service';
 import { LocationserviceService } from '../locationservice.service';
 import { ModalController } from '@ionic/angular';
 import { MyaddressPage } from '../myaddress/myaddress.page';
+import { Location } from '@angular/common';
 
 import { prop } from '../../environments/environment';
 
@@ -39,7 +40,8 @@ export class StockdetailPage implements OnInit {
   private routerService: RouterserviceService,
   private authService: AuthenticateService,
   private locationService: LocationserviceService,
-  public modalController: ModalController
+  public modalController: ModalController,
+  public location : Location
 ) { 
   
   }
@@ -102,6 +104,8 @@ export class StockdetailPage implements OnInit {
   dhouseno : string;
   dstreetname : string;
   dlandmark : string;
+  statusList = [];
+  assignedto : string;
   async presentModal() {
     const modal = await this.modalController.create({
       component: MyaddressPage,
@@ -128,25 +132,26 @@ export class StockdetailPage implements OnInit {
       buttons: [{
           text: 'Ok',
           handler: () => {
-            if(status == 'Success') {
-				this.navController.navigateRoot('/stock/0');
-			} else if(status == 'Ordered'){
-				this.navController.navigateRoot('/orders');
-			} else if(status == 'Cart'){
-				this.navController.navigateRoot('/mycart');
-			} else if(status == 'Status'){
-				this.navController.navigateRoot('/orders');
-			} else if(status == 'Login'){
-				this.navController.navigateRoot('/login');
-			} else if(status == 'Profile'){
-				this.navController.navigateRoot('/profile');
-			}
+		  if(status == 'Login') {
+			this.navController.navigateRoot('/login');
+		  } else {
+			this.location.back();
+		  }
 	  }}]
     });
     await alert.present();
   }
   
   ngOnInit() {
+	  
+	  firebase.database().ref('/properties/status').once('value').then((snapshot) => {
+		  if(snapshot != null) {
+			  snapshot.forEach(item =>{
+				  let a = item.toJSON();
+				  this.statusList.push(a);
+			  })
+		  }
+	  });
 	  firebase.database().ref('/properties/prop').once('value').then((snapshot) => {
 		  this.delieverycharge = snapshot.child('delieverycharge').val();
 		  this.masalacharge = snapshot.child('masalacharge').val();
@@ -166,7 +171,7 @@ export class StockdetailPage implements OnInit {
 			this.backUrl = '/stock/0';
 		}
 		
-		if(this.productVisibility == 'ORD' || this.productVisibility == 'AC') {
+		if(this.productVisibility != 'R') {
 			  firebase.database().ref('/orders/'+this.index).once('value').then((snapshot) => {
 				  this.masala = snapshot.child('masala').val();
 				  this.quantity = snapshot.child('quantity').val();
@@ -174,6 +179,7 @@ export class StockdetailPage implements OnInit {
 				  this.cookingpurpose = snapshot.child('cookingpurpose').val();
 				  this.productVisibility = snapshot.child('currentstatus').val();
 				  this.oldStatus = snapshot.child('currentstatus').val();
+				  this.assignedto = snapshot.child('assignedto').val();;
 				  
 				  this.ofinalprice = snapshot.child('finalprice').val();
 				  this.oactualprice = snapshot.child('actualprice').val();
@@ -187,18 +193,17 @@ export class StockdetailPage implements OnInit {
 				  if(this.productVisibility != 'AC') {
 					  this.ordervisibility = true;
 				  }
-				  if(this.productVisibility == 'ORD') {
-					  this.dindex = snapshot.child('deliveryaddress').val();
-					  firebase.database().ref('/addressbook/'+snapshot.child('deliveryaddress').val()).once('value').then((snapshot) => {
-						if(snapshot != null) {
-							this.dname = snapshot.child('name').val();
-							this.dmobile = snapshot.child('mobile').val();
-							this.dhouseno = snapshot.child('houseno').val();
-							this.dstreetname = snapshot.child('streetname').val();
-							this.dlandmark = snapshot.child('landmark').val();
-						}
-					});
-				  }
+				  this.dindex = snapshot.child('deliveryaddress').val();
+				  firebase.database().ref('/addressbook/'+snapshot.child('deliveryaddress').val()).once('value').then((snapshot) => {
+					if(snapshot != null) {
+						this.dname = snapshot.child('name').val();
+						this.dmobile = snapshot.child('mobile').val();
+						this.dhouseno = snapshot.child('houseno').val();
+						this.dstreetname = snapshot.child('streetname').val();
+						this.dlandmark = snapshot.child('landmark').val();
+					}
+				});
+				  
 				  firebase.database().ref('/productsforselling/'+snapshot.child('orderedto').val()).once('value').then((snapshot) => {
 					if(snapshot != null) {
 						this.price = snapshot.child('price').val();
@@ -344,7 +349,8 @@ export class StockdetailPage implements OnInit {
 	  firebase.database().ref('/orders/'+this.index).update({
 		"currentstatus": this.productVisibility,
 		"modifieddate":new Date(),
-		"modifiedby":this.authService.getUserID()
+		"modifiedby":this.authService.getUserID(),
+		"assignedto" : this.productVisibility == 'DS' || (this.assignedto == this.authService.getUserID() && this.productVisibility != 'WFP') ? this.authService.getUserID() : ""
 	  }).then(
 	   res => 
 	   {

@@ -87,8 +87,8 @@ export class MycartPage implements OnInit {
     await alert.present();
   }
   
-  routeStockDetail(index,productcode){
-	  this.navController.navigateRoot('/stockdetail',{queryParams : {index : index, productcode : productcode, status : 'AC'}});
+  routeStockDetail(index,productcode,status){
+	  this.navController.navigateRoot('/stockdetail',{queryParams : {index : index, productcode : productcode, status : status}});
   }
   
   deleteThisItem(index) {

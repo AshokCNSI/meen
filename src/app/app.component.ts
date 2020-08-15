@@ -10,13 +10,14 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import * as firebase from 'firebase';
 import { AuthenticateService } from './authentication.service';
 import { NavController } from '@ionic/angular';
-import { Router } from '@angular/router';
 import { Network } from '@ionic-native/network/ngx';
 import {  MenuController } from '@ionic/angular';
+import { LocationserviceService } from './locationservice.service';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
+import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -42,7 +43,8 @@ export class AppComponent implements OnInit {
 	private menuCtrl : MenuController,
 	private geolocation: Geolocation,
 	private nativeGeocoder: NativeGeocoder,
-	private diagnostic: Diagnostic
+	private diagnostic: Diagnostic,
+	private locationService: LocationserviceService
   ) {
 	
     this.initializeApp();
@@ -83,6 +85,38 @@ export class AppComponent implements OnInit {
 	  }).catch(e => console.log(e));
 	// stop connect watch
 	//connectSubscription.unsubscribe();
+	
+	router.events.subscribe( (event: Event) => {
+		if (event instanceof NavigationStart) {
+			this.authService.userDetails().subscribe(res => { 
+				if (res !== null) {
+					this.authService.setUserName(res.email);
+					this.authService.setUserID(res.uid);
+					this.authService.setEmailID(res.email);
+					this.authService.setIsUserLoggedIn(true);
+					firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
+						if(snapshot != null) {
+							this.authService.setUserType(snapshot.child('usertype').val());  
+							this.authService.setUserName(snapshot.child('firstname').val()+" "+snapshot.child('lastname').val());
+						}
+					})
+				} else {
+					this.authService.setIsUserLoggedIn(false);
+				}
+			  }, err => {
+				  console.log('err', err);
+			 })
+		}
+
+		if (event instanceof NavigationEnd) {
+			console.log("Start");
+		}
+
+		if (event instanceof NavigationError) {
+			console.log(event.error);
+		}
+	});
+
   }
 
   initializeApp() {
@@ -114,12 +148,13 @@ export class AppComponent implements OnInit {
 	  this.authService.logoutUser()
       .then(res => {
         console.log(res);
-		this.authService.setUserID(null);
-		this.authService.setEmailID(null);
+		this.authService.setUserID("");
+		this.authService.setEmailID("");
 		this.authService.setIsUserLoggedIn(false);
-		this.authService.setUserType(null);  
-		this.authService.setUserName(null);  
-        this.navController.navigateBack('');
+		this.authService.setUserType("");  
+		this.authService.setUserName("");  
+        this.locationService.setCurrentLocationFn();
+		this.navController.navigateBack('');
       })
       .catch(error => {
         console.log(error);

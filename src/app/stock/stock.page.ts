@@ -33,6 +33,8 @@ isAdmin : boolean = false;
 searchInput : string;
 searchVal : string;
 productTempList = [];
+productstatus : string;
+productcode : string;
   ngOnInit() {
 	  this.activatedRoute.queryParams.subscribe(params => {
 		  this.productcode = params['productcode'];

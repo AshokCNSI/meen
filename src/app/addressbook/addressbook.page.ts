@@ -9,7 +9,7 @@ import * as firebase from 'firebase';
 import { filter } from 'rxjs/operators';
 import { RouterserviceService } from '../routerservice.service';
 import { AuthenticateService } from '../authentication.service';
-import { ModalController,NavParams  } from '@ionic/angular';
+import { ModalController  } from '@ionic/angular';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
@@ -18,12 +18,13 @@ import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 @Injectable({
   providedIn: 'root'
 })
+
 @Component({
-  selector: 'app-myaddress',
-  templateUrl: './myaddress.page.html',
-  styleUrls: ['./myaddress.page.scss'],
+  selector: 'app-addressbook',
+  templateUrl: './addressbook.page.html',
+  styleUrls: ['./addressbook.page.scss'],
 })
-export class MyaddressPage implements OnInit {
+export class AddressbookPage implements OnInit {
 
   constructor(
   public alertCtrl: AlertController, 
@@ -37,8 +38,7 @@ export class MyaddressPage implements OnInit {
   private geolocation: Geolocation,
   private nativeGeocoder: NativeGeocoder,
   private diagnostic: Diagnostic,
-  public modalController: ModalController,
-  private navParams: NavParams) { 
+  public modalController: ModalController) { 
   
   }
   
@@ -240,13 +240,20 @@ export class MyaddressPage implements OnInit {
     }
     return address.slice(0, -2);
   }
-  
-  dismissModal() {
-		this.modalController.dismiss();
-    }
 	
   selectAddress(addressindex):void {
-		this.modalController.dismiss(addressindex);
-  }
-
+		  firebase.database().ref('/profile/'+this.authService.getUserID()).update({
+			   "deliveryaddress" : addressindex.index,
+			   "modifieddate": Date(),
+			   "modifiedby":this.authService.getUserID()
+		  }).then(
+		   res => 
+		   {
+			   this.presentAlert('Success','Your default address has been updated.');
+			   this.navController.navigateRoot('/home');
+		   }
+		 ).catch(error => {
+			this.presentAlert('Error',error);
+		  });	
+	  }
 }
