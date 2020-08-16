@@ -35,7 +35,16 @@ export class MyassignmentsPage implements OnInit {
   }
 
   cartList = [];
-  ngOnInit() {				
+  statusList = [];
+  ngOnInit() {			
+		firebase.database().ref('/properties/status').once('value').then((snapshot) => {
+		  if(snapshot != null) {
+			  snapshot.forEach(item =>{
+				  let a = item.toJSON();
+				  this.statusList.push(a);
+			  })
+		  }
+	  });
 	  let getCartDetail = this.db.list('/orders', ref => ref.orderByChild('assignedto').equalTo(this.authService.getUserID()));
 	  getCartDetail.snapshotChanges().subscribe(res => { 
 		  if(res != null) {

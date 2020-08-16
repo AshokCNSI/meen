@@ -10,6 +10,7 @@ import * as firebase from 'firebase';
 import { filter } from 'rxjs/operators';
 import { RouterserviceService } from '../routerservice.service';
 import { AuthenticateService } from '../authentication.service';
+import { LoadingService } from '../loading.service';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,8 @@ export class MycartPage implements OnInit {
   private db: AngularFireDatabase,
   private activatedRoute: ActivatedRoute,
   private routerService: RouterserviceService,
-  private authService: AuthenticateService
+  private authService: AuthenticateService,
+  public loading: LoadingService
 ) { 
   
   }
@@ -40,7 +42,7 @@ export class MycartPage implements OnInit {
   cartList = [];
   ngOnInit() {
 	  this.isAdmin = this.authService.getIsAdmin();
-				
+	  this.loading.present();
 	  let getCartDetail = this.db.list('/orders', ref => ref.orderByChild('createdby').equalTo(this.authService.getUserID()));
 	  getCartDetail.snapshotChanges().subscribe(res => { 
 		  if(res != null) {
@@ -68,6 +70,7 @@ export class MycartPage implements OnInit {
 			  })
 		  }
 	});
+	this.loading.dismiss();
   }
   
   async presentAlert(status, msg) {

@@ -69,7 +69,7 @@
 				  <ion-radio slot="start" value="C" (ionSelect)="usertTypeSelect($event)"></ion-radio>
 				</ion-item>
 			</ion-col>
-			<ion-col>
+			<ion-col *ngIf="enableseller == 'Y'">
 				<ion-item>
 				  <ion-label>Seller</ion-label>
 				  <ion-radio slot="start" value="S" (ionSelect)="usertTypeSelect($event)"></ion-radio>

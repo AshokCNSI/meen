@@ -10,6 +10,7 @@ import * as firebase from 'firebase';
 import { filter } from 'rxjs/operators';
 import { RouterserviceService } from '../routerservice.service';
 import { AuthenticateService } from '../authentication.service';
+import { LoadingService } from '../loading.service';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,8 @@ export class OrdersPage implements OnInit {
   private db: AngularFireDatabase,
   private activatedRoute: ActivatedRoute,
   private routerService: RouterserviceService,
-  private authService: AuthenticateService
+  private authService: AuthenticateService,
+  public loading: LoadingService
 ) { 
   
   }
@@ -43,7 +45,7 @@ export class OrdersPage implements OnInit {
 	  if(this.authService.getUserType() == 'SA' || this.authService.getUserType() == 'A') {
 		  this.isAdmin = true;
 	  }
-	  
+	  this.loading.present();
 	  firebase.database().ref('/properties/status').once('value').then((snapshot) => {
 		  if(snapshot != null) {
 			  snapshot.forEach(item =>{
@@ -100,6 +102,7 @@ export class OrdersPage implements OnInit {
 
 		});
 	  }
+	   this.loading.dismiss();
   }
   
   async presentAlert(status, msg) {

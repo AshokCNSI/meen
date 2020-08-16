@@ -11,6 +11,7 @@ import { AlertController } from '@ionic/angular';
 import { AuthenticateService } from '../authentication.service';
 import { LocationserviceService } from '../locationservice.service';
 import { LoadingService } from '../loading.service';
+import { NoticePage } from '../notice/notice.page';
 
 import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
 import { NavController } from '@ionic/angular';
@@ -82,121 +83,47 @@ export class HomePage implements OnInit {
     });
     await alert.present();
   }
-  ngOnInit() {
-	  this.menuCtrl.enable(true);
-	  //this.presentPopover();
-		  //this.loading.present();
-		  if(this.authService.getUserType() == 'D') {
-			  this.db.list('/orders').snapshotChanges().subscribe(res => { 
-				  if(res != null) {
-					  this.productList = [];
-					  res.forEach(item => {
-						let a = item.payload.toJSON();
-						a['index'] = item.key;
-						firebase.database().ref('/productsforselling/'+a['orderedto']).once('value').then((snapshot) => {
-							if(snapshot != null) {
-								a['price'] = snapshot.child('price').val();
-								a['productcode'] = snapshot.child('productcode').val();
-								a['seller'] = snapshot.child('createdby').val();
-								firebase.database().ref('/profile/'+a['seller']).once('value').then((snapshot) => {
-									if(snapshot != null) {
-										let distance = this.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),snapshot.child('latitude').val(),snapshot.child('longitude').val());
-										a['distance'] = Math.round(distance * 100) / 100;
-										firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
-											if(snapshot != null) {
-												a['title'] = snapshot.child('title').val();
-												a['details'] = snapshot.child('details').val();
-												a['imagepath'] = snapshot.child('imagepath').val();
-												if(a['currentstatus'] == 'WFP') {
-													this.productList.push(a);
-												}
-											}
-										})
-									}
-								});
-							}
-						});
-						this.productTempList = this.productList;
-					  })
-				  }
-				  this.loading.dismiss();
-			});
-		} else if(this.authService.getUserType() == 'S') {
-			  firebase.database().ref('/productsforselling/').orderByChild('createdby').equalTo(this.authService.getUserID()).once('value').then((snapshot) => {
-				  this.productList = [];
-				  this.productTempList = [];
-				  snapshot.forEach(item => {
-					let a = item.toJSON();
-					a['index'] = item.key;
-					firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
-						a['title'] = snapshot.child('title').val();
-						a['imagepath'] = snapshot.child('imagepath').val();
-						a['details'] = snapshot.child('details').val();
-						if(a['available'] == 'Y') {
-							this.productList.push(a);
-						}
-					})
-					this.productTempList = this.productList;
-				  })
-				  this.loading.dismiss();
-			  });
-			} else {
-					this.db.list('/properties/products/').snapshotChanges().subscribe(res => {
-						this.productList = [];
-						this.productTempList = [];
-						res.forEach(item => {
-							let a = item.payload.toJSON();
-							firebase.database().ref('/productsforselling/').orderByChild('productcode').equalTo(a['productcode']).once('value').then((snapshot) => {
-								this.priceList = [];
-								snapshot.forEach(item => {
-									let b = item.toJSON();
-									if(b['available'] == 'Y') {
-										this.priceList.push(b['price']);
-									}
-								})
-								if(this.priceList.length > 0) {
-									a['price'] = Math.min.apply(Math, this.priceList);
-									this.productList.push(a);
-								}
-							})
-							this.productTempList = this.productList;
-						});
-					})
-					
-					this.db.list('/properties/products/').snapshotChanges().subscribe(res => {
-						this.discountList = [];
-						res.forEach(item => {
-							let a = item.payload.toJSON();
-							firebase.database().ref('/productsforselling/').orderByChild('productcode').equalTo(a['productcode']).once('value').then((snapshot) => {
-								this.discountPriceList = [];
-								snapshot.forEach(item => {
-									let b = item.toJSON();
-									if(b['discount'] == 'Y' && b['discountprice'] > 0) {
-										this.discountPriceList.push(b['discountprice']);
-									}
-								})
-								if(this.discountPriceList.length > 0) {
-									a['price'] = Math.max.apply(Math, this.discountPriceList);
-									this.discountList.push(a);
-								}
-							})
-						});
-					})
-				}  
-			
+  
+  async presentNoticePopover(title, message) {
+    const popover = await this.popoverController.create({
+      component: NoticePage,
+      cssClass: 'my-custom-class',
+	  componentProps:{title: title, desc: message},
+	  backdropDismiss: false
+    });
+    return await popover.present();
+  }
+  ngOnInit() {  
+	firebase.database().ref('/properties/prop').once('value').then((snapshot) => {
+		  if(snapshot != null) {
+			  if(snapshot.child('restrictapp').val() == 'Y') {
+				this.presentNoticePopover(snapshot.child('restrictapptitle').val(),snapshot.child('restrictappmsg').val());
+			  } else if(snapshot.child('updaterequired').val() == 'Y') {
+				  this.presentNoticePopover(snapshot.child('updaterequiredtitle').val(),snapshot.child('updaterequiredmsg').val());
+			  }
+		  }
+	  }).catch((error: any) => {
+			this.loading.dismiss();
+	  });
 	firebase.database().ref('/properties/fishcategory').once('value').then((snapshot) => {
+		  this.loading.present();
 		  this.fishcategortList = [];
 		  snapshot.forEach(item => {
 			let a = item.toJSON();
 			this.fishcategortList.push(a);
 		  })
-
-	  });
-  }
+		  this.loading.dismiss();
+	  }).catch((error: any) => {
+			this.loading.dismiss();
+		});
+}
   
   ionViewWillEnter() {
 	this.menuCtrl.enable(true);
+	this.loading.present();
 	this.locationService.setCurrentLocationFn();
+	this.loadData();
+	this.loading.dismiss();
   }
 
   onSlideChanged(e) {
@@ -246,22 +173,125 @@ export class HomePage implements OnInit {
 		});
 	}
   }
-  
-  getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
-	  var R = 6371; // Radius of the earth in km
-	  var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
-	  var dLon = this.deg2rad(lon2-lon1); 
-	  var a = 
-		Math.sin(dLat/2) * Math.sin(dLat/2) +
-		Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * 
-		Math.sin(dLon/2) * Math.sin(dLon/2)
-		; 
-	  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-	  var d = R * c; // Distance in km
-	  return d;
-	}
-
-	deg2rad(deg) {
-	  return deg * (Math.PI/180)
+	
+	loadData() {
+		this.menuCtrl.enable(true);
+		  if(this.authService.getUserType() == 'D') {
+			  firebase.database().ref('/orders/').once('value').then((snapshot) => { 
+				  if(snapshot != null) {
+					  this.productList = [];
+					  snapshot.forEach(item => {
+						let a = item.toJSON();
+						a['index'] = item.key;
+						firebase.database().ref('/productsforselling/'+a['orderedto']).once('value').then((snapshot) => {
+							if(snapshot != null) {
+								a['price'] = snapshot.child('price').val();
+								a['productcode'] = snapshot.child('productcode').val();
+								a['seller'] = snapshot.child('createdby').val();
+								firebase.database().ref('/profile/'+a['seller']).once('value').then((snapshot) => {
+									if(snapshot != null) {
+										let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),snapshot.child('latitude').val(),snapshot.child('longitude').val());
+										a['distance'] = Math.round(distance * 100) / 100;
+										firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
+											if(snapshot != null) {
+												a['title'] = snapshot.child('title').val();
+												a['details'] = snapshot.child('details').val();
+												a['imagepath'] = snapshot.child('imagepath').val();
+												if(a['currentstatus'] == 'WFP') {
+													this.productList.push(a);
+												}
+											}
+										}).catch((error: any) => {
+											
+										});
+									}
+								}).catch((error: any) => {
+									
+								});
+							}
+						}).catch((error: any) => {
+								
+							});
+						this.productTempList = this.productList;
+					  })
+				  }
+			}).catch((error: any) => {
+				
+			});
+		} else if(this.authService.getUserType() == 'S') {
+			  firebase.database().ref('/productsforselling/').orderByChild('createdby').equalTo(this.authService.getUserID()).once('value').then((snapshot) => {
+				  this.productList = [];
+				  this.productTempList = [];
+				  snapshot.forEach(item => {
+					let a = item.toJSON();
+					a['index'] = item.key;
+					firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
+						a['title'] = snapshot.child('title').val();
+						a['imagepath'] = snapshot.child('imagepath').val();
+						a['details'] = snapshot.child('details').val();
+						if(a['available'] == 'Y') {
+							this.productList.push(a);
+						}
+					}).catch((error: any) => {
+						
+					});
+					this.productTempList = this.productList;
+				  })
+			  }).catch((error: any) => {
+					
+				});
+			} else {
+					firebase.database().ref('/properties/products/').once('value').then((snapshot) => {
+						
+						this.productList = [];
+						this.productTempList = [];
+						snapshot.forEach(item => {
+							let a = item.toJSON();
+							firebase.database().ref('/productsforselling/').orderByChild('productcode').equalTo(a['productcode']).once('value').then((snapshot) => {
+								this.priceList = [];
+								snapshot.forEach(item => {
+									let b = item.toJSON();
+									if(b['available'] == 'Y') {
+										this.priceList.push(b['price']);
+									}
+								})
+								if(this.priceList.length > 0) {
+									a['price'] = Math.min.apply(Math, this.priceList);
+									this.productList.push(a);
+								}
+							}).catch((error: any) => {
+								
+							});
+							this.productTempList = this.productList;
+						});
+					}).catch((error: any) => {
+						
+					});
+					
+					firebase.database().ref('/properties/products/').once('value').then((snapshot) => {
+						this.discountList = [];
+						snapshot.forEach(item => {
+							let a = item.toJSON();
+							firebase.database().ref('/productsforselling/').orderByChild('productcode').equalTo(a['productcode']).once('value').then((snapshot) => {
+								this.discountPriceList = [];
+								snapshot.forEach(item => {
+									let b = item.toJSON();
+									if(b['discount'] == 'Y' && b['discountprice'] > 0) {
+										this.discountPriceList.push(b['discountprice']);
+									}
+								})
+								if(this.discountPriceList.length > 0) {
+									a['price'] = Math.max.apply(Math, this.discountPriceList);
+									this.discountList.push(a);
+								}
+							}).catch((error: any) => {
+								
+							});
+						});
+					}).catch((error: any) => {
+						
+					});
+				}  
+			
 	}
 }

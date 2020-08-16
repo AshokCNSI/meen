@@ -13,34 +13,6 @@
         "type": "C"
     },
     {
-        "title": "Profile",
-        "path": "/profile",
-        "icon": "people",
-        "order": 2,
-        "type": "CU"
-    },
-	{
-        "title": "Profile",
-        "path": "/profile",
-        "icon": "people",
-        "order": 2,
-        "type": "A"
-    },
-	{
-        "title": "Profile",
-        "path": "/profile",
-        "icon": "people",
-        "order": 2,
-        "type": "SA"
-    },
-	{
-        "title": "Profile",
-        "path": "/profile",
-        "icon": "people",
-        "order": 2,
-        "type": "D"
-    },
-    {
         "title": "User Management",
         "path": "/customers",
         "icon": "happy",

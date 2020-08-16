@@ -6,6 +6,7 @@ import { AuthenticateService } from '../authentication.service';
 import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
 import { NavController } from '@ionic/angular';
 import { LocationserviceService } from '../locationservice.service';
+import { LoadingService } from '../loading.service';
 
 @Component({
   selector: 'app-stock',
@@ -21,7 +22,8 @@ export class StockPage implements OnInit {
   private db: AngularFireDatabase,
   private navController: NavController,
   private router : ActivatedRoute,
-  private locationService: LocationserviceService
+  private locationService: LocationserviceService,
+  private loading : LoadingService
   ) { }
 @ViewChild('search') search : any;
 
@@ -37,6 +39,7 @@ productstatus : string;
 productcode : string;
   ngOnInit() {
 	  this.activatedRoute.queryParams.subscribe(params => {
+		  this.loading.present();
 		  this.productcode = params['productcode'];
 		  this.productstatus = params['productstatus'];
 		  this.categoryID = this.activatedRoute.snapshot.params['id'];  
@@ -48,27 +51,34 @@ productcode : string;
 						let b = item.toJSON();
 						let index = item.key;
 						if((this.productstatus == 'D') ? b['discount'] : b['available'] == 'Y') {
-							this.db.list('/properties/products/',ref => ref.orderByChild('productcode').equalTo(b['productcode'])).snapshotChanges().subscribe(res => {
-								res.forEach(item => {
-									let a = item.payload.toJSON();
+							firebase.database().ref('/properties/products/').orderByChild('productcode').equalTo(b['productcode']).once('value').then((snapshot) => {
+								snapshot.forEach(item => {
+									let a = item.toJSON();
 									a['index'] = index;
 									a['price'] = b['price'];
 									a['discount'] = b['discount'];
 									a['discountprice'] = b['discountprice'];
 									firebase.database().ref('/profile/'+b['createdby']).once('value').then((snapshot) => {
 										if(snapshot != null) {
-											let distance = this.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
+											let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
 															snapshot.child('latitude').val(),snapshot.child('longitude').val());
 											a['distance'] = Math.round(distance * 100) / 100;
 											this.stockList.push(a);
 										}
+									}).catch((error: any) => {
+										
 									});
 								});
-							})
+							}).catch((error: any) => {
+								
+							});
 						}
 					})
 					this.productTempList = this.stockList;
-				})
+					
+				}).catch((error: any) => {
+					
+				});
 		  } else if(this.categoryID == 0) {
 				firebase.database().ref('/productsforselling/').once('value').then((snapshot) => {
 				  this.stockList = [];
@@ -77,27 +87,34 @@ productcode : string;
 						let b = item.toJSON();
 						let index = item.key;
 						if(b['available'] == 'Y') {
-							this.db.list('/properties/products/',ref => ref.orderByChild('productcode').equalTo(b['productcode'])).snapshotChanges().subscribe(res => {
-								res.forEach(item => {
-									let a = item.payload.toJSON();
+							firebase.database().ref('/properties/products/').orderByChild('productcode').equalTo(b['productcode']).once('value').then((snapshot) => {
+								snapshot.forEach(item => {
+									let a = item.toJSON();
 									a['index'] = index;
 									a['price'] = b['price'];
 									a['discount'] = b['discount'];
 									a['discountprice'] = b['discountprice'];
 									firebase.database().ref('/profile/'+b['createdby']).once('value').then((snapshot) => {
 										if(snapshot != null) {
-											let distance = this.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
+											let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
 															snapshot.child('latitude').val(),snapshot.child('longitude').val());
 											a['distance'] = Math.round(distance * 100) / 100;
 											this.stockList.push(a);
 										}
+									}).catch((error: any) => {
+										
 									});
 								});
-							})
+							}).catch((error: any) => {
+								
+							});
 						}
 					})
 					this.productTempList = this.stockList;
-				})
+					
+				}).catch((error: any) => {
+					
+				});
 			  } else {
 				  firebase.database().ref('/productsforselling/').orderByChild('category').equalTo(this.categoryID).once('value').then((snapshot) => {
 				  this.stockList = [];
@@ -106,29 +123,36 @@ productcode : string;
 						let b = item.toJSON();
 						let index = item.key;
 						if(b['available'] == 'Y') {
-							this.db.list('/properties/products/',ref => ref.orderByChild('productcode').equalTo(b['productcode'])).snapshotChanges().subscribe(res => {
-								res.forEach(item => {
-									let a = item.payload.toJSON();
+							firebase.database().ref('/properties/products/').orderByChild('productcode').equalTo(b['productcode']).once('value').then((snapshot) => {
+								snapshot.forEach(item => {
+									let a = item.toJSON();
 									a['index'] = index;
 									a['price'] = b['price'];
 									a['discount'] = b['discount'];
 									a['discountprice'] = b['discountprice'];
 									firebase.database().ref('/profile/'+b['createdby']).once('value').then((snapshot) => {
 										if(snapshot != null) {
-											let distance = this.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
+											let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
 															snapshot.child('latitude').val(),snapshot.child('longitude').val());
 											a['distance'] = Math.round(distance * 100) / 100;
 											this.stockList.push(a);
 										}
+									}).catch((error: any) => {
+										
 									});
 								});
+							}).catch((error: any) => {
+								
 							});
-							
 						}
 					})
 					this.productTempList = this.stockList;
-				})
+					
+				}).catch((error: any) => {
+					
+				});
 			  }
+			  this.loading.dismiss();
 		});	  
 	  
 	if(this.authService.getUserType() == 'SA' || this.authService.getUserType() == 'A') {
@@ -163,23 +187,5 @@ productcode : string;
   routeProductDetail(index) {
 	  this.navController.navigateRoot('/stockdetail',{queryParams : {index : index, status : 'R'}});
   }
-  
-  getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
-	  var R = 6371; // Radius of the earth in km
-	  var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
-	  var dLon = this.deg2rad(lon2-lon1); 
-	  var a = 
-		Math.sin(dLat/2) * Math.sin(dLat/2) +
-		Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * 
-		Math.sin(dLon/2) * Math.sin(dLon/2)
-		; 
-	  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-	  var d = R * c; // Distance in km
-	  return d;
-	}
-
-	deg2rad(deg) {
-	  return deg * (Math.PI/180)
-	}
 
 }

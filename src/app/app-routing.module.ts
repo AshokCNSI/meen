@@ -105,6 +105,14 @@ const routes: Routes = [
   {
     path: 'contact',
     loadChildren: () => import('./contact/contact.module').then( m => m.ContactPageModule)
+  },
+  {
+    path: 'aboutme',
+    loadChildren: () => import('./aboutme/aboutme.module').then( m => m.AboutmePageModule)
+  },
+  {
+    path: 'notice',
+    loadChildren: () => import('./notice/notice.module').then( m => m.NoticePageModule)
   }
 
 ];

@@ -13,6 +13,7 @@ import { NavController } from '@ionic/angular';
 import { Network } from '@ionic-native/network/ngx';
 import {  MenuController } from '@ionic/angular';
 import { LocationserviceService } from './locationservice.service';
+import { LoadingService } from './loading.service';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
@@ -44,7 +45,8 @@ export class AppComponent implements OnInit {
 	private geolocation: Geolocation,
 	private nativeGeocoder: NativeGeocoder,
 	private diagnostic: Diagnostic,
-	private locationService: LocationserviceService
+	private locationService: LocationserviceService,
+	private loading : LoadingService
   ) {
 	
     this.initializeApp();
@@ -88,6 +90,7 @@ export class AppComponent implements OnInit {
 	
 	router.events.subscribe( (event: Event) => {
 		if (event instanceof NavigationStart) {
+			this.loading.dismiss();
 			this.authService.userDetails().subscribe(res => { 
 				if (res !== null) {
 					this.authService.setUserName(res.email);
@@ -144,20 +147,8 @@ export class AppComponent implements OnInit {
 	});
   }
   
-  logout() {
-	  this.authService.logoutUser()
-      .then(res => {
-        console.log(res);
-		this.authService.setUserID("");
-		this.authService.setEmailID("");
-		this.authService.setIsUserLoggedIn(false);
-		this.authService.setUserType("");  
-		this.authService.setUserName("");  
-        this.locationService.setCurrentLocationFn();
-		this.navController.navigateBack('');
-      })
-      .catch(error => {
-        console.log(error);
-      })
-  }
+  openAboutMe() {
+	  this.menuCtrl.toggle();
+	  this.navController.navigateRoot('/aboutme');
+	}
 }

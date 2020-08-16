@@ -14,6 +14,7 @@ import { LocationserviceService } from '../locationservice.service';
 import { ModalController } from '@ionic/angular';
 import { MyaddressPage } from '../myaddress/myaddress.page';
 import { Location } from '@angular/common';
+import { LoadingService } from '../loading.service';
 
 import { prop } from '../../environments/environment';
 
@@ -41,7 +42,8 @@ export class StockdetailPage implements OnInit {
   private authService: AuthenticateService,
   private locationService: LocationserviceService,
   public modalController: ModalController,
-  public location : Location
+  public location : Location,
+  public loading: LoadingService
 ) { 
   
   }
@@ -143,7 +145,7 @@ export class StockdetailPage implements OnInit {
   }
   
   ngOnInit() {
-	  
+	  this.loading.present();
 	  firebase.database().ref('/properties/status').once('value').then((snapshot) => {
 		  if(snapshot != null) {
 			  snapshot.forEach(item =>{
@@ -235,7 +237,8 @@ export class StockdetailPage implements OnInit {
 						})
 					}
 				});
-		  }  
+		  }
+	 this.loading.dismiss();
   }
   
   formData = this.formBuilder.group({
@@ -284,7 +287,8 @@ export class StockdetailPage implements OnInit {
 	  this.isSubmitted = true;
 	  if (!this.orderData.valid) {
 		return false;
-	  } else {		
+	  } else {
+		this.loading.present();		  
 		firebase.database().ref('/orders').push({
 			"productcode": this.productcode,
 			"quantity": this.orderData.value.quantity,
@@ -307,6 +311,7 @@ export class StockdetailPage implements OnInit {
 	 } else {
 		 this.presentAlert('Login','We are advising you to Login to make sure all the transactions are safe with us.');
 	 }
+	 this.loading.dismiss();
   }
   
   orderConfirm() {
@@ -314,7 +319,8 @@ export class StockdetailPage implements OnInit {
 	  this.isSubmitted = true;
 	  if (!this.orderData.valid) {
 		return false;
-	  } else {		 
+	  } else {
+		this.loading.present();			  
 		firebase.database().ref('/orders/'+this.index).update({
 			"productcode": this.productcode,
 			"quantity": this.orderData.value.quantity,
@@ -343,9 +349,11 @@ export class StockdetailPage implements OnInit {
 	  } else {
 		  this.presentAlert('Profile','We are advising you to update profile to make sure all the transactions are safe with us.');
 	  }
+	  this.loading.dismiss();	
   }
   
   updateStatus() {
+	  this.loading.present();	
 	  firebase.database().ref('/orders/'+this.index).update({
 		"currentstatus": this.productVisibility,
 		"modifieddate":new Date(),
@@ -357,9 +365,11 @@ export class StockdetailPage implements OnInit {
 		   this.presentAlert('Status','Status updated successfully.');
 	   }
 	 )
+	 this.loading.dismiss();	
   }
   
   cancelOrder() {
+	  this.loading.present();	
 	  firebase.database().ref('/orders/'+this.index).update({
 		"currentstatus": 'CL',
 		"modifieddate":new Date(),
@@ -378,6 +388,7 @@ export class StockdetailPage implements OnInit {
 		   this.presentAlert('Status','Order cancelled successfully.');
 	   }
 	 )
+	 this.loading.dismiss();	
   }
   selectAddress() {
 	this.presentModal();

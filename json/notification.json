@@ -1,0 +1,62 @@
+{
+    "JEt36lLxFySoIF8ZSxrZQSjYIGt1" : {
+      "district" : "Erode",
+      "firstname" : "Ashok",
+      "lastname" : "Kumar",
+      "mobilenumber" : "9942570269",
+      "pincode" : 638002,
+      "state" : "TN",
+      "street1" : "22, Kothukara, st, Kollampalaym",
+      "street2" : "",
+      "usertype" : "SA",
+	  "createddate": "Tue May 26 2020 16:42:04 GMT+0530 (India Standard Time)",
+	  "createdby":"JEt36lLxFySoIF8ZSxrZQSjYIGt1",
+	  "modifieddate": "Tue May 26 2020 16:42:04 GMT+0530 (India Standard Time)",
+	  "modifiedby": "JEt36lLxFySoIF8ZSxrZQSjYIGt1"
+    },
+    "OuBxfufZM2hTZj1bXPPlek786wt2" : {
+      "district" : "Erode",
+      "firstname" : "Customer",
+      "lastname" : "Services",
+      "mobilenumber" : "9942570269",
+      "pincode" : 638002,
+      "state" : "TN",
+      "street1" : "22, Kothukara, st, Kollampalaym",
+      "street2" : "",
+      "usertype" : "C",
+	  "createddate": "Tue May 26 2020 16:42:04 GMT+0530 (India Standard Time)",
+	  "createdby":"OuBxfufZM2hTZj1bXPPlek786wt2",
+	  "modifieddate": "Tue May 26 2020 16:42:04 GMT+0530 (India Standard Time)",
+	  "modifiedby": "OuBxfufZM2hTZj1bXPPlek786wt2"
+    },
+    "WCecdC8CBFP8g4BKPn76SoeAfC12" : {
+      "district" : "No District",
+      "firstname" : "Muthu",
+      "lastname" : "Selvan",
+      "mobilenumber" : "9791222937",
+      "pincode" : 0,
+      "state" : "No state",
+      "street1" : "No Street",
+      "street2" : "",
+      "usertype" : "S",
+	  "createddate": "Tue May 26 2020 16:42:04 GMT+0530 (India Standard Time)",
+	  "createdby":"WCecdC8CBFP8g4BKPn76SoeAfC12",
+	  "modifieddate": "Tue May 26 2020 16:42:04 GMT+0530 (India Standard Time)",
+	  "modifiedby": "WCecdC8CBFP8g4BKPn76SoeAfC12"
+    },
+    "MbcwN8BSWuRXMoCTVIgvrY0eArH3" : {
+      "district" : "Erode",
+      "firstname" : "Seller",
+      "lastname" : "Client",
+      "mobilenumber" : "9994552259",
+      "pincode" : 638002,
+      "state" : "Tn",
+      "street1" : "22A, Kothukara st, Kollamapalaym",
+      "street2" : "",
+      "usertype" : "A",
+	  "createddate": "Tue May 26 2020 16:42:04 GMT+0530 (India Standard Time)",
+	  "createdby":"MbcwN8BSWuRXMoCTVIgvrY0eArH3",
+	  "modifieddate": "Tue May 26 2020 16:42:04 GMT+0530 (India Standard Time)",
+	  "modifiedby": "MbcwN8BSWuRXMoCTVIgvrY0eArH3"
+    }
+  }

@@ -106,12 +106,12 @@ export class AddressbookPage implements OnInit {
 	  //this.latitude = "11.3172443";
 	  //this.longitude = "77.7355966";
 	  //this.address = "Erode";
-	  if(!this.name || !this.mobile || !this.houseno || !this.streetname || !this.landmark || !this.latitude || !this.longitude || this.mobile.length != 10) {
+	  if(!this.name || !this.mobile || !this.houseno || !this.streetname || !this.landmark || !this.latitude || !this.longitude || this.mobile.toString().length != 10) {
 		  if(!this.latitude || !this.longitude) {
 			  this.presentAlert('Error','Please choose the location.');
 		  } else if(!this.mobile) {
 			  this.presentAlert('Error','Please give Contact Number.');
-		  } else if(this.mobile.length != 10) {
+		  } else if(this.mobile.toString().length != 10) {
 			  this.presentAlert('Error','Contact Number is invalid.');
 		  } else {
 			  this.presentAlert('Error','Please fill all the required fields.');

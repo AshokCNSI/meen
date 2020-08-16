@@ -80,7 +80,14 @@
   ],
   "prop": {
     "delieverycharge": 20,
-    "masalacharge": 20
+    "masalacharge": 20,
+	"enableseller" : "Y",
+	"restrictapp" : "N",
+	"restrictapptitle" : "Dear Customer",
+	"restrictappmsg" : "You cannot use this app due to insufficient access.",
+	"updaterequired" : "N",
+	"updaterequiredtitle" : "Dear Customer",
+	"updaterequiredmsg" : "Due to server activity, our application will be down for next 24 hrs. Sorry for the inconvinience caused."
   },
   "fishcategory": [
     {
