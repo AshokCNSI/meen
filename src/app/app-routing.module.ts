@@ -113,6 +113,10 @@ const routes: Routes = [
   {
     path: 'notice',
     loadChildren: () => import('./notice/notice.module').then( m => m.NoticePageModule)
+  },
+  {
+    path: 'locationsearch',
+    loadChildren: () => import('./locationsearch/locationsearch.module').then( m => m.LocationsearchPageModule)
   }
 
 ];

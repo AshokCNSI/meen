@@ -1,9 +1,35 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>discounts</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-
+<ion-content fullscreen> 
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="loadMap()" ion-fab color="tertiary">
+      <ion-icon name="locate-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <ion-fab vertical="top" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="goBack()">
+      <ion-icon name="chevron-back-circle-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <div class="map-wrapper" style="height: 100%;">      
+    <div id="map_center">
+      <ion-icon name="pin" size="large" color="danger"></ion-icon>      
+    </div>
+    <div #map id="map"  style="height: 100%;"></div>
+  </div>   
 </ion-content>
+<ion-footer>
+	<ion-item>
+	  <ion-button slot="start">
+		<ion-icon name="navigate-circle-outline"></ion-icon>
+	  </ion-button>
+	  <ion-card-title>{{address}}</ion-card-title>
+	  <ion-button slot="end" (click)="openAddressBar()">
+		change
+	  </ion-button>
+	</ion-item>
+	<ion-item>
+	<ion-card-subtitle>Card Title</ion-card-subtitle>
+	</ion-item>
+	<ion-toolbar>
+		<ion-button expand="block" fill="outline" (click)="confirmMyLocation()">Confirm my location</ion-button>
+	</ion-toolbar>
+</ion-footer>

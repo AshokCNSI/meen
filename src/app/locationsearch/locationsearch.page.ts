@@ -7,12 +7,11 @@ import { ModalController } from '@ionic/angular';
 declare var google;
 
 @Component({
-  selector: 'app-locationpopover',
-  templateUrl: './locationpopover.component.html',
-  styleUrls: ['./locationpopover.component.scss'],
+  selector: 'app-locationsearch',
+  templateUrl: './locationsearch.page.html',
+  styleUrls: ['./locationsearch.page.scss'],
 })
-
-export class LocationpopoverComponent implements OnInit {
+export class LocationsearchPage implements OnInit {
   
   @ViewChild('map',  {static: false}) mapElement: ElementRef;
   map: any;
@@ -34,6 +33,8 @@ export class LocationpopoverComponent implements OnInit {
 	public modalController: ModalController
   ) {
     this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
+	
+	
     this.autocomplete = { input: '' };
     this.autocompleteItems = [];
   }
@@ -54,6 +55,7 @@ export class LocationpopoverComponent implements OnInit {
       this.autocompleteItems = [];
       return;
     }
+	
     this.GoogleAutocomplete.getPlacePredictions({ input: event.srcElement.value },
     (predictions, status) => {
       this.autocompleteItems = [];
@@ -67,10 +69,9 @@ export class LocationpopoverComponent implements OnInit {
   }
   
   //wE CALL THIS FROM EACH ITEM.
-  SelectSearchResult(item) {
+  SelectSearchResult(item: any):void {
     ///WE CAN CONFIGURE MORE COMPLEX FUNCTIONS SUCH AS UPLOAD DATA TO FIRESTORE OR LINK IT TO SOMETHING
-    alert(JSON.stringify(item))      
-    this.placeid = item.place_id
+    this.modalController.dismiss(item);
   }
   
   
@@ -83,6 +84,10 @@ export class LocationpopoverComponent implements OnInit {
 
   goBack() {
 	  this.locationR.back();
+  }
+  
+  onCancel() {
+	  this.modalController.dismiss();
   }
  
 }

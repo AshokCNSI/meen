@@ -12,6 +12,13 @@
         "order": 8,
         "type": "C"
     },
+	{
+        "title": "Map",
+        "path": "/discounts",
+        "icon": "information",
+        "order": 8,
+        "type": "C"
+    },
     {
         "title": "User Management",
         "path": "/customers",
