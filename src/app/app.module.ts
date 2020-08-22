@@ -28,6 +28,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // environment
 import { environment } from '../environments/environment';
+import { StarRatingModule } from 'ionic5-star-rating';
 
 @NgModule({
   declarations: [AppComponent],
@@ -40,7 +41,8 @@ import { environment } from '../environments/environment';
     AngularFireAuthModule,
     AngularFireDatabaseModule,
     AngularFireStorageModule,
-	BrowserAnimationsModule
+	BrowserAnimationsModule,
+	StarRatingModule
   ],
   providers: [
     StatusBar,

@@ -14,12 +14,12 @@ import {  MenuController } from '@ionic/angular';
 declare var google;
 
 @Component({
-  selector: 'app-discounts',
-  templateUrl: './discounts.page.html',
-  styleUrls: ['./discounts.page.scss'],
+  selector: 'app-locationassigner',
+  templateUrl: './locationassigner.page.html',
+  styleUrls: ['./locationassigner.page.scss'],
 })
 
-export class DiscountsPage implements OnInit {
+export class LocationassignerPage implements OnInit {
   
   @ViewChild('map',  {static: false}) mapElement: ElementRef;
   map: any;

@@ -73,7 +73,7 @@ export class StockdetailPage implements OnInit {
   stock :number;
   isAdmin : boolean = false;
   masala : string;
-  quantity : number;
+  quantity : number = 1;
   cookingpurpose : string;
   description : string;
   orderDetailS = {};
@@ -108,6 +108,7 @@ export class StockdetailPage implements OnInit {
   dlandmark : string;
   statusList = [];
   assignedto : string;
+  masalaquantity : number = 0;
   async presentModal() {
     const modal = await this.modalController.create({
       component: MyaddressPage,
@@ -251,6 +252,7 @@ export class StockdetailPage implements OnInit {
 	   quantity: ['', [Validators.required]],
 	   cookingpurpose: ['', [Validators.required]],
 	   masala: ['', [Validators.required]],
+	   masalaquantity : ['', [Validators.required]],
 	   description: ['', [Validators.required]]
 	});
 	
@@ -392,6 +394,34 @@ export class StockdetailPage implements OnInit {
   }
   selectAddress() {
 	this.presentModal();
+  }
+  
+  addNumber() {
+	  if((this.quantity - 1) >= 10)
+		  this.quantity = 10;
+	  else
+		this.quantity = this.quantity + 1;
+  }
+  
+  removeNumber() {
+	  if((this.quantity - 1) <= 1)
+		  this.quantity = 1;
+	  else
+		this.quantity = this.quantity - 1;
+  }
+  
+  addMasalaQuantity() {
+	  if((this.masalaquantity - 1) >= 10)
+		  this.masalaquantity = 10;
+	  else
+		this.masalaquantity = this.masalaquantity + 1;
+  }
+  
+  removeMasalaQuantity() {
+	  if((this.masalaquantity - 1) <= 0)
+		  this.masalaquantity = 0;
+	  else
+		this.masalaquantity = this.masalaquantity - 1;
   }
 
 }

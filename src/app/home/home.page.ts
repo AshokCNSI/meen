@@ -29,9 +29,9 @@ import { IonSlides } from '@ionic/angular';
   styleUrls: ['./home.page.scss'],
   animations: [
     trigger('visibilityChanged', [
-      state('shown', style({ opacity: 1 })),
-      state('hidden', style({ opacity: 0 })),
-      transition('* => *', animate('500ms'))
+      state('shown', style({ display: 'block' })),
+      state('hidden', style({ display: 'none' })),
+      transition('* => *', animate('150ms ease-in'))
     ])
   ]
 })
@@ -55,7 +55,34 @@ export class HomePage implements OnInit {
   priceList = [];
   discountPriceList = [];
   visibility: string = 'shown';
+  productvisibility: string = 'hidden';
   fishcategortList = [];
+  instBanner = [];
+  sliderOne: any;
+  sliderTwo: any;
+  sliderThree: any;
+  
+  //Configuration for each Slider
+  slideOptsOne = {
+    initialSlide: 0,
+    slidesPerView: 3,
+    autoplay: false,
+	spaceBetween: 10 
+  };
+  
+  slideOptsTwo = {
+    initialSlide: 0,
+    slidesPerView: 1.1,
+    autoplay: false,
+	spaceBetween: 5 
+  };
+  
+  slideOptsThree = {
+    initialSlide: 0,
+    slidesPerView: 1,
+    autoplay: false,
+	spaceBetween: 5 
+  };
   constructor(
   public alertCtrl: AlertController,
   public modalController: ModalController,
@@ -93,7 +120,34 @@ export class HomePage implements OnInit {
     });
     return await popover.present();
   }
-  ngOnInit() {  
+  ngOnInit() { 
+	this.authService.userDetails().subscribe(res => { 
+		if (res !== null) {
+			this.authService.setUserName(res.email);
+			this.authService.setUserID(res.uid);
+			this.authService.setEmailID(res.email);
+			this.authService.setIsUserLoggedIn(true);
+			firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
+				if(snapshot != null) {
+					this.authService.setUserType(snapshot.child('usertype').val());  
+					this.authService.setUserName(snapshot.child('firstname').val()+" "+snapshot.child('lastname').val());
+					this.loading.present();
+					this.locationService.setCurrentLocationFn();
+					this.loadData();
+					this.loading.dismiss();
+				}
+			})
+		} else {
+			this.authService.setIsUserLoggedIn(false);
+			this.loading.present();
+			this.locationService.setCurrentLocationFn();
+			this.loadData();
+			this.loading.dismiss();
+		}
+	  }, err => {
+		  console.log('err', err);
+	 })
+	 
 	firebase.database().ref('/properties/prop').once('value').then((snapshot) => {
 		  if(snapshot != null) {
 			  if(snapshot.child('restrictapp').val() == 'Y') {
@@ -116,14 +170,22 @@ export class HomePage implements OnInit {
 	  }).catch((error: any) => {
 			this.loading.dismiss();
 		});
+		
+	firebase.database().ref('/properties/instbanner').once('value').then((snapshot) => {
+		  this.loading.present();
+		  this.instBanner = [];
+		  snapshot.forEach(item => {
+			let a = item.toJSON();
+			this.instBanner.push(a);
+		  })
+		  this.loading.dismiss();
+	  }).catch((error: any) => {
+			this.loading.dismiss();
+		});
 }
   
   ionViewWillEnter() {
 	this.menuCtrl.enable(true);
-	this.loading.present();
-	this.locationService.setCurrentLocationFn();
-	this.loadData();
-	this.loading.dismiss();
   }
 
   onSlideChanged(e) {
@@ -163,11 +225,14 @@ export class HomePage implements OnInit {
   }
   
   filterProductList(event) {
-	this.visibility = 'hidden';
 	if(event.srcElement.value == null || event.srcElement.value == '') {
 		this.productList = this.productTempList;
+		this.visibility = 'shown';
+		this.productvisibility = 'hidden';
 	} else {
 		this.productList = this.productTempList;
+		this.visibility = 'hidden';
+		this.productvisibility = 'shown';
 		this.productList = this.productList.filter(function(val) {
 			return val.title.toLowerCase().indexOf((event.srcElement.value).toLowerCase()) > -1;
 		});
@@ -183,16 +248,16 @@ export class HomePage implements OnInit {
 					  snapshot.forEach(item => {
 						let a = item.toJSON();
 						a['index'] = item.key;
-						firebase.database().ref('/productsforselling/'+a['orderedto']).once('value').then((snapshot) => {
+						 firebase.database().ref('/productsforselling/'+a['orderedto']).once('value').then((snapshot) => {
 							if(snapshot != null) {
 								a['price'] = snapshot.child('price').val();
 								a['productcode'] = snapshot.child('productcode').val();
 								a['seller'] = snapshot.child('createdby').val();
-								firebase.database().ref('/profile/'+a['seller']).once('value').then((snapshot) => {
+								 firebase.database().ref('/profile/'+a['seller']).once('value').then((snapshot) => {
 									if(snapshot != null) {
 										let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),snapshot.child('latitude').val(),snapshot.child('longitude').val());
 										a['distance'] = Math.round(distance * 100) / 100;
-										firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
+										 firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
 											if(snapshot != null) {
 												a['title'] = snapshot.child('title').val();
 												a['details'] = snapshot.child('details').val();
@@ -293,5 +358,10 @@ export class HomePage implements OnInit {
 					});
 				}  
 			
+	}
+	
+	hideContent() {
+		this.visibility = 'hidden';
+		this.productvisibility = 'shown';
 	}
 }

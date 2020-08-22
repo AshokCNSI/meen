@@ -47,12 +47,23 @@
 		<ion-card *ngFor="let p of stockList; let i = index;" (click)="routeProductDetail(p.index)">
 			<img alt="M" class="center" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
 			<ion-card-header>
-			  <ion-card-subtitle>{{p.title}}</ion-card-subtitle>
+			  <ion-card-subtitle><b>{{p.title}}</b></ion-card-subtitle>
 			  <ion-card-title>&#x20b9; {{p.price}}</ion-card-title>
+			  <ionic5-star-rating #rating
+				activeIcon = "star"
+				defaultIcon = "star-outline"
+				activeColor = "#488aff" 
+				defaultColor = "#488aff"
+				readonly="true"
+				rating="3"
+				fontSize = "15px"
+				(ratingChanged)="logRatingChange($event)">
+			</ionic5-star-rating>
 			</ion-card-header>
-			<ion-card-content style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+			<italic style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
 			  {{p.details}}
-			</ion-card-content>
+			</italic>
+			
 			<ion-card-header>
 			  <ion-card-subtitle>Product available Within <b>{{p.distance}}</b> km</ion-card-subtitle>
 			  <ion-card-subtitle *ngIf="p.discount == 'Y' && p.discountprice > 0">Offer available upto &#x20b9; {{p.discountprice}}</ion-card-subtitle>

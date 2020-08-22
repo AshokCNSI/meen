@@ -48,6 +48,7 @@
     "cordova-support-google-services": "^1.4.1",
     "cordova.plugins.diagnostic": "^6.0.2",
     "firebase": "^7.14.5",
+    "ionic5-star-rating": "https://github.com/JeongJun-Lee/ionic5-star-rating/tarball/master",
     "rxjs": "~6.5.1",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"

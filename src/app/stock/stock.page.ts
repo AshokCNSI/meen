@@ -187,5 +187,10 @@ productcode : string;
   routeProductDetail(index) {
 	  this.navController.navigateRoot('/stockdetail',{queryParams : {index : index, status : 'R'}});
   }
+  
+   logRatingChange(rating){
+        console.log("changed rating: ",rating);
+        // do your stuff
+    }
 
 }

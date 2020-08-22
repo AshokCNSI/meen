@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content>
-<ion-searchbar #search animated debounce="500"
+<!-- <ion-searchbar #search animated debounce="500"
     (keyup)="filtermap($event)" [value]="searchVal" placeholder="Search Address"></ion-searchbar>
 	<ion-card>
 		<ion-item>
@@ -39,23 +39,18 @@
 <ion-item>
   <ion-label position="floating">Landmark<span>*</span></ion-label>
   <ion-input type="text" [(ngModel)]="landmark"></ion-input>
-</ion-item>
-<ion-row>
-  <ion-col style="text-align:center;">
-	 <ion-button expand="block" (click)="addAddress()">Add Address</ion-button>
-  </ion-col>
-</ion-row>
+</ion-item> -->
+
 <ng-container *ngIf="addressList.length > 0">
 <ion-list>
   <ion-radio-group [(ngModel)]="customeraddress">
   <ion-item-sliding *ngFor="let p of addressList;" (click)="selectAddress(p)">
   <ion-item>
 	<ion-card-header>
-		  <ion-card-title>Name : {{p.name}}</ion-card-title>
-		  <ion-card-title>Mobile : {{p.mobile}}</ion-card-title>
-		  <ion-card-title>{{p.houseno}}</ion-card-title>
-		  <ion-card-subtitle>{{p.streetname}}</ion-card-subtitle>
-		  <ion-card-subtitle>{{p.landmark}}</ion-card-subtitle>
+		  <ion-card-title>{{p.name}}</ion-card-title>
+		  <ion-card-subtitle>{{p.mobile}}</ion-card-subtitle>
+		  <ion-card-subtitle>{{p.houseno}}, {{p.streetname}}, {{p.landmark}}</ion-card-subtitle>
+		  
 	</ion-card-header>
       <ion-radio slot="start" value="{{p.index}}"></ion-radio>
     </ion-item>
@@ -72,4 +67,9 @@
 <ng-container *ngIf="addressList.length == 0">
 	<p class="no-items">No address available</p>
 </ng-container>
+<ion-row>
+  <ion-col style="text-align:center;">
+	 <ion-button expand="block" [routerLink]="['/addaddress']">Add Address</ion-button>
+  </ion-col>
+</ion-row>
 </ion-content>

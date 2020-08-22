@@ -90,25 +90,7 @@ export class AppComponent implements OnInit {
 	
 	router.events.subscribe( (event: Event) => {
 		if (event instanceof NavigationStart) {
-			this.loading.dismiss();
-			this.authService.userDetails().subscribe(res => { 
-				if (res !== null) {
-					this.authService.setUserName(res.email);
-					this.authService.setUserID(res.uid);
-					this.authService.setEmailID(res.email);
-					this.authService.setIsUserLoggedIn(true);
-					firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
-						if(snapshot != null) {
-							this.authService.setUserType(snapshot.child('usertype').val());  
-							this.authService.setUserName(snapshot.child('firstname').val()+" "+snapshot.child('lastname').val());
-						}
-					})
-				} else {
-					this.authService.setIsUserLoggedIn(false);
-				}
-			  }, err => {
-				  console.log('err', err);
-			 })
+			
 		}
 
 		if (event instanceof NavigationEnd) {

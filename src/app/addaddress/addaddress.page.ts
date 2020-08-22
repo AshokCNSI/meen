@@ -14,12 +14,11 @@ import {  MenuController } from '@ionic/angular';
 declare var google;
 
 @Component({
-  selector: 'app-discounts',
-  templateUrl: './discounts.page.html',
-  styleUrls: ['./discounts.page.scss'],
+  selector: 'app-addaddress',
+  templateUrl: './addaddress.page.html',
+  styleUrls: ['./addaddress.page.scss'],
 })
-
-export class DiscountsPage implements OnInit {
+export class AddaddressPage implements OnInit {
   
   @ViewChild('map',  {static: false}) mapElement: ElementRef;
   map: any;
@@ -36,6 +35,14 @@ export class DiscountsPage implements OnInit {
   current_lat : string = "";
   current_long : string = "";
   isHidden : boolean = false;
+  name : string;
+  mobile : string;
+  houseno : string;
+  streetname : string;
+  landmark : string;
+  latitude : string;
+  longitude : string;
+  customeraddress : string;
   
   constructor(
     private geolocation: Geolocation,
@@ -283,30 +290,62 @@ export class DiscountsPage implements OnInit {
 	  if(this.current_lat != undefined && this.current_lat != "" 
 		&& this.current_long != undefined && this.current_long != ""
 		&& this.current_location != undefined && this.current_location != "") {
-			if(this.authService.getUserID() != null && this.authService.getUserID() != undefined && this.authService.getUserID() != "") {
-				firebase.database().ref('/profile/'+this.authService.getUserID()).update({
-				   "latitude" : this.current_lat,
-				   "longitude" : this.current_long,
-				   "lastlocation" : this.current_location,
-				   "modifieddate": Date(),
-				   "modifiedby":this.authService.getUserID()
+			
+			if(!this.name || !this.mobile || !this.houseno || !this.streetname || !this.landmark || !this.latitude || !this.longitude || this.mobile.toString().length != 10) {
+			  if(!this.mobile) {
+				  this.presentAlert('Error','Please give Contact Number.');
+			  } else if(this.mobile.toString().length != 10) {
+				  this.presentAlert('Error','Contact Number is invalid.');
+			  } else {
+				  this.presentAlert('Error','Please fill all the required fields.');
+			  }
+		  } else {
+			  firebase.database().ref('/addressbook/').push({
+					"name" : this.name,
+					"mobile" : this.mobile,
+					"houseno" : this.houseno,
+					"streetname" : this.streetname,
+					"landmark" : this.landmark,
+					"latitude" : this.latitude,
+					"longitude" : this.longitude,
+					"address" : this.address,
+					"createddate" : Date(),
+					"createdby":this.authService.getUserID(),
+					"modifieddate": Date(),
+					"modifiedby":this.authService.getUserID()
 			  }).then(
 			   res => 
 			   {
-				    this.locationService.setLatitude(this.current_lat);
-					this.locationService.setLongitude(this.current_long);
-					this.locationService.setCurrentLocation(this.current_location);
-					this.navController.navigateRoot('/home');
+				   firebase.database().ref('/profile/'+this.authService.getUserID()).update({
+					   "latitude" : this.current_lat,
+					   "longitude" : this.current_long,
+					   "lastlocation" : this.current_location,
+					   "modifieddate": Date(),
+					   "modifiedby":this.authService.getUserID()
+				  }).then(
+				   res => 
+				   {
+						this.locationService.setLatitude(this.current_lat);
+						this.locationService.setLongitude(this.current_long);
+						this.locationService.setCurrentLocation(this.current_location);
+						this.navController.navigateRoot('/addressbook');
+				   }
+				 ).catch(error => {
+					this.presentAlert('Error',error);
+				  });	
+				   this.presentAlert('Success','Your address has been successfully added');
+				   this.name = '';
+				   this.mobile = '';
+				   this.houseno = '';
+				   this.streetname = '';
+				   this.landmark = '';
+				   this.latitude = '';
+				   this.longitude = '';
+				   this.address = '';
 			   }
-			 ).catch(error => {
-				this.presentAlert('Error',error);
-			  });	
-		} else {
-			this.locationService.setLatitude(this.current_lat);
-			this.locationService.setLongitude(this.current_long);
-			this.locationService.setCurrentLocation(this.current_location);
-			this.navController.navigateRoot('/home');
-		}
+			 ).catch(res => console.log(res))
+		  }
+
 	} else {
 		this.presentAlert('Error','No address found');
 	}

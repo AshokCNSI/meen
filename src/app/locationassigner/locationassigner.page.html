@@ -18,16 +18,14 @@
 </ion-content>
 <ion-footer>
 	<ion-item>
-	  <ion-button slot="start">
-		<ion-icon name="navigate-circle-outline"></ion-icon>
-	  </ion-button>
-	  <ion-card-subtitle><b>{{addressA ? addressA[0] : "No Address Found"}}</b></ion-card-subtitle>
+	  <ion-icon slot="start" name="navigate-circle-outline"></ion-icon>
+	  <ion-card-subtitle>Select Delivery Location</ion-card-subtitle>
 	  <ion-button slot="end" (click)="openAddressBar()">
 		change
 	  </ion-button>
 	</ion-item>
 	<ion-item>
-	<ion-card-subtitle>{{addressA ? addressA.toString() : "No Address Found"}}</ion-card-subtitle>
+	<ion-card-title>{{addressA ? addressA.toString() : "No Address Found"}}</ion-card-title>
 	</ion-item>
 	<ion-toolbar>
 		<ion-button expand="block" fill="outline" (click)="confirmMyLocation()">Confirm my location</ion-button>

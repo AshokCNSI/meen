@@ -25,41 +25,78 @@
       "code": "FI"
     }
   ],
+  "instbanner": [
+    {
+      "title": "Best Safety Standrads",
+      "desc": "What our fishing stores to keep the product clean and fresh.",
+      "icon": "thumbs-up-outline",
+	  "color": "burlywood",
+      "bgcolor": "beige"
+    },
+	{
+      "title": "Delivery Officer Safety",
+      "desc": "Measures which we are following to make riders safely.",
+      "icon": "boat-outline",
+      "color": "#2eb0e8",
+	  "bgcolor": "#d1edf9"
+    },
+	{
+      "title": "No Contact Delivery",
+      "desc": "Your orders will be drop off your door step.",
+      "icon": "hand-right-outline",
+      "color": "#9e9e9efc",
+	  "bgcolor": "#9e9e9e3b"
+    }
+  ],
   "status": [
     {
       "name": "Ordered",
       "code": "ORD",
-      "buffer": "0.2"
+      "buffer": "0.2",
+      "icon": "pizza-outline",
+      "color": "black"
     },
     {
       "name": "In Progress",
       "code": "INP",
-      "buffer": "0.3"
+      "buffer": "0.3",
+      "icon": "file-tray-full-outline",
+      "color": "black"
     },
     {
       "name": "Waiting for pickup",
       "code": "WFP",
-      "buffer": "0.4"
+      "buffer": "0.4",
+      "icon": "rocket-outline",
+      "color": "black"
     },
     {
       "name": "Delivery assigned",
       "code": "DS",
-      "buffer": "0.6"
+      "buffer": "0.6",
+      "icon": "man-outline",
+      "color": "black"
     },
     {
       "name": "Item picked for Delivery",
       "code": "IPD",
-      "buffer": "0.7"
+      "buffer": "0.7",
+      "icon": "fast-food-outline",
+      "color": "black"
     },
     {
       "name": "Delievered",
       "code": "DE",
-      "buffer": "1"
+      "buffer": "1",
+      "icon": "basket-outline",
+      "color": "green"
     },
     {
       "name": "Cancel Order",
       "code": "CL",
-      "buffer": "1"
+      "buffer": "1",
+      "icon": "trash-bin-outline",
+      "color": "red"
     }
   ],
   "terms": [
@@ -81,13 +118,13 @@
   "prop": {
     "delieverycharge": 20,
     "masalacharge": 20,
-	"enableseller" : "Y",
-	"restrictapp" : "N",
-	"restrictapptitle" : "Dear Customer",
-	"restrictappmsg" : "You cannot use this app due to insufficient access.",
-	"updaterequired" : "N",
-	"updaterequiredtitle" : "Dear Customer",
-	"updaterequiredmsg" : "Due to server activity, our application will be down for next 24 hrs. Sorry for the inconvinience caused."
+    "enableseller": "Y",
+    "restrictapp": "N",
+    "restrictapptitle": "Dear Customer",
+    "restrictappmsg": "You cannot use this app due to insufficient access.",
+    "updaterequired": "N",
+    "updaterequiredtitle": "Dear Customer",
+    "updaterequiredmsg": "Due to server activity, our application will be down for next 24 hrs. Sorry for the inconvinience caused."
   },
   "fishcategory": [
     {

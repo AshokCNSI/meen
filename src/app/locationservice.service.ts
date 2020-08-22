@@ -60,7 +60,7 @@ export class LocationserviceService {
 					if(snapshot.child('latitude').val() == null 
 						|| snapshot.child('latitude').val() == undefined 
 						|| snapshot.child('latitude').val() == "") {
-						this.navController.navigateRoot('/locationmap');
+						this.navController.navigateRoot('/locationassigner');
 					} else {
 						this.setLatitude(snapshot.child('latitude').val());
 						this.setLongitude(snapshot.child('longitude').val());

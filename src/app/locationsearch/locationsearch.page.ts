@@ -61,7 +61,6 @@ export class LocationsearchPage implements OnInit {
       this.autocompleteItems = [];
       this.zone.run(() => {
         predictions.forEach((prediction) => {
-			console.log(prediction)
           this.autocompleteItems.push(prediction);
         });
       });

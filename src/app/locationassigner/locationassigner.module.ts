@@ -4,20 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { StockPageRoutingModule } from './stock-routing.module';
+import { LocationassignerPageRoutingModule } from './locationassigner-routing.module';
 
-import { StockPage } from './stock.page';
-import { StarRatingModule } from 'ionic5-star-rating';
-
+import { LocationassignerPage } from './locationassigner.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    StockPageRoutingModule,
-	StarRatingModule
+    LocationassignerPageRoutingModule
   ],
-  declarations: [StockPage]
+  declarations: [LocationassignerPage]
 })
-export class StockPageModule {}
+export class LocationassignerPageModule {}

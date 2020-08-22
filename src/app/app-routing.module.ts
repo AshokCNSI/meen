@@ -117,6 +117,14 @@ const routes: Routes = [
   {
     path: 'locationsearch',
     loadChildren: () => import('./locationsearch/locationsearch.module').then( m => m.LocationsearchPageModule)
+  },
+  {
+    path: 'locationassigner',
+    loadChildren: () => import('./locationassigner/locationassigner.module').then( m => m.LocationassignerPageModule)
+  },
+  {
+    path: 'addaddress',
+    loadChildren: () => import('./addaddress/addaddress.module').then( m => m.AddaddressPageModule)
   }
 
 ];

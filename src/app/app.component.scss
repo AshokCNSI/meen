@@ -1,3 +1,5 @@
+@import '../theme/fonts';
+
 ion-menu ion-content {
   --background: var(--ion-item-background, var(--ion-background-color, #fff));
 }
@@ -116,4 +118,19 @@ ion-note {
 
 ion-item.selected {
   --color: var(--ion-color-primary);
+}
+
+* {
+font-family : Roboto Light;
+}
+
+.menu-header-bg {
+	height: 150px;
+}
+
+.menu-item {
+	ion-item {
+		margin-left: 26px;
+		padding: 7px;
+	}
 }

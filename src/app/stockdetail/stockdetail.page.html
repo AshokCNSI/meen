@@ -22,6 +22,16 @@
 	<ion-card-header>
 	  <ion-card-subtitle>{{title}}</ion-card-subtitle>
 	  <ion-card-title>&#x20b9; {{price}}</ion-card-title>
+	  <ionic5-star-rating #rating
+		activeIcon = "star"
+		defaultIcon = "star-outline"
+		activeColor = "#488aff" 
+		defaultColor = "#488aff"
+		readonly="true"
+		rating="3"
+		fontSize = "15px"
+		(ratingChanged)="logRatingChange($event)">
+	</ionic5-star-rating>
 	</ion-card-header>
 	<ion-card-content>
 	  {{details}}
@@ -88,6 +98,12 @@
 		<ion-item>
 		  <ion-label position="floating">How much you need in Kg?</ion-label>
 		  <ion-input type="number" formControlName="quantity" [(ngModel)]="quantity" required disabled="{{ordervisibility}}"></ion-input>
+		  <ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" slot="end" (click)="removeNumber()">
+			<ion-icon name="remove-circle-outline"></ion-icon>
+		  </ion-buttons>
+		  <ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" slot="end" (click)="addNumber()">
+			<ion-icon name="add-circle-outline"></ion-icon>
+		  </ion-buttons>
 		</ion-item>
 		<ion-item>
 		  <ion-label>Purpose</ion-label>
@@ -106,6 +122,16 @@
 			<ion-select-option value="Y">Yes</ion-select-option>
 			<ion-select-option value="N">No</ion-select-option>
 		  </ion-select>
+		</ion-item>
+		<ion-item *ngIf="masala == 'Y'">
+		  <ion-label position="floating">Masala Quantity</ion-label>
+		  <ion-input type="number" formControlName="masalaquantity" [(ngModel)]="masalaquantity" required disabled="{{ordervisibility}}"></ion-input>
+		  <ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" slot="end" (click)="removeMasalaQuantity()">
+			<ion-icon name="remove-circle-outline"></ion-icon>
+		  </ion-buttons>
+		  <ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" slot="end" (click)="addMasalaQuantity()">
+			<ion-icon name="add-circle-outline"></ion-icon>
+		  </ion-buttons>
 		</ion-item>
 		<ion-item>
 		  <ion-label position="floating">Any Description</ion-label>
