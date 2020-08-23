@@ -48,6 +48,8 @@ export class ProfilePage implements OnInit {
   spinnerShow = false;
   usertype : string;
   rolename : string;
+  stateList = [];
+  locationList = [];
   
   async presentAlert(status, msg) {
     const alert = await this.alertCtrl.create({
