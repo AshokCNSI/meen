@@ -1,0 +1,29 @@
+<ion-header translucent [hidden]="isHidden">
+  <ion-toolbar>
+	<ion-buttons slot="start">
+		<ion-back-button defaultHref="home"></ion-back-button>
+	</ion-buttons>
+    <ion-title>Location</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<ion-searchbar #search animated debounce="500"
+    (keyup)="filtermap($event)" [value]="searchVal" placeholder="Search Address"></ion-searchbar>
+	<ion-card>
+		<ion-item>
+			<ion-icon name="map" slot="start"></ion-icon>
+			<ion-label>My Location</ion-label>
+			<ion-button fill="outline" slot="end" (click)="locateMe()">Locate me</ion-button>
+		</ion-item>
+		<ion-card-content>
+			{{current_location}}
+		</ion-card-content>
+	</ion-card>
+
+	<ion-row>
+	  <ion-col style="text-align:center;">
+		 <ion-button (click)="updateMyLocation()">Update my location</ion-button>
+	  </ion-col>
+   </ion-row>
+</ion-content>

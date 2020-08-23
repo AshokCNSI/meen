@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-		<ion-back-button defaultHref="/home"></ion-back-button>
+		<ion-back-button defaultHref="home"></ion-back-button>
 	</ion-buttons>
     <ion-title>User Management</ion-title>
 	<ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" [routerLink]="['/register']" *ngIf="authService.getUserType() == 'SA'">

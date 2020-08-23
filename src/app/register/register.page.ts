@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import * as firebase from 'firebase';
 import { AuthenticateService } from '../authentication.service';
 import {  MenuController } from '@ionic/angular';
+import { LoadingService } from '../loading.service';
 
 @Injectable({
   providedIn: 'root'
@@ -29,19 +30,32 @@ export class RegisterPage implements OnInit {
   public formBuilder: FormBuilder, 
   private navController: NavController, 
   private router: Router,
-  private menuCtrl : MenuController) { }
+  private menuCtrl : MenuController,
+  public loading: LoadingService) { }
 
+  enableseller : string;
   ngOnInit() {
 	this.usertype = "C";
 	this.menuCtrl.enable(false);
 	firebase.database().ref('/properties/States').orderByChild('state_name').once('value').then((snapshot) => {
+		this.loading.present();
 		  this.stateList = [];
 		  snapshot.forEach(item => {
 			let a = item.toJSON();
 			this.stateList.push(a);
 		  })
-
-	  });
+		  this.loading.dismiss();
+	  }).catch((error: any) => {
+		this.loading.dismiss();
+	});
+	
+	firebase.database().ref('/properties/prop').once('value').then((snapshot) => {
+		this.loading.present();
+		this.enableseller = snapshot.child('enableseller').val();
+		  this.loading.dismiss();
+	  }).catch((error: any) => {
+		this.loading.dismiss();
+	});
   }
   
   ionViewWillLeave() {
@@ -56,7 +70,6 @@ export class RegisterPage implements OnInit {
   usertype : string;
   firstname: string; 
   lastname : string;
-  shopname : string;
   mobilenumber : number;
   street1 : string;
   street2 : string = "";
@@ -88,7 +101,6 @@ export class RegisterPage implements OnInit {
 	   password: ['', [Validators.required, Validators.minLength(8)]],
 	   firstname: ['', [Validators.required]],
 	   lastname: ['', [Validators.required]],
-	   shopname: ['', []],
 	   usertype: ['', [Validators.required]],
 	   mobilenumber: ['', Validators.compose([Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern('^[0-9]+$')])],
 	   street1: ['', [Validators.required]],
@@ -123,10 +135,10 @@ export class RegisterPage implements OnInit {
   }
   
   profileCreation(uid) {
+	this.loading.present();
     firebase.database().ref('/profile/'+uid).set({
 	   firstname: this.formData.value.firstname,
 	   lastname: this.formData.value.lastname,
-	   shopname: this.formData.value.shopname,
 	   usertype: this.usertype,
 	   mobilenumber: this.formData.value.mobilenumber,
 	   street1: this.formData.value.street1,
@@ -142,7 +154,6 @@ export class RegisterPage implements OnInit {
 	 .then(
 	   res => 
 	   {
-		   this.spinnerShow = false;
 		   this.authService.setUserName(this.formData.value.firstname+" "+this.formData.value.lastname);	
 		   this.authService.userDetails().subscribe(res => { 
 			  if (res !== null) {
@@ -157,14 +168,17 @@ export class RegisterPage implements OnInit {
 			  } else {
 				 this.authService.setIsUserLoggedIn(false); 
 			  }
+			  this.loading.dismiss();
 			}, err => {
 			  console.log('err', err);
+			  this.loading.dismiss();
 			})
+			this.loading.dismiss();
 		   this.presentAlert('Success','Congrats, User successfully created.');
 	   },
 	   err => {
-		   this.spinnerShow = false;
 		   this.presentAlert('Error',err);
+		   this.loading.dismiss();
 	   }
 	 )
   }
@@ -173,12 +187,14 @@ export class RegisterPage implements OnInit {
 	  this.state = $event.target.value;
 	  firebase.database().ref('/properties/location/'+this.state).once('value').then((snapshot) => {
 		  this.locationList = [];
+		  this.loading.present();
 		  snapshot.forEach(item => {
 			let a = item.toJSON();
 			if(a['available'] == true) {
 				this.locationList.push(a);
 			}
 		  })
+		  this.loading.dismiss();
 	  });
   }
 	

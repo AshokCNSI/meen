@@ -9,6 +9,7 @@ import { NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AuthenticateService } from '../authentication.service';
 import {  MenuController } from '@ionic/angular';
+import { LoadingService } from '../loading.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,8 @@ export class LoginPage implements OnInit {
   private navController: NavController, 
   private router: Router, 
   private authService: AuthenticateService,
-  private menuCtrl : MenuController) { }
+  private menuCtrl : MenuController,
+  public loading: LoadingService) { }
 
   ngOnInit() {
 	  this.menuCtrl.enable(false);
@@ -64,11 +66,35 @@ export class LoginPage implements OnInit {
 	  if (!this.formData.valid) {
 		return false;
 	  } else {
-		  
+		this.loading.present();
 		this.authService.loginUser(this.formData.value.email, this.formData.value.password)
 		  .then(res => {
-			this.navController.navigateRoot('/home');
+			this.loading.dismiss();
+			if (res !== null) {
+				this.authService.userDetails().subscribe(res => { 
+				if (res !== null) {
+					this.authService.setUserName(res.email);
+					this.authService.setUserID(res.uid);
+					this.authService.setEmailID(res.email);
+					this.authService.setIsUserLoggedIn(true);
+					firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
+						if(snapshot != null) {
+							this.authService.setUserType(snapshot.child('usertype').val());  
+							this.authService.setUserName(snapshot.child('firstname').val()+" "+snapshot.child('lastname').val());
+							this.navController.navigateRoot('/home');
+						}
+					}).catch((error: any) => {
+						this.loading.dismiss();
+					});
+				} else {
+					this.authService.setIsUserLoggedIn(false);
+				}
+			  }, err => {
+				  console.log('err', err);
+			 })
+			}
 		  }, error => {
+			this.loading.dismiss();
 			this.presentAlert('Error',error.message);
 		  })
 	  }

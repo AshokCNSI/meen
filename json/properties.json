@@ -25,26 +25,127 @@
       "code": "FI"
     }
   ],
+  "instbanner": [
+    {
+      "title": "Best Safety Standrads",
+      "desc": "What our fishing stores to keep the product clean and fresh.",
+      "icon": "thumbs-up-outline",
+	  "color": "burlywood",
+      "bgcolor": "beige"
+    },
+	{
+      "title": "Delivery Officer Safety",
+      "desc": "Measures which we are following to make riders safely.",
+      "icon": "boat-outline",
+      "color": "#2eb0e8",
+	  "bgcolor": "#d1edf9"
+    },
+	{
+      "title": "No Contact Delivery",
+      "desc": "Your orders will be drop off your door step.",
+      "icon": "hand-right-outline",
+      "color": "#9e9e9efc",
+	  "bgcolor": "#9e9e9e3b"
+    }
+  ],
+  "status": [
+    {
+      "name": "Ordered",
+      "code": "ORD",
+      "buffer": "0.2",
+      "icon": "pizza-outline",
+      "color": "black"
+    },
+    {
+      "name": "In Progress",
+      "code": "INP",
+      "buffer": "0.3",
+      "icon": "file-tray-full-outline",
+      "color": "black"
+    },
+    {
+      "name": "Waiting for pickup",
+      "code": "WFP",
+      "buffer": "0.4",
+      "icon": "rocket-outline",
+      "color": "black"
+    },
+    {
+      "name": "Delivery assigned",
+      "code": "DS",
+      "buffer": "0.6",
+      "icon": "man-outline",
+      "color": "black"
+    },
+    {
+      "name": "Item picked for Delivery",
+      "code": "IPD",
+      "buffer": "0.7",
+      "icon": "fast-food-outline",
+      "color": "black"
+    },
+    {
+      "name": "Delievered",
+      "code": "DE",
+      "buffer": "1",
+      "icon": "basket-outline",
+      "color": "green"
+    },
+    {
+      "name": "Cancel Order",
+      "code": "CL",
+      "buffer": "1",
+      "icon": "trash-bin-outline",
+      "color": "red"
+    }
+  ],
+  "terms": [
+    {
+      "title": "Important Clauses for Your Ecommerce Terms and Conditions",
+      "description": "Every Terms and Conditions agreement is unique. The specific terms you include depend on your unique business needs and practices. However, there are some clauses that you can expect to find in every Terms and Conditions agreement if it's going to do its job properly. Let's look at these recommended clauses and see why they're so important for ecommerce store owners to incorporate into their own agreements."
+    },
+    {
+      "title": "The Introductory Clause",
+      "description": "There's no point in having a Terms and Conditions agreement if no one knows who it applies to. Create a short introductory clause to outline who the agreement is between, what the agreement actually is, and when it's triggered.Ecommerce website Etsy has a great example of an introductory clause. It spells out exactly who the consumer has an agreement with - it varies depending on the consumer's physical location. The agreement is triggered if the consumer uses any Etsy service, even if they're just browsing the site."
+    }
+  ],
+  "contact": [
+    {
+      "title": "Customer Service",
+      "description": "Thanks for choosing the Meen application. We will give you the best and satisfy the needs of your taste. If any enquiry or feedback, please post comments in the your queries which is there in help section."
+    }
+  ],
   "prop": {
-    "deliverycharge": 20,
-    "masalacharge": 20
+    "delieverycharge": 20,
+    "masalacharge": 20,
+    "enableseller": "Y",
+    "restrictapp": "N",
+    "restrictapptitle": "Dear Customer",
+    "restrictappmsg": "You cannot use this app due to insufficient access.",
+    "updaterequired": "N",
+    "updaterequiredtitle": "Dear Customer",
+    "updaterequiredmsg": "Due to server activity, our application will be down for next 24 hrs. Sorry for the inconvinience caused."
   },
   "fishcategory": [
     {
       "name": "Fresh Fish",
-      "code": "CF"
+      "code": "CF",
+      "imagepath": "assets/icon/fish_icons/fresh-water.png"
     },
     {
       "name": "Sea Fish",
-      "code": "SF"
+      "code": "SF",
+      "imagepath": "assets/icon/fish_icons/sea-food.png"
     },
     {
       "name": "Prawns",
-      "code": "PR"
+      "code": "PR",
+      "imagepath": "assets/icon/fish_icons/prawn.png"
     },
     {
       "name": "Crabs",
-      "code": "CR"
+      "code": "CR",
+      "imagepath": "assets/icon/fish_icons/crab.png"
     }
   ],
   "location": {
@@ -70,7 +171,7 @@
         "available": false
       }
     ],
-	"AN": [
+    "AN": [
       {
         "location_name": "Guntoor",
         "location_code": "GU",
@@ -89,10 +190,152 @@
       "state_code": "TN",
       "available": true
     },
-	{
+    {
       "state_name": "Andhra",
       "state_code": "AN",
       "available": true
     }
-  ]
+  ],
+  "products": {
+    "10000": {
+      "details": "The rohu is a large, silver-colored fish of typical cyprinid shape, with a conspicuously arched head. Adults can reach a maximum weight of 45 kg (99 lb) and maximum length of 2 m (6.6 ft).",
+      "imagepath": "https://image.shutterstock.com/image-photo/popular-rohu-rohit-fish-indian-260nw-418790131.jpg",
+      "productcode": "10000",
+      "title": "Roghu",
+      "category": "CF"
+    },
+    "10001": {
+      "details": "Catla is a fish with large and broad head, a large protruding lower jaw, and upturned mouth. It has large, greyish scales on its dorsal side and whitish on its belly. It reaches up to 182 cm (6.0 ft) in length and 38.6 kg (85 lb) in weight.",
+      "imagepath": "https://5.imimg.com/data5/OD/GC/MY-13824843/pond-catla-fish-seed-500x500.jpg",
+      "productcode": "10001",
+      "title": "Katla",
+      "category": "CF"
+    },
+    "10002": {
+      "details": "Red pomfret/Pacu is a freshwater species of fish that is native to South America. . It is now a common species that can be caught mainly in private ponds. ... They are also an excellent food fish. It is one of fresh water cheap fish, with huge quantity farmed whole round year.",
+      "imagepath": "https://laziiz.in/wp-content/uploads/2019/12/Roopchand-Maach-Steaks-468x277.png",
+      "productcode": "10002",
+      "title": "Ruba",
+      "category": "CF"
+    },
+    "10003": {
+      "details": "The mrigal carp (Cirrhinus cirrhosus), also known as the white carp, is a species of ray-finned fish in the carp family. Native to streams and rivers in India, the only surviving wild population is in the Cauvery River.",
+      "imagepath": "https://bsagricomplex.com/wp-content/uploads/2019/06/5571idea99mrigala.png",
+      "productcode": "10003",
+      "title": "mirugal",
+      "category": "CF"
+    },
+    "10004": {
+      "details": "Tamil name of Original Sea bass fish is Koduva fish. Bhetki is the bengali name . Seabass fish is available throughout the eastern and western coasts of India. Because of it's excellent taste it is preferred for the tasty fish curry preparation and the fillets can be consumed by all age groups of people .",
+      "imagepath": "https://img1.exportersindia.com/product_images/bc-full/dir_176/5271123/mirgal-fish-1508751376-3410943.jpeg",
+      "productcode": "10004",
+      "title": "Dam koduva",
+      "category": "CF"
+    },
+    "10005": {
+      "details": "Basa (Pangasius bocourti) is a species of catfish in the family Pangasiidae. Basa are native to the Mekong and Chao Phraya basins in Mainland Southeast Asia.[2] These fish are important food fish with an international market.",
+      "imagepath": "https://www.forbesindia.com/fbimages/900x600/proportional/jpeg/media/images/2011/Mar/topimg_12142_basa_fish.jpg",
+      "productcode": "10005",
+      "title": "Baasha fish",
+      "category": "CF"
+    },
+    "10006": {
+      "details": "Tilapia is an inexpensive, mild-flavored fish. It is the fourth most commonly consumed type of seafood in the United States. Many people love tilapia because it is relatively affordable and doesn�t taste very fishy.",
+      "imagepath": "https://4.imimg.com/data4/MF/FF/MY-26293601/blue-tilapia-fish-500x500.jpg",
+      "productcode": "10006",
+      "title": "Tilaphia",
+      "category": "CF"
+    },
+    "10007": {
+      "details": "The goldfish (Carassius auratus) is a freshwater fish in the family Cyprinidae of order Cypriniformes. It is one of the most commonly kept aquarium fish.",
+      "imagepath": "https://5.imimg.com/data5/MH/UN/MY-2/grass-carp-fish-500x500.jpg",
+      "productcode": "10007",
+      "title": "Gold fish",
+      "category": "CF"
+    },
+    "10008": {
+      "details": "Channa striata, the striped snakehead, is a species of snakehead fish. It is also known as the common snakehead, chevron snakehead, or snakehead murrel and generally referred simply as mudfish.",
+      "imagepath": "https://horticare.co.in/images/murrel-fish.png",
+      "productcode": "10008",
+      "title": "Avuri fish",
+      "category": "CF"
+    },
+    "20000": {
+      "details": "They are pelagic fish, fast swimmers and predatory in nature, that fight vigorously when caught. ... In Tamil Nadu and Andhra Pradesh, this fish is called Vanjaram and is usually the costliest variety available.",
+      "imagepath": "https://glimageurl.golocall.com/golocal-post/image/507618_fusionplus_1503898788.jpeg",
+      "productcode": "20000",
+      "title": "Vanjaram",
+      "category": "SF"
+    },
+    "20001": {
+      "details": "Pomfrets are perciform fish belonging to the family Bramidae. The family currently includes 20 species across 7 genera.[1] Several species are important food sources for humans, especially Brama brama in the South Asia.",
+      "imagepath": "https://5.imimg.com/data5/PE/TD/MY-32766656/selection_012-500x500.png",
+      "productcode": "20001",
+      "title": "Vaaval",
+      "category": "SF"
+    },
+    "20003": {
+      "details": "Emperor fish ( Vilai Meen ) is most popular in Kanya Kumari and Tuticorin districts and most parts of Tamilnadu . People prefer this fish over Seer fish.",
+      "imagepath": "https://img3.exportersindia.com/product_images/bc-full/dir_113/3376718/emperor-fish-1909446.jpg",
+      "productcode": "20003",
+      "title": "Vilai Meen",
+      "category": "SF"
+    },
+    "20004": {
+      "details": "Sankara Fish Red Snapper. Red snapper is a low-calorie, lean source of protein that is rich in selenium, vitamin A, potassium and omega-3 fatty acids.",
+      "imagepath": "https://4.imimg.com/data4/VQ/DT/GLADMIN-24454577/14-500x500.jpg",
+      "productcode": "20004",
+      "title": "Sankaran",
+      "category": "SF"
+    },
+    "20005": {
+      "details": "A barracuda is a large, predatory ray-finned fish known for its fearsome appearance and ferocious behaviour. ",
+      "imagepath": "https://freshcatch.ae/wp-content/uploads/2020/01/barracuda.png",
+      "productcode": "20005",
+      "title": "Seela Meen",
+      "category": "SF"
+    },
+    "20006": {
+      "details": "The yellowstripe scad (Selaroides leptolepis), also known as the yellowstripe trevally, yellow-banded trevally, smooth-tailed trevally, slender-scaled trevally and slender trevally, is a species of small inshore fish in the jack and horse mackerel family Carangidae, and the only member of the genus Selaroides.",
+      "imagepath": "https://www.bigbasket.com/media/uploads/p/l/700102712_1-antony-fish-shop-fish-thenga-paarai-coconut-trevally.jpg",
+      "productcode": "20006",
+      "title": "Paarai Meen",
+      "category": "SF"
+    },
+    "20007": {
+      "details": "Indian Mackerel Small / Ayilai / Kumla whole. Mullets are rich in protein and omega3 . It has the most delicate flesh . They can be fried or poached .",
+      "imagepath": "https://alchetron.com/cdn/indian-mackerel-8feface3-0957-4e3b-b63a-f761391b9b0-resize-750.jpeg",
+      "productcode": "20007",
+      "title": "Ayilai Meen",
+      "category": "SF"
+    },
+    "20008": {
+      "details": "Sardine and pilchard are common names used to refer to various small, oily forage fish in the herring family Clupeidae. The term sardine was first used in English during the early 15th century and may come from the Mediterranean island of Sardinia, around which sardines were once abundant.",
+      "imagepath": "https://laziiz.in/wp-content/uploads/2019/05/mathi.jpg",
+      "productcode": "20008",
+      "title": "Mathi Meen",
+      "category": "SF"
+    },
+    "20009": {
+      "details": "Sharks are a group of elasmobranch fish characterized by a cartilaginous skeleton, five to seven gill slits on the sides of the head, and pectoral fins that are not fused to the head.",
+      "imagepath": "https://static.turbosquid.com/Preview/2016/03/02__05_07_40/MilkSharky3dmodel02.jpga7ac84a8-dc66-4719-ad4b-62c0a0f9a763Original.jpg",
+      "productcode": "20009",
+      "title": "Sura Meen",
+      "category": "SF"
+    },
+    "30000": {
+      "details": "Rich in vitamins and minerals, crab meat is also low in fat and contains Omega-3 polyunsaturated acids. Helps provide protection from heart disease and aids brain development. Some research suggests that Omega-3 also inhibits aggressive behaviour.",
+      "imagepath": "https://5.imimg.com/data5/GS/CP/MY-38391435/three-spotted-crab-500x500.jpg",
+      "productcode": "30000",
+      "title": "Indian Crab",
+      "category": "CR"
+    },
+    "40000": {
+      "details": "Prawn is a common name for small aquatic crustaceans with an exoskeleton and ten legs some of which can be eaten.",
+      "imagepath": "https://www.kindpng.com/picc/m/118-1186436_picture-of-vannamei-prawn-shrimp-png-transparent-png.png",
+      "productcode": "40000",
+      "title": "Indian Prawn",
+      "category": "PR"
+    }
+  }
 }

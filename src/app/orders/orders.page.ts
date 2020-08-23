@@ -10,6 +10,7 @@ import * as firebase from 'firebase';
 import { filter } from 'rxjs/operators';
 import { RouterserviceService } from '../routerservice.service';
 import { AuthenticateService } from '../authentication.service';
+import { LoadingService } from '../loading.service';
 
 @Injectable({
   providedIn: 'root'
@@ -30,34 +31,52 @@ export class OrdersPage implements OnInit {
   private db: AngularFireDatabase,
   private activatedRoute: ActivatedRoute,
   private routerService: RouterserviceService,
-  private authService: AuthenticateService
+  private authService: AuthenticateService,
+  public loading: LoadingService
 ) { 
   
   }
   
   orderRef: AngularFireObject<any>;
   orderList = [];
+  statusList = [];
   isAdmin : boolean = false;
   ngOnInit() {
 	  if(this.authService.getUserType() == 'SA' || this.authService.getUserType() == 'A') {
 		  this.isAdmin = true;
 	  }
-	  if(this.isAdmin) {
-		  this.db.list('/orders').snapshotChanges().subscribe(res => { 
+	  this.loading.present();
+	  firebase.database().ref('/properties/status').once('value').then((snapshot) => {
+		  if(snapshot != null) {
+			  snapshot.forEach(item =>{
+				  let a = item.toJSON();
+				  this.statusList.push(a);
+			  })
+		  }
+	  });
+	  
+	  if(this.authService.getUserType() == 'S') {
+		  this.db.list('/orders', ref => ref.orderByChild('seller').equalTo(this.authService.getUserID())).snapshotChanges().subscribe(res => { 
 			  if(res != null) {
 				  this.orderList = [];
 				  res.forEach(item => {
 					let a = item.payload.toJSON();
 					a['index'] = item.key;
-					let getStockDetail = this.db.object('/stock/'+a['productcode']);
-					getStockDetail.snapshotChanges().subscribe(resp => { 
-						a['product'] = resp.payload.toJSON();
-					});
-					if(a['currentstatus'] == 'ORD' || a['currentstatus'] == 'INP' || a['currentstatus'] == 'DE') {
-						this.orderList.push(a);
-					}
+					a['price'] = a['sellingprice'];
+					firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
+							if(snapshot != null) {
+								a['title'] = snapshot.child('title').val();
+								a['details'] = snapshot.child('details').val();
+								a['imagepath'] = snapshot.child('imagepath').val();
+								if(a['currentstatus'] != 'AC') {
+									this.orderList.push(a);
+								}
+							}
+						})
 				  })
 			  }
+			  	this.orderList.sort(this.comp);
+
 		});
 	} else {
 		  this.db.list('/orders', ref => ref.orderByChild('createdby').equalTo(this.authService.getUserID())).snapshotChanges().subscribe(res => { 
@@ -66,19 +85,24 @@ export class OrdersPage implements OnInit {
 				  res.forEach(item => {
 					let a = item.payload.toJSON();
 					a['index'] = item.key;
-				  let getStockDetail = this.db.object('/stock/'+a['productcode']);
-					getStockDetail.snapshotChanges().subscribe(resp => { 
-						a['product'] = resp.payload.toJSON();
-					});
-					if(a['currentstatus'] == 'ORD' || a['currentstatus'] == 'INP' || a['currentstatus'] == 'DE' || a['currentstatus'] == 'CL') {
-						this.orderList.push(a);
-					}
+					a['price'] = a['sellingprice'];
+					firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
+							if(snapshot != null) {
+								a['title'] = snapshot.child('title').val();
+								a['details'] = snapshot.child('details').val();
+								a['imagepath'] = snapshot.child('imagepath').val();
+								if(a['currentstatus'] != 'AC') {
+									this.orderList.push(a);
+								}
+							}
+						})
 				  })
 			  }
 			  	this.orderList.sort(this.comp);
 
 		});
 	  }
+	   this.loading.dismiss();
   }
   
   async presentAlert(status, msg) {
@@ -98,8 +122,8 @@ export class OrdersPage implements OnInit {
     await alert.present();
   }
   
-  routeStockDetail(index,productcode){
-	  this.navController.navigateRoot('/stockdetail',{queryParams : {index : index, productcode : productcode, status : 'ORD'}});
+  routeStockDetail(index,productcode,status){
+	  this.navController.navigateRoot('/stockdetail',{queryParams : {index : index, productcode : productcode, status : status}});
   }
   
   comp(a, b) {

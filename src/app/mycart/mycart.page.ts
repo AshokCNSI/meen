@@ -10,6 +10,7 @@ import * as firebase from 'firebase';
 import { filter } from 'rxjs/operators';
 import { RouterserviceService } from '../routerservice.service';
 import { AuthenticateService } from '../authentication.service';
+import { LoadingService } from '../loading.service';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,8 @@ export class MycartPage implements OnInit {
   private db: AngularFireDatabase,
   private activatedRoute: ActivatedRoute,
   private routerService: RouterserviceService,
-  private authService: AuthenticateService
+  private authService: AuthenticateService,
+  public loading: LoadingService
 ) { 
   
   }
@@ -40,7 +42,7 @@ export class MycartPage implements OnInit {
   cartList = [];
   ngOnInit() {
 	  this.isAdmin = this.authService.getIsAdmin();
-				
+	  this.loading.present();
 	  let getCartDetail = this.db.list('/orders', ref => ref.orderByChild('createdby').equalTo(this.authService.getUserID()));
 	  getCartDetail.snapshotChanges().subscribe(res => { 
 		  if(res != null) {
@@ -48,16 +50,27 @@ export class MycartPage implements OnInit {
 			  res.forEach(item => {
 				let a = item.payload.toJSON();
 				a['index'] = item.key;
-			  let getStockDetail = this.db.object('/stock/'+a['productcode']);
-				getStockDetail.snapshotChanges().subscribe(resp => { 
-					a['product'] = resp.payload.toJSON();
+				firebase.database().ref('/productsforselling/'+a['orderedto']).once('value').then((snapshot) => {
+					if(snapshot != null) {
+						a['price'] = snapshot.child('price').val();
+						a['productcode'] = snapshot.child('productcode').val();
+						a['seller'] = snapshot.child('createdby').val();
+						firebase.database().ref('/properties/products/'+snapshot.child('productcode').val()).once('value').then((snapshot) => {
+							if(snapshot != null) {
+								a['title'] = snapshot.child('title').val();
+								a['details'] = snapshot.child('details').val();
+								a['imagepath'] = snapshot.child('imagepath').val();
+								if(a['currentstatus'] == 'AC') {
+									this.cartList.push(a);
+								}
+							}
+						})
+					}
 				});
-				if(a['currentstatus'] == 'AC') {
-					this.cartList.push(a);
-				}
 			  })
 		  }
 	});
+	this.loading.dismiss();
   }
   
   async presentAlert(status, msg) {
@@ -77,8 +90,8 @@ export class MycartPage implements OnInit {
     await alert.present();
   }
   
-  routeStockDetail(index,productcode){
-	  this.navController.navigateRoot('/stockdetail',{queryParams : {index : index, productcode : productcode, status : 'AC'}});
+  routeStockDetail(index,productcode,status){
+	  this.navController.navigateRoot('/stockdetail',{queryParams : {index : index, productcode : productcode, status : status}});
   }
   
   deleteThisItem(index) {

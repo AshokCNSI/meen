@@ -1,0 +1,38 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+		<ion-back-button defaultHref="/home"></ion-back-button>
+	</ion-buttons>
+    <ion-title>My Products</ion-title>
+	<ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" [routerLink]="['/addproduct']">
+        <ion-icon name="add-circle-outline"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<ion-searchbar #search animated showCancelButton="always" debounce="500" (ionCancel)="onCancel($event)" cancelButtonText="Custom Cancel"
+    (ionInput)="filterList($event)"  [value]="searchVal" autofocus="true"></ion-searchbar>
+	<ng-container *ngIf="productList.length == 0">
+		<p class="no-items">No products available</p>
+	</ng-container>
+	<ng-container *ngIf="productList.length > 0">
+	
+	<ion-item *ngFor="let p of productList; let i = index;" (click)="routeProductDetail(p.index)">
+	  <ion-thumbnail slot="start">
+		<img alt="M" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+	  </ion-thumbnail>
+		<ion-label>
+			<h2>{{p.title}}</h2>
+			<h5>{{p.details}}</h5>
+			<h5>Available for Sale: {{p.available == "Y" ? "Yes" : "No"}}</h5>
+			<h5>Availbale for discount: {{p.discount == "Y" ? "Yes" : "No"}}</h5>
+			<h5>Discount Price: &#x20b9;{{p.discountprice}}</h5>
+		</ion-label>
+		<ion-thumbnail slot="end">
+			<h3>&#x20b9;{{p.price}}</h3>
+	    </ion-thumbnail>
+	</ion-item>
+	
+	</ng-container>
+</ion-content>

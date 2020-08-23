@@ -1,96 +1,38 @@
-<ion-header translucent>
+<ion-header style="z-index : 0;">
   <ion-toolbar>
 	<ion-buttons slot="start">
 		<ion-back-button defaultHref="home"></ion-back-button>
 	</ion-buttons>
-    <ion-title>{{isAdmin ? '' : 'My'}} Orders</ion-title>
+    <ion-title>Your Orders</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-<ion-list>
-<ion-list-header>
-  Current items
-</ion-list-header>
+
 <ng-container *ngFor="let p of orderList;">
-	<ion-item (click)="routeStockDetail(p.index,p.productcode)" *ngIf="p.currentstatus != 'DE' && p.currentstatus != 'CL'">
-		  <ion-avatar slot="start">
-			<img alt="M" src="{{p.product.imagepath}}">
-		  </ion-avatar>
-		  <ion-label>
-			<h2>{{p.product.title}}</h2>
-			<h3>RS.{{p.product.price}}</h3>
-			<p>Quantity: {{p.quantity}} in Kg</p>
-			  <ng-container *ngIf="p.currentstatus == 'ORD'">
-				<p>Order Status: <b>Ordered</b></p>
-			  </ng-container>
-			  <ng-container *ngIf="p.currentstatus == 'INP'">
-				<p>Order Status: <b>In-Progress</b></p>
-			  </ng-container>
-			  <ng-container *ngIf="p.currentstatus == 'DE'">
-				<p>Order Status: <b>Delievered</b></p>
-			  </ng-container>
-			  <p>Date: {{p.modifieddate |  date:'MM/dd/yyyy'}}</p>
-		  </ion-label>
+	<ion-item (click)="routeStockDetail(p.index,p.productcode,p.currentstatus)">
+	  <ion-thumbnail slot="start">
+		<img alt="M" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+	  </ion-thumbnail>
+	  <ion-card-header>
+		  <ion-card-title>{{p.title}}</ion-card-title>
+		  <ion-card-content style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{p.details}}</ion-card-content>
+		  <ion-card-subtitle>{{p.modifieddate |  date:'MM/dd/yyyy h:mm:ss a'}}</ion-card-subtitle>
+		  <ion-card-subtitle>{{p.quantity}} x &#x20b9;{{p.totalprice}}</ion-card-subtitle>
+	  </ion-card-header>
+	</ion-item>
+	<ion-item>
+		<ng-container *ngFor="let g of statusList">
+			<ng-container *ngIf="p.currentstatus == g.code">
+				<ion-icon name="{{g.icon}}"></ion-icon>
+				<ion-label style="color:{{g.color}}">{{g.name}}</ion-label>			
+			</ng-container>
+		</ng-container>
 	</ion-item>
 </ng-container>
+
+		
 <ng-container *ngIf="orderList.length == 0">
 	<p class="no-items">No items available</p>
 </ng-container>
-</ion-list>
-<ion-list>
-<ion-list-header>
-	  Delievered items
-</ion-list-header>
-
-<ng-container *ngFor="let p of orderList;">
-	<ion-item (click)="routeStockDetail(p.index,p.productcode)" *ngIf="p.currentstatus == 'DE'">
-		  <ion-avatar slot="start">
-			<img alt="M" src="{{p.product.imagepath}}">
-		  </ion-avatar>
-		  <ion-label>
-			<h2>{{p.product.title}}</h2>
-			<h3>RS.{{p.product.price}}</h3>
-			<p>Quantity: {{p.quantity}} in Kg</p>
-			  <ng-container *ngIf="p.currentstatus == 'ORD'">
-				<p>Order Status: <b>Ordered</b></p>
-			  </ng-container>
-			  <ng-container *ngIf="p.currentstatus == 'INP'">
-				<p>Order Status: <b>In-Progress</b></p>
-			  </ng-container>
-			  <ng-container *ngIf="p.currentstatus == 'DE'">
-				<p>Order Status: <b>Delievered</b></p>
-			  </ng-container>
-			  <p>Date: {{p.modifieddate |  date:'MM/dd/yyyy'}}</p>
-		  </ion-label>
-	</ion-item>
-</ng-container>
-<ng-container *ngIf="orderList.length == 0">
-	<p class="no-items">No items available</p>
-</ng-container>
-</ion-list>
-
-<ion-list>
-<ion-list-header>
-	  Cancelled items
-</ion-list-header>
-
-<ng-container *ngFor="let p of orderList;">
-	<ion-item (click)="routeStockDetail(p.index,p.productcode)" *ngIf="p.currentstatus == 'CL'">
-		  <ion-avatar slot="start">
-			<img alt="M" src="{{p.product.imagepath}}">
-		  </ion-avatar>
-		  <ion-label>
-			<h2>{{p.product.title}}</h2>
-			<h3>RS.{{p.product.price}}</h3>
-			<p>Quantity: {{p.quantity}} in Kg</p>
-			<p>Order Status: <b>Cancelled</b></p> 
-			<p>Date: {{p.modifieddate |  date:'MM/dd/yyyy'}}</p>
-		  </ion-label>
-	</ion-item>
-</ng-container>
-<ng-container *ngIf="orderList.length == 0">
-	<p class="no-items">No items available</p>
-</ng-container>
-</ion-list>
 </ion-content>

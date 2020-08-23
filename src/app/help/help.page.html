@@ -8,44 +8,63 @@
 </ion-header>
 
 <ion-content>
-<ion-card>
-  <ion-card-header>
-    
-    <ion-card-title>Fishing cart</ion-card-title>
-  </ion-card-header>
-
-  <ion-card-content>
-   This organization is entirely based on online fishing cart. People can order desired variety of fish meats in specified custom. First time in tamilnadu we are introducing online cart specially for local and sea foods. We can proudly say there are abudent people get jobs in this Industry.
-  </ion-card-content>
-</ion-card>
-<ion-card>
-  <ion-item>
-	<ion-icon name="call" slot="start"></ion-icon>
-	<ion-label>Ashokkumar</ion-label>
-	<ion-button fill="outline" slot="end" (click)="callforDetail('+91 9942570269')">Call</ion-button>
-  </ion-item>
-  <ion-card-content>
-	Mobile Number: +91 9942570269
-  </ion-card-content>
-</ion-card>
-<ion-card>
-  <ion-item>
-	<ion-icon name="call" slot="start"></ion-icon>
-	<ion-label>Sathiskkumar</ion-label>
-	<ion-button fill="outline" slot="end" (click)="callforDetail('+91 9659834006')">Call</ion-button>
-  </ion-item>
-  <ion-card-content>
-	Mobile Number: +91 9659834006
-  </ion-card-content>
-</ion-card>
-<ion-card>
-  <ion-item>
-	<ion-icon name="call" slot="start"></ion-icon>
-	<ion-label>Manojkumar</ion-label>
-	<ion-button fill="outline" slot="end" (click)="callforDetail('+91 9659831400')">Call</ion-button>
-  </ion-item>
-  <ion-card-content>
-	Mobile Number: +91 9659831400
-  </ion-card-content>
-</ion-card>
+<ng-container *ngIf="authService.getUserType() != 'SA' && authService.getUserType() != 'A' && authService.getIsUserLoggedIn()">
+<ion-item>
+  <ion-label position="floating">Subject</ion-label>
+  <ion-input type="text" [(ngModel)]="subject"></ion-input>
+</ion-item>
+<ion-item>
+  <ion-label position="floating">Comments</ion-label>
+  <ion-textarea type="number" [(ngModel)]="comments"></ion-textarea>
+</ion-item>
+<ion-row>
+  <ion-col style="text-align:center;">
+	 <ion-button expand="block" (click)="postComments()">Post your comments</ion-button>
+  </ion-col>
+</ion-row>
+<ion-list>
+	<ion-item button (click)="presentQueriesModal()">
+	  <ion-icon slot="start" name="help-circle-outline" style=""></ion-icon>
+	  <ion-label>
+		<h3>Your queries</h3>
+	  </ion-label>
+	</ion-item>
+	<ion-item button (click)="presentContactModal()">
+	  <ion-icon slot="start" name="trail-sign-outline" style=""></ion-icon>
+	  <ion-label>
+		<h3>Contact us</h3>
+	  </ion-label>
+	</ion-item>
+	<ion-item button (click)="presentTermsModal()">
+	  <ion-icon slot="start" name="book-outline" style=""></ion-icon>
+	  <ion-label>
+		<h3>Terms and Conditions</h3>
+	  </ion-label>
+	</ion-item>
+</ion-list>
+</ng-container>
+<ng-container>
+<ion-list *ngIf="!authService.getIsUserLoggedIn()">
+	<ion-item button (click)="presentContactModal()">
+	  <ion-icon slot="start" name="trail-sign-outline" style=""></ion-icon>
+	  <ion-label>
+		<h3>Contact us</h3>
+	  </ion-label>
+	</ion-item>
+	<ion-item button (click)="presentTermsModal()">
+	  <ion-icon slot="start" name="book-outline" style=""></ion-icon>
+	  <ion-label>
+		<h3>Terms and Conditions</h3>
+	  </ion-label>
+	</ion-item>
+</ion-list>
+</ng-container>
+<ng-container *ngIf="authService.getUserType() == 'SA' || authService.getUserType() == 'A'">
+<ion-item button (click)="presentQueriesModal()">
+	  <ion-icon slot="start" name="help-circle-outline" style=""></ion-icon>
+	  <ion-label>
+		<h3>Customer queries</h3>
+	  </ion-label>
+	</ion-item>
+</ng-container>
 </ion-content>

@@ -10,9 +10,15 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import * as firebase from 'firebase';
 import { AuthenticateService } from './authentication.service';
 import { NavController } from '@ionic/angular';
-import { Router } from '@angular/router';
 import { Network } from '@ionic-native/network/ngx';
 import {  MenuController } from '@ionic/angular';
+import { LocationserviceService } from './locationservice.service';
+import { LoadingService } from './loading.service';
+
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
+import { Diagnostic } from '@ionic-native/diagnostic/ngx';
+import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -35,7 +41,12 @@ export class AppComponent implements OnInit {
 	private router: Router,
 	private db: AngularFireDatabase,
 	private network: Network,
-	private menuCtrl : MenuController
+	private menuCtrl : MenuController,
+	private geolocation: Geolocation,
+	private nativeGeocoder: NativeGeocoder,
+	private diagnostic: Diagnostic,
+	private locationService: LocationserviceService,
+	private loading : LoadingService
   ) {
 	
     this.initializeApp();
@@ -67,9 +78,30 @@ export class AppComponent implements OnInit {
 		}
 	  }, 3000);
 	});
-
+	
+	this.diagnostic.isLocationEnabled()
+	  .then((state) => {
+		if (!state){
+		  this.navController.navigateRoot('/locationfinder');
+		}
+	  }).catch(e => console.log(e));
 	// stop connect watch
 	//connectSubscription.unsubscribe();
+	
+	router.events.subscribe( (event: Event) => {
+		if (event instanceof NavigationStart) {
+			
+		}
+
+		if (event instanceof NavigationEnd) {
+			console.log("Start");
+		}
+
+		if (event instanceof NavigationError) {
+			console.log(event.error);
+		}
+	});
+
   }
 
   initializeApp() {
@@ -97,19 +129,8 @@ export class AppComponent implements OnInit {
 	});
   }
   
-  logout() {
-	  this.authService.logoutUser()
-      .then(res => {
-        console.log(res);
-		this.authService.setUserID(null);
-		this.authService.setEmailID(null);
-		this.authService.setIsUserLoggedIn(false);
-		this.authService.setUserType(null);  
-		this.authService.setUserName(null);  
-        this.navController.navigateBack('');
-      })
-      .catch(error => {
-        console.log(error);
-      })
-  }
+  openAboutMe() {
+	  this.menuCtrl.toggle();
+	  this.navController.navigateRoot('/aboutme');
+	}
 }

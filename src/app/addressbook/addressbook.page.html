@@ -1,0 +1,75 @@
+<ion-header>
+  <ion-toolbar>
+	<ion-buttons slot="start">
+		<ion-back-button defaultHref="home"></ion-back-button>
+	</ion-buttons>
+    <ion-title>Address Book</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<!-- <ion-searchbar #search animated debounce="500"
+    (keyup)="filtermap($event)" [value]="searchVal" placeholder="Search Address"></ion-searchbar>
+	<ion-card>
+		<ion-item>
+			<ion-icon name="map" slot="start"></ion-icon>
+			<ion-label>My Location</ion-label>
+			<ion-button fill="outline" slot="end" (click)="locateMe()">Locate me</ion-button>
+		</ion-item>
+		<ion-card-content>
+			{{address}}
+		</ion-card-content>
+	</ion-card>
+<ion-item>
+  <ion-label position="floating">Customer Name<span>*</span></ion-label>
+  <ion-input type="text" [(ngModel)]="name"></ion-input>
+</ion-item>
+<ion-item>
+  <ion-label position="floating">Contact Number<span>*</span></ion-label>
+  <ion-input type="number" [(ngModel)]="mobile"></ion-input>
+</ion-item>
+<ion-item>
+  <ion-label position="floating">House/Door No<span>*</span></ion-label>
+  <ion-input type="text" [(ngModel)]="houseno"></ion-input>
+</ion-item>
+<ion-item>
+  <ion-label position="floating">Street name<span>*</span></ion-label>
+  <ion-input type="text" [(ngModel)]="streetname"></ion-input>
+</ion-item>
+<ion-item>
+  <ion-label position="floating">Landmark<span>*</span></ion-label>
+  <ion-input type="text" [(ngModel)]="landmark"></ion-input>
+</ion-item> -->
+
+<ng-container *ngIf="addressList.length > 0">
+<ion-list>
+  <ion-radio-group [(ngModel)]="customeraddress">
+  <ion-item-sliding *ngFor="let p of addressList;" (click)="selectAddress(p)">
+  <ion-item>
+	<ion-card-header>
+		  <ion-card-title>{{p.name}}</ion-card-title>
+		  <ion-card-subtitle>{{p.mobile}}</ion-card-subtitle>
+		  <ion-card-subtitle>{{p.houseno}}, {{p.streetname}}, {{p.landmark}}</ion-card-subtitle>
+		  
+	</ion-card-header>
+      <ion-radio slot="start" value="{{p.index}}"></ion-radio>
+    </ion-item>
+	<ion-item-options>
+      <ion-item-option color="danger" (click)="deleteAddress(p.index)">
+        <ion-icon slot="start" name="trash"></ion-icon>
+        Delete
+      </ion-item-option>
+    </ion-item-options>
+  </ion-item-sliding>
+  </ion-radio-group>
+</ion-list>
+</ng-container>
+<ng-container *ngIf="addressList.length == 0">
+	<p class="no-items">No address available</p>
+</ng-container>
+<ion-row>
+  <ion-col style="text-align:center;">
+	 <ion-button expand="block" [routerLink]="['/addaddress']">Add Address</ion-button>
+  </ion-col>
+</ion-row>
+</ion-content>

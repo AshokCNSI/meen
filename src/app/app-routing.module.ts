@@ -65,6 +65,66 @@ const routes: Routes = [
   {
     path: 'properties',
     loadChildren: () => import('./properties/properties.module').then( m => m.PropertiesPageModule)
+  },
+  {
+    path: 'locationmap',
+    loadChildren: () => import('./locationmap/locationmap.module').then( m => m.LocationmapPageModule)
+  },
+  {
+    path: 'locationfinder',
+    loadChildren: () => import('./locationfinder/locationfinder.module').then( m => m.LocationfinderPageModule)
+  },
+  {
+    path: 'myaddress',
+    loadChildren: () => import('./myaddress/myaddress.module').then( m => m.MyaddressPageModule)
+  },
+  {
+    path: 'myassignments',
+    loadChildren: () => import('./myassignments/myassignments.module').then( m => m.MyassignmentsPageModule)
+  },
+  {
+    path: 'mysellingproducts',
+    loadChildren: () => import('./mysellingproducts/mysellingproducts.module').then( m => m.MysellingproductsPageModule)
+  },
+  {
+    path: 'addproduct',
+    loadChildren: () => import('./addproduct/addproduct.module').then( m => m.AddproductPageModule)
+  },
+  {
+    path: 'addressbook',
+    loadChildren: () => import('./addressbook/addressbook.module').then( m => m.AddressbookPageModule)
+  },
+  {
+    path: 'queries',
+    loadChildren: () => import('./queries/queries.module').then( m => m.QueriesPageModule)
+  },
+  {
+    path: 'terms',
+    loadChildren: () => import('./terms/terms.module').then( m => m.TermsPageModule)
+  },
+  {
+    path: 'contact',
+    loadChildren: () => import('./contact/contact.module').then( m => m.ContactPageModule)
+  },
+  {
+    path: 'aboutme',
+    loadChildren: () => import('./aboutme/aboutme.module').then( m => m.AboutmePageModule)
+  },
+  {
+    path: 'notice',
+    loadChildren: () => import('./notice/notice.module').then( m => m.NoticePageModule)
+  },
+  {
+    path: 'locationsearch',
+    loadChildren: () => import('./locationsearch/locationsearch.module').then( m => m.LocationsearchPageModule)
+  },
+  {
+    path: 'locationassigner',
+    loadChildren: () => import('./locationassigner/locationassigner.module').then( m => m.LocationassignerPageModule)
+  },
+  {
+    path: 'addaddress',
+    loadChildren: () => import('./addaddress/addaddress.module').then( m => m.AddaddressPageModule)
   }
 
 ];

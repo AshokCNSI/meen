@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { StockdetailPageRoutingModule } from './stockdetail-routing.module';
 
 import { StockdetailPage } from './stockdetail.page';
+import { StarRatingModule } from 'ionic5-star-rating';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { StockdetailPage } from './stockdetail.page';
     FormsModule,
 	ReactiveFormsModule,
     IonicModule,
-    StockdetailPageRoutingModule
+    StockdetailPageRoutingModule,
+	StarRatingModule
   ],
   declarations: [StockdetailPage]
 })

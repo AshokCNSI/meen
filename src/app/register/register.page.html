@@ -69,7 +69,7 @@
 				  <ion-radio slot="start" value="C" (ionSelect)="usertTypeSelect($event)"></ion-radio>
 				</ion-item>
 			</ion-col>
-			<ion-col>
+			<ion-col *ngIf="enableseller == 'Y'">
 				<ion-item>
 				  <ion-label>Seller</ion-label>
 				  <ion-radio slot="start" value="S" (ionSelect)="usertTypeSelect($event)"></ion-radio>
@@ -98,20 +98,6 @@
 			</div>
 		</ion-row>
 	</ion-radio-group>
-	<ng-container *ngIf="!authService.getIsUserLoggedIn() && usertype == 'S'">
-		<ion-row>
-				<ion-col>
-					<ion-item>
-					  <ion-label position="floating">Shop Name<span>*</span></ion-label>
-					  <ion-input type="text" formControlName="shopname" [(ngModel)]="shopname"></ion-input>
-					</ion-item>
-					<div *ngIf="isSubmitted && errorControl.shopname.errors?.required"
-						class="validator-error">
-					  <ion-icon name="alert-circle-outline"></ion-icon>  Shopname is required.
-					</div>
-				</ion-col>
-		</ion-row>
-	</ng-container>
    <ion-row>
 			<ion-col>
 				<ion-item>

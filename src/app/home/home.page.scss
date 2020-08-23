@@ -1,7 +1,7 @@
 .slide-text{
   position: absolute;
   color: white;
-  bottom: 30px;
+  bottom: 10px;
   color: black;
 }
 
@@ -10,3 +10,29 @@ margin-top:10px;
 text-align:center;
 }
 
+ion-title {
+    .subtitle {
+      font-size: 66%;
+      margin: 0;
+    }
+  }
+  
+.location-popover {
+	width : 100%;
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.no-items {
+	text-align: center;
+	font-size : 10px;
+}
+
+.banner {
+	width: 95% !important;
+}

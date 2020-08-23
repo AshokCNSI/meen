@@ -8,14 +8,24 @@
 </ion-header>
 
 <ion-content>
-<ion-card *ngFor="let p of discountList">
-  <ion-item>
-	<ion-icon name="bulb" slot="start"></ion-icon>
-	<ion-label>{{p.title}}</ion-label>
-	<ion-button fill="outline" slot="end" (click)="nagivateProdcut(p.$key,p.productcode)">Order</ion-button>
-  </ion-item>
-  <ion-card-content>
-	{{p.title}} is discounted for Rs.{{p.discountprice}}. Please hurry up, limited stock only.
-  </ion-card-content>
-</ion-card>
+<ng-container *ngIf="discountList.length == 0">
+		<p class="no-items">No Offers available</p>
+	</ng-container>
+<ng-container *ngIf="discountList.length > 0">
+
+<ion-item *ngFor="let p of discountList; let i = index;" (click)="routeStockDetail(p.index,p.productcode)">
+  <ion-thumbnail slot="start">
+	<img alt="M" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+  </ion-thumbnail>
+	<ion-label>
+		<h2>{{p.title}}</h2>
+		<h5>{{p.details}}</h5>
+		<h5>Discount Price: &#x20b9;{{p.discountprice}}</h5>
+	</ion-label>
+	<ion-thumbnail slot="end">
+		<h3>&#x20b9;{{p.price}}</h3>
+	</ion-thumbnail>
+</ion-item>
+
+</ng-container>
 </ion-content>
