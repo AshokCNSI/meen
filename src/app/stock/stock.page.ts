@@ -26,7 +26,8 @@ export class StockPage implements OnInit {
   private loading : LoadingService
   ) { }
 @ViewChild('search') search : any;
-
+Arr = Array;
+skeletoncount : number = 10;
 categoryID : number;
 fullStocks : AngularFireList<any>;
 fullStocksCategory : AngularFireList<any>;
@@ -39,7 +40,6 @@ productstatus : string;
 productcode : string;
   ngOnInit() {
 	  this.activatedRoute.queryParams.subscribe(params => {
-		  this.loading.present();
 		  this.productcode = params['productcode'];
 		  this.productstatus = params['productstatus'];
 		  this.categoryID = this.activatedRoute.snapshot.params['id'];  
@@ -152,7 +152,6 @@ productcode : string;
 					
 				});
 			  }
-			  this.loading.dismiss();
 		});	  
 	  
 	if(this.authService.getUserType() == 'SA' || this.authService.getUserType() == 'A') {

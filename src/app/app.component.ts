@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Platform } from '@ionic/angular';
+import { Platform, ModalController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
@@ -19,6 +19,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
+import { SplashPage } from './splash/splash.page';
 
 @Component({
   selector: 'app-root',
@@ -46,7 +47,8 @@ export class AppComponent implements OnInit {
 	private nativeGeocoder: NativeGeocoder,
 	private diagnostic: Diagnostic,
 	private locationService: LocationserviceService,
-	private loading : LoadingService
+	private loading : LoadingService,
+	private modalController : ModalController
   ) {
 	
     this.initializeApp();
@@ -107,7 +109,8 @@ export class AppComponent implements OnInit {
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
-      this.splashScreen.hide();
+      //this.splashScreen.hide();
+	  this.openSplash();
     });
   }
   
@@ -133,4 +136,13 @@ export class AppComponent implements OnInit {
 	  this.menuCtrl.toggle();
 	  this.navController.navigateRoot('/aboutme');
 	}
+
+  async openSplash() {
+	const modal = await this.modalController.create({
+		  component: SplashPage,
+		  cssClass: 'my-custom-class'
+		});
+		await modal.present();
+		
+  }
 }

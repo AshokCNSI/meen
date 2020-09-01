@@ -8,29 +8,28 @@
 </ion-header>
 
 <ion-content>
-
-<ng-container *ngFor="let p of cartList;">
-	<ion-item (click)="routeStockDetail(p.index,p.productcode,p.currentstatus)" style="padding: 15px;">
+<ng-container *ngFor="let p of cartList">
+	<ion-item (click)="routeStockDetail(p.index,p.productcode,p.currentstatus)">
 	  <ion-thumbnail slot="start">
 		<img alt="M" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+	  </ion-thumbnail>
+	  <ion-card-header>
+		  <ion-card-title>{{p.title}}</ion-card-title>
+		  <ion-card-content style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{p.details}}</ion-card-content>
+		  <ion-card-subtitle>{{p.modifieddate |  date:'MM/dd/yyyy h:mm:ss a'}}</ion-card-subtitle>
+		  <ion-card-subtitle>{{p.quantity}} x &#x20b9;{{p.totalprice}}</ion-card-subtitle>
+	  </ion-card-header>
+	</ion-item>
+	<ion-item>
 		<ng-container *ngFor="let g of statusList">
 			<ng-container *ngIf="p.currentstatus == g.code">
-			<ion-badge style="--background:#e05164;">{{g.name}}</ion-badge>
+				<ion-icon name="{{g.icon}}"></ion-icon>
+				<ion-label style="color:{{g.color}}">{{g.name}}</ion-label>			
 			</ng-container>
 		</ng-container>
-	  </ion-thumbnail>
-			<ion-card-header>
-				  <ion-card-title>{{p.title}}</ion-card-title>
-				  <!-- <ion-card-subtitle style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{p.details}}</ion-card-subtitle> -->
-				  <ion-card-subtitle>Ordered on {{p.modifieddate |  date:'MM/dd/yyyy'}}</ion-card-subtitle>
-				  <ion-card-title>&#x20b9;{{p.totalprice}}</ion-card-title>
-				  
-			</ion-card-header>
-		<ion-thumbnail slot="end">
-			<ion-card-subtitle>Quantity <b>{{p.quantity}}</b> kg</ion-card-subtitle>
-	    </ion-thumbnail>
 	</ion-item>
 </ng-container>
+
 <ng-container *ngIf="cartList.length == 0">
 	<p class="no-items">No Assignments available</p>
 </ng-container>

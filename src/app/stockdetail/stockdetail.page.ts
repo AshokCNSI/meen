@@ -13,8 +13,10 @@ import { AuthenticateService } from '../authentication.service';
 import { LocationserviceService } from '../locationservice.service';
 import { ModalController } from '@ionic/angular';
 import { MyaddressPage } from '../myaddress/myaddress.page';
+import { DeliverylocationPage } from '../deliverylocation/deliverylocation.page';
 import { Location } from '@angular/common';
 import { LoadingService } from '../loading.service';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 import { prop } from '../../environments/environment';
 
@@ -43,7 +45,8 @@ export class StockdetailPage implements OnInit {
   private locationService: LocationserviceService,
   public modalController: ModalController,
   public location : Location,
-  public loading: LoadingService
+  public loading: LoadingService,
+  private geolocation: Geolocation
 ) { 
   
   }
@@ -109,6 +112,12 @@ export class StockdetailPage implements OnInit {
   statusList = [];
   assignedto : string;
   masalaquantity : number = 0;
+  latitude : string;
+  longitude : string;
+  current_lat : string;
+  current_long : string;
+  sellerlatitude : string;
+  sellerlongitude : string;
   async presentModal() {
     const modal = await this.modalController.create({
       component: MyaddressPage,
@@ -147,6 +156,13 @@ export class StockdetailPage implements OnInit {
   
   ngOnInit() {
 	  this.loading.present();
+	   this.geolocation.getCurrentPosition().then((resp) => {
+			this.current_lat = (resp.coords.latitude).toString();
+			this.current_long = (resp.coords.longitude).toString();
+			
+		}).catch((error) => {
+			
+		});
 	  firebase.database().ref('/properties/status').once('value').then((snapshot) => {
 		  if(snapshot != null) {
 			  snapshot.forEach(item =>{
@@ -204,6 +220,8 @@ export class StockdetailPage implements OnInit {
 						this.dhouseno = snapshot.child('houseno').val();
 						this.dstreetname = snapshot.child('streetname').val();
 						this.dlandmark = snapshot.child('landmark').val();
+						this.latitude = snapshot.child('latitude').val();
+						this.longitude = snapshot.child('longitude').val();
 					}
 				});
 				  
@@ -220,6 +238,14 @@ export class StockdetailPage implements OnInit {
 								this.imagepath = snapshot.child('imagepath').val();
 							}
 						})
+						firebase.database().ref('/profile/'+this.seller).once('value').then((snapshot) => {
+							if(snapshot != null) {
+								this.sellerlatitude = snapshot.child('latitude').val();
+								this.sellerlongitude = snapshot.child('longitude').val();
+							}
+						}).catch((error: any) => {
+							
+						});
 					}
 				});
 			  });
@@ -422,6 +448,18 @@ export class StockdetailPage implements OnInit {
 		  this.masalaquantity = 0;
 	  else
 		this.masalaquantity = this.masalaquantity - 1;
+  }
+  
+  async goToClientLocation() {
+	const modal = await this.modalController.create({
+	  component: DeliverylocationPage,
+	  cssClass: 'my-custom-class',
+	  componentProps: {
+		destinationlatitude: this.productVisibility == 'DS' ? this.sellerlatitude : this.latitude,
+		destinationlongitude: this.productVisibility == 'DS' ? this.sellerlongitude : this.longitude
+	  }
+	});
+	await modal.present();
   }
 
 }

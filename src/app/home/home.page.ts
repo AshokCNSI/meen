@@ -364,4 +364,9 @@ export class HomePage implements OnInit {
 		this.visibility = 'hidden';
 		this.productvisibility = 'shown';
 	}
+	
+	onCancel(event) {
+		this.visibility = 'shown';
+		this.productvisibility = 'hidden';
+	}
 }

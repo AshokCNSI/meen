@@ -3,17 +3,15 @@
 	<ion-buttons style="font-size: 25px;margin: 10px;" slot="start" (click)="location.back()">
 		<ion-icon name="arrow-back-outline"></ion-icon>
 	</ion-buttons>
-    <ion-title>{{authService.getUserType() == 'SA' || authService.getUserType() == 'A' ? 'Stock' : 'Products'}} Detail</ion-title>
-	<ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" (click)="saveStock()" *ngIf="(authService.getUserType() == 'A' || authService.getUserType() == 'SA') && productVisibility == 'R'">
+	<ion-title>{{title}}</ion-title>
+	<ion-buttons slot="secondary" style="font-size: 25px;margin: 10px;" (click)="saveStock()" *ngIf="(authService.getUserType() == 'A' || authService.getUserType() == 'SA') && productVisibility == 'R'">
         <ion-icon name="push-outline"></ion-icon>
     </ion-buttons>
-	<ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" (click)="updateStatus()" *ngIf="(authService.getUserType() == 'S' || authService.getUserType() == 'D') && (productVisibility != 'AC' && productVisibility != 'R' && oldStatus!='DE')">
+	<ion-buttons slot="secondary" style="font-size: 25px;margin: 10px;" (click)="updateStatus()" *ngIf="(authService.getUserType() == 'S' || authService.getUserType() == 'D') && (productVisibility != 'AC' && productVisibility != 'R' && oldStatus!='DE')">
         <ion-icon name="arrow-up-circle-outline"></ion-icon>
     </ion-buttons>
   </ion-toolbar>
-  
 </ion-header>
-
 
 <ion-content>
 
@@ -74,7 +72,14 @@
 		{{dhouseno}}
 		{{dstreetname}}
 		{{dlandmark}}
+		<ion-buttons (click)="goToClientLocation()" *ngIf="(authService.getUserType() == 'D') && (oldStatus == 'IPD' || oldStatus == 'DS') && (sellerlatitude || latitude)">
+			<ion-button color="primary">
+			<ng-container *ngIf="(oldStatus == 'DS')">Click to go to Seller Location</ng-container>
+			<ng-container *ngIf="(oldStatus == 'IPD')"> Click to go to Customer Location</ng-container>
+			</ion-button>
+		</ion-buttons>
 	  </ion-card-content>
+	  
 	</ion-card>
 </ng-container>
 <ng-container *ngIf="(productVisibility == 'R' || productVisibility == 'AC') && (authService.getUserType() == 'C' || !authService.getIsUserLoggedIn())">
@@ -240,7 +245,7 @@
 			  </ion-list-header>
 		  </ng-container>
 	</ng-container>
-<ng-container *ngIf="oldStatus != 'DE' && (authService.getUserType() == 'D' && assignedto == authService.getUserID()) || (productVisibility != 'AC' && productVisibility != 'R' && productVisibility != 'DE') && ((authService.getUserType() == 'S' || authService.getUserType() == 'D') && !assignedto)">
+<ng-container *ngIf="(oldStatus != 'DE') && (authService.getUserType() == 'D' && assignedto == authService.getUserID()) || (productVisibility != 'AC' && productVisibility != 'R') && ((authService.getUserType() == 'S' || authService.getUserType() == 'D') && !assignedto)">
 	<ion-item>
 	  <ion-label>Change Order Status</ion-label>
 	  <ion-select [(ngModel)]="productVisibility" interface="action-sheet">

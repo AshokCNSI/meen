@@ -125,6 +125,14 @@ const routes: Routes = [
   {
     path: 'addaddress',
     loadChildren: () => import('./addaddress/addaddress.module').then( m => m.AddaddressPageModule)
+  },
+  {
+    path: 'splash',
+    loadChildren: () => import('./splash/splash.module').then( m => m.SplashPageModule)
+  },
+  {
+    path: 'deliverylocation',
+    loadChildren: () => import('./deliverylocation/deliverylocation.module').then( m => m.DeliverylocationPageModule)
   }
 
 ];
