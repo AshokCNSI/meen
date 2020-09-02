@@ -7,7 +7,7 @@ import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angula
 import { NavController } from '@ionic/angular';
 import { LocationserviceService } from '../locationservice.service';
 import { LoadingService } from '../loading.service';
-
+import { Location } from '@angular/common';
 @Component({
   selector: 'app-stock',
   templateUrl: './stock.page.html',
@@ -23,7 +23,8 @@ export class StockPage implements OnInit {
   private navController: NavController,
   private router : ActivatedRoute,
   private locationService: LocationserviceService,
-  private loading : LoadingService
+  private loading : LoadingService,
+  private location : Location
   ) { }
 @ViewChild('search') search : any;
 Arr = Array;
@@ -58,11 +59,13 @@ productcode : string;
 									a['price'] = b['price'];
 									a['discount'] = b['discount'];
 									a['discountprice'] = b['discountprice'];
+									a['selleruid'] = b['createdby'];
 									firebase.database().ref('/profile/'+b['createdby']).once('value').then((snapshot) => {
 										if(snapshot != null) {
 											let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
 															snapshot.child('latitude').val(),snapshot.child('longitude').val());
 											a['distance'] = Math.round(distance * 100) / 100;
+											a['shopname'] = snapshot.child('shopname').val();
 											this.stockList.push(a);
 										}
 									}).catch((error: any) => {
@@ -94,11 +97,13 @@ productcode : string;
 									a['price'] = b['price'];
 									a['discount'] = b['discount'];
 									a['discountprice'] = b['discountprice'];
+									a['selleruid'] = b['createdby'];
 									firebase.database().ref('/profile/'+b['createdby']).once('value').then((snapshot) => {
 										if(snapshot != null) {
 											let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
 															snapshot.child('latitude').val(),snapshot.child('longitude').val());
 											a['distance'] = Math.round(distance * 100) / 100;
+											a['shopname'] = snapshot.child('shopname').val();
 											this.stockList.push(a);
 										}
 									}).catch((error: any) => {
@@ -130,11 +135,13 @@ productcode : string;
 									a['price'] = b['price'];
 									a['discount'] = b['discount'];
 									a['discountprice'] = b['discountprice'];
+									a['selleruid'] = b['createdby'];
 									firebase.database().ref('/profile/'+b['createdby']).once('value').then((snapshot) => {
 										if(snapshot != null) {
 											let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
 															snapshot.child('latitude').val(),snapshot.child('longitude').val());
 											a['distance'] = Math.round(distance * 100) / 100;
+											a['shopname'] = snapshot.child('shopname').val();
 											this.stockList.push(a);
 										}
 									}).catch((error: any) => {

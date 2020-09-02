@@ -50,6 +50,7 @@ export class ProfilePage implements OnInit {
   rolename : string;
   locationList = [];
   stateList = [];
+  shopname : string;
   
   async presentAlert(status, msg) {
     const alert = await this.alertCtrl.create({
@@ -71,6 +72,7 @@ export class ProfilePage implements OnInit {
 			  this.state = snapshot.child('state').val();
 			  this.pincode = snapshot.child('pincode').val();
 			  this.usertype = snapshot.child('usertype').val();
+			  this.shopname = snapshot.child('shopname').val();
 			  if(this.usertype == 'A') {
 				  this.rolename = 'Administrator';
 			  } else if(this.usertype == 'SA') {
@@ -105,6 +107,7 @@ export class ProfilePage implements OnInit {
 	   firstname: ['', [Validators.required]],
 	   lastname: ['', [Validators.required]],
 	   mobilenumber: ['', Validators.compose([Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern('^[0-9]+$')])],
+	   shopname : ['', this.usertype == 'S' ? [Validators.required] : []],
 	   street1: ['', [Validators.required]],
 	   street2: ['', []],
 	   district: ['', [Validators.required]],
@@ -126,6 +129,7 @@ export class ProfilePage implements OnInit {
 			   firstname: this.profileData.value.firstname,
 			   lastname: this.profileData.value.lastname,
 			   mobilenumber: this.profileData.value.mobilenumber,
+			   shopname: this.profileData.value.shopname,
 			   street1: this.profileData.value.street1,
 			   street2: this.profileData.value.street2,
 			   district: this.profileData.value.district,

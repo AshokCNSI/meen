@@ -19,33 +19,23 @@
    </ion-row>
    <ion-row>
       <ion-col>
-         <ion-item lines="none" class="font-size-25px">
+         <ion-item lines="none" style="text-align:center;" class="font-size-25px">
             <ion-label>Delight with your <b>Login</b></ion-label>
          </ion-item>
       </ion-col>
    </ion-row>
    <form [formGroup]="formData" (ngSubmit)="login(form)" novalidate id="registerFrom">
-   <ion-row>
-      <ion-col>
-         <ion-item>
-            <ion-label floating>Email</ion-label>
-            <ion-input formControlName="email" type="email" required></ion-input>
-         </ion-item>
-      </ion-col>
-   </ion-row>
-   <ion-row>
-      <ion-col>
-         <ion-item>
-            <ion-label floating>Password</ion-label>
-            <ion-input formControlName="password" type="password" required></ion-input>
-         </ion-item>
-      </ion-col>
-   </ion-row>
-   <ion-row>
-	  <ion-col style="text-align:center;">
-         <ion-button type="submit">Delight me in.</ion-button>
-      </ion-col>
-   </ion-row>
+	 <ion-item>
+		<ion-label position="floating">Email</ion-label>
+		<ion-input formControlName="email" type="email" required></ion-input>
+	 </ion-item>
+	 <ion-item>
+		<ion-label position="floating">Password</ion-label>
+		<ion-input formControlName="password" type="password" required></ion-input>
+	 </ion-item>
+	 <ion-button type="submit" expand="block">Delight me in.</ion-button>
+   </form>   
+   
    <ion-row style="text-align:center;">
    <ion-col style="text-align:center;">
 	  <ion-label>
@@ -72,5 +62,5 @@
 		class="validator-error">
 	  Password length should be minimun 8 Character.
 	</div>
-   </form>
+   
 </ion-content>

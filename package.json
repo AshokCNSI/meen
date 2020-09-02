@@ -38,10 +38,8 @@
     "cordova-browser": "6.0.0",
     "cordova-plugin-add-swift-support": "^2.0.2",
     "cordova-plugin-androidx": "^1.0.2",
-<<<<<<< HEAD
-=======
+
     "cordova-plugin-androidx-adapter": "^1.1.1",
->>>>>>> fe0c353085249885bb91ee1e352e304b742d3ad8
     "cordova-plugin-firebase-authentication": "^3.3.0",
     "cordova-plugin-firebasex": "^9.1.1",
     "cordova-plugin-geolocation": "^4.0.2",
@@ -68,11 +66,9 @@
     "@types/node": "^12.11.1",
     "codelyzer": "^5.1.2",
     "cordova-android": "^9.0.0",
-<<<<<<< HEAD
     "cordova-androidx-build": "^1.0.4",
     "cordova-plugin-androidx-adapter": "^1.1.1",
-=======
->>>>>>> fe0c353085249885bb91ee1e352e304b742d3ad8
+
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-googlemaps": "git+https://github.com/mapsplugin/cordova-plugin-googlemaps.git#multiple_maps",
     "cordova-plugin-ionic-keyboard": "^2.2.0",
@@ -112,12 +108,9 @@
       "cordova.plugins.diagnostic": {
         "ANDROIDX_VERSION": "1.+"
       },
-<<<<<<< HEAD
       "cordova-plugin-googlemaps": {},
       "cordova-plugin-androidx-adapter": {}
-=======
-      "cordova-plugin-googlemaps": {}
->>>>>>> fe0c353085249885bb91ee1e352e304b742d3ad8
+
     },
     "platforms": [
       "browser",

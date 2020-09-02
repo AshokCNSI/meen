@@ -111,7 +111,7 @@ export class StockdetailPage implements OnInit {
   dlandmark : string;
   statusList = [];
   assignedto : string;
-  masalaquantity : number = 0;
+  masalaquantity : number = 1;
   latitude : string;
   longitude : string;
   current_lat : string;
@@ -278,8 +278,8 @@ export class StockdetailPage implements OnInit {
 	   quantity: ['', [Validators.required]],
 	   cookingpurpose: ['', [Validators.required]],
 	   masala: ['', [Validators.required]],
-	   masalaquantity : ['', [Validators.required]],
-	   description: ['', [Validators.required]]
+	   masalaquantity : [''],
+	   description: ['']
 	});
 	
   get errorControl() {
@@ -311,11 +311,15 @@ export class StockdetailPage implements OnInit {
   }
   
   addToCart() {
-	  if(this.authService.getIsUserLoggedIn()) {
+	  
 	  this.isSubmitted = true;
 	  if (!this.orderData.valid) {
 		return false;
 	  } else {
+		if(!this.authService.getIsUserLoggedIn()) {
+		  this.presentAlert('Login','We are advising you to Login to make sure all the transactions are safe with us.');
+		  return;
+		}
 		this.loading.present();		  
 		firebase.database().ref('/orders').push({
 			"productcode": this.productcode,
@@ -336,9 +340,6 @@ export class StockdetailPage implements OnInit {
 		  }).then(res => { this.presentAlert('Cart','Product added to cart successfully.');})
 			.catch(res => {console.log(res)})
 	  }
-	 } else {
-		 this.presentAlert('Login','We are advising you to Login to make sure all the transactions are safe with us.');
-	 }
 	 this.loading.dismiss();
   }
   

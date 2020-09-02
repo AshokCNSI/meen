@@ -133,6 +133,10 @@ const routes: Routes = [
   {
     path: 'deliverylocation',
     loadChildren: () => import('./deliverylocation/deliverylocation.module').then( m => m.DeliverylocationPageModule)
+  },
+  {
+    path: 'sellerproducts/:selleruid',
+    loadChildren: () => import('./sellerproducts/sellerproducts.module').then( m => m.SellerproductsPageModule)
   }
 
 ];
