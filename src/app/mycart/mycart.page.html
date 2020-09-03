@@ -8,8 +8,8 @@
 </ion-header>
 
 <ion-content>
-<ng-container *ngFor="let p of cartList;">
-<ion-item-sliding>
+<ng-container *ngIf="cartList.length > 0">
+<ion-item-sliding *ngFor="let p of cartList;">
 	<ion-item (click)="routeStockDetail(p.index,p.productcode,p.currentstatus)">
 	  <ion-thumbnail slot="start">
 		<img alt="M" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
@@ -42,8 +42,42 @@
       </ion-item-option>
     </ion-item-options>
 </ion-item-sliding>
+
+
 </ng-container>
 <ng-container *ngIf="cartList.length == 0">
-	<p class="no-items">No items available</p>
+	<ion-row *ngFor="let i of Arr(skeletoncount).fill(1)">
+		<ion-col>
+			<ion-card>
+				<ion-skeleton-text animated></ion-skeleton-text>
+				<ion-card-header>
+				  <ion-card-subtitle><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-subtitle>
+				  <ion-card-title><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-title>
+				  
+				</ion-card-header>
+				<italic style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+				  <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+				</italic>
+				
+				<ion-card-header>
+				  <ion-card-subtitle><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-subtitle>
+				  <ion-card-subtitle><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-subtitle>
+				</ion-card-header>
+			</ion-card>
+		</ion-col>
+	</ion-row>
 </ng-container>
+
 </ion-content>
+<ion-footer class="ion-no-border" *ngIf="cartList.length > 0">
+  <ion-toolbar>
+    <ion-row>
+	  <ion-col style="text-align:center;">
+		 <ion-button expand="block" color="danger" (click)="clearCart()">Clear Cart</ion-button>
+	  </ion-col>
+	  <ion-col style="text-align:center;" [routerLink]="['/billingdetails']">
+		 <ion-button expand="block" color="success">Order Review</ion-button>
+	  </ion-col>
+	</ion-row>
+  </ion-toolbar>
+</ion-footer>

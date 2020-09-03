@@ -137,6 +137,10 @@ const routes: Routes = [
   {
     path: 'sellerproducts/:selleruid',
     loadChildren: () => import('./sellerproducts/sellerproducts.module').then( m => m.SellerproductsPageModule)
+  },
+  {
+    path: 'billingdetails',
+    loadChildren: () => import('./billingdetails/billingdetails.module').then( m => m.BillingdetailsPageModule)
   }
 
 ];

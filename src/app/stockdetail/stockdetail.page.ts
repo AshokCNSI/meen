@@ -118,6 +118,7 @@ export class StockdetailPage implements OnInit {
   current_long : string;
   sellerlatitude : string;
   sellerlongitude : string;
+  cartList = [];
   async presentModal() {
     const modal = await this.modalController.create({
       component: MyaddressPage,
@@ -154,6 +155,25 @@ export class StockdetailPage implements OnInit {
     await alert.present();
   }
   
+  async presentAlertWithCancel(status, msg) {
+    const alert = await this.alertCtrl.create({
+      header: status,
+      message: msg,
+      buttons: [{
+          text: 'Ok',
+          handler: () => {
+		  if(status == 'ClearCart') {
+			this.cartList.forEach(function(key,value){
+				   firebase.database().ref('/cart/'+key.index).remove().then(data => {
+					  
+				   })
+			   })
+		  } 
+	  }},{text : 'Cancel'}]
+    });
+    await alert.present();
+  }
+  
   ngOnInit() {
 	  this.loading.present();
 	   this.geolocation.getCurrentPosition().then((resp) => {
@@ -162,6 +182,29 @@ export class StockdetailPage implements OnInit {
 			
 		}).catch((error) => {
 			
+		});
+		
+		let getCartDetail = this.db.list('/cart', ref => ref.orderByChild('createdby').equalTo(this.authService.getUserID()));
+		getCartDetail.snapshotChanges().subscribe(res => { 
+		  if(res != null) {
+			  this.cartList = [];
+			  res.forEach(item => {
+				let a = item.payload.toJSON();
+					a['index'] = item.key;
+					firebase.database().ref('/productsforselling/'+a['orderedto']).once('value').then((snapshot) => {
+						if(snapshot != null) {
+							a['seller'] = snapshot.child('createdby').val();
+							firebase.database().ref('/properties/products/'+snapshot.child('productcode').val()).once('value').then((snapshot) => {
+								if(snapshot != null) {
+									if(a['currentstatus'] == 'AC') {
+										this.cartList.push(a);
+									}
+								}
+							})
+						}
+					});
+				  })
+			  }
 		});
 	  firebase.database().ref('/properties/status').once('value').then((snapshot) => {
 		  if(snapshot != null) {
@@ -191,8 +234,9 @@ export class StockdetailPage implements OnInit {
 		}
 		
 		if(this.productVisibility != 'R') {
-			  firebase.database().ref('/orders/'+this.index).once('value').then((snapshot) => {
+			  firebase.database().ref('/cart/'+this.index).once('value').then((snapshot) => {
 				  this.masala = snapshot.child('masala').val();
+				  this.masalaquantity = snapshot.child('masalaquantity').val();
 				  this.quantity = snapshot.child('quantity').val();
 				  this.description = snapshot.child('description').val();
 				  this.cookingpurpose = snapshot.child('cookingpurpose').val();
@@ -319,19 +363,20 @@ export class StockdetailPage implements OnInit {
 		if(!this.authService.getIsUserLoggedIn()) {
 		  this.presentAlert('Login','We are advising you to Login to make sure all the transactions are safe with us.');
 		  return;
+		} else if(this.cartList.length != 0 && this.cartList[0].seller != this.seller) {
+		   this.presentAlertWithCancel('ClearCart','We found that this item is not belongs to the current seller. Press ok to clear the cart and try to add this item again.');
+		   return;
 		}
 		this.loading.present();		  
-		firebase.database().ref('/orders').push({
+		firebase.database().ref('/cart').push({
 			"productcode": this.productcode,
 			"quantity": this.orderData.value.quantity,
 			"masala": this.orderData.value.masala,
+			"masalaquantity" : this.orderData.value.masalaquantity,
 			"cookingpurpose": this.orderData.value.cookingpurpose,
 			"currentstatus": "AC",
 			"orderedto" : this.index,
 			"seller" : this.seller,
-			"order_latitude" : this.locationService.getLatitude(),
-			"order_longitude" : this.locationService.getLongitude(),
-			"order_location" : this.locationService.getCurrentLocation(),
 			"description" : this.orderData.value.description,
 			"createddate" : Date(),
 			"createdby":this.authService.getUserID(),
@@ -354,6 +399,7 @@ export class StockdetailPage implements OnInit {
 			"productcode": this.productcode,
 			"quantity": this.orderData.value.quantity,
 			"masala": this.orderData.value.masala,
+			"masalaquantity": this.orderData.value.masalaquantity,
 			"cookingpurpose": this.orderData.value.cookingpurpose,
 			"currentstatus": "ORD",
 			"description" : this.orderData.value.description,

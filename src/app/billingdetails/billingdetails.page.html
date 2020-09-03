@@ -1,0 +1,123 @@
+<ion-header translucent>
+  <ion-toolbar>
+	<ion-buttons slot="start">
+		<ion-back-button defaultHref="/home"></ion-back-button>
+	</ion-buttons>
+    <ion-title>Billing</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<ng-container *ngIf="cartList.length > 0">
+<ng-container *ngFor="let p of cartList;">
+<ion-item (click)="routeStockDetail(p.index,p.productcode,p.currentstatus)">
+	<ion-card-header>
+		  <ion-card-title>{{p.title}}</ion-card-title>
+		  <ion-card-subtitle style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{p.details}}</ion-card-subtitle>
+		  <ion-card-subtitle>Ordered on {{p.modifieddate |  date:'MM/dd/yyyy'}}</ion-card-subtitle>
+	</ion-card-header>
+	
+</ion-item>
+<ion-item-divider>
+<ion-grid>
+  <ion-row>
+		  <ion-col>
+			 <ion-card-subtitle>{{p.quantity}} kg x {{p.price}}</ion-card-subtitle>
+		  </ion-col>
+		  <ion-col style="text-align:right;">
+			 <ion-card-subtitle>&#x20b9; {{p.quantity * p.price}}</ion-card-subtitle>
+		  </ion-col>
+	</ion-row>
+	<ion-row>
+		  <ion-col>
+			 <ion-card-subtitle>Discount</ion-card-subtitle>
+		  </ion-col>
+		  <ion-col style="text-align:right;">
+			 <ion-card-subtitle>&#x20b9; {{p.quantity * p.discount}}</ion-card-subtitle>
+		  </ion-col>
+	</ion-row>
+	<ion-row *ngIf="p.masala == 'Y' && p.masalaquantity">
+		  <ion-col>
+			 <ion-card-subtitle>Masala</ion-card-subtitle>
+		  </ion-col>
+		  <ion-col style="text-align:right;">
+			 <ion-card-subtitle>&#x20b9; {{p.masalaquantity * masalacharge}}</ion-card-subtitle>
+		  </ion-col>
+	</ion-row>
+	<ion-row>
+		  <ion-col>
+			 <ion-card-subtitle>Total</ion-card-subtitle>
+		  </ion-col>
+		  <ion-col style="text-align:right;">
+			 <ion-card-subtitle>&#x20b9; {{p.quantity * p.price - p.quantity * p.discount + ((p.masala == 'Y' && p.masalaquantity) ? (p.masalaquantity * masalacharge):0)}}</ion-card-subtitle>
+		  </ion-col>
+	</ion-row>
+</ion-grid>
+</ion-item-divider>
+</ng-container>
+<ion-item (click)="selectAddress()">
+	<ion-note slot="start">Delivering to</ion-note>
+	<ion-label *ngIf="!dindex">No Address Selected</ion-label>
+	<ion-label *ngIf="dindex">Click to change address</ion-label>
+</ion-item>
+<ion-card *ngIf="dindex">
+  <ion-card-header>
+	<ion-card-subtitle>{{dname}}</ion-card-subtitle>
+	<ion-card-title>{{dmobile}}</ion-card-title>
+	<ion-card-content>
+		{{dhouseno}}
+		{{dstreetname}}
+		{{dlandmark}}
+		<ion-buttons (click)="goToClientLocation()" *ngIf="(authService.getUserType() == 'D') && (oldStatus == 'IPD' || oldStatus == 'DS') && (sellerlatitude || latitude)">
+			<ion-button color="primary">
+			<ng-container *ngIf="(oldStatus == 'DS')">Click to go to Seller Location</ng-container>
+			<ng-container *ngIf="(oldStatus == 'IPD')"> Click to go to Customer Location</ng-container>
+			</ion-button>
+		</ion-buttons>
+	  </ion-card-content>
+  </ion-card-header>
+
+</ion-card>
+
+</ng-container>
+<ng-container *ngIf="cartList.length == 0">
+	<ion-row *ngFor="let i of Arr(skeletoncount).fill(1)">
+		<ion-col>
+			<ion-card>
+				<ion-skeleton-text animated></ion-skeleton-text>
+				<ion-card-header>
+				  <ion-card-subtitle><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-subtitle>
+				  <ion-card-title><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-title>
+				  
+				</ion-card-header>
+				<italic style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+				  <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+				</italic>
+				
+				<ion-card-header>
+				  <ion-card-subtitle><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-subtitle>
+				  <ion-card-subtitle><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-subtitle>
+				</ion-card-header>
+			</ion-card>
+		</ion-col>
+	</ion-row>
+</ng-container>
+
+</ion-content>
+<ion-footer class="ion-no-border" *ngIf="cartList.length > 0">
+  <ion-toolbar>
+	<ion-row>
+	  <ion-col>
+		 <ion-card-subtitle>Your Bill Amount</ion-card-subtitle>
+	  </ion-col>
+	  <ion-col style="text-align:right;">
+		 {{totalAmount}}
+	  </ion-col>
+	</ion-row>
+    <ion-row>
+	  <ion-col style="text-align:center;">
+		 <ion-button expand="block" color="success" [disabled]="!dindex" (click)="confirmOrder()">Confirm Order</ion-button>
+	  </ion-col>
+	</ion-row>
+  </ion-toolbar>
+</ion-footer>

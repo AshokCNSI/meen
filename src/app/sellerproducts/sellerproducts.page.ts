@@ -40,6 +40,7 @@ searchVal : string;
 productTempList = [];
 productstatus : string;
 productcode : string;
+selleruid : string;
   ngOnInit() {
 	  this.activatedRoute.queryParams.subscribe(params => {
 		  this.selleruid = this.activatedRoute.snapshot.params['selleruid'];

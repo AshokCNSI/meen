@@ -36,14 +36,14 @@ export class MycartPage implements OnInit {
 ) { 
   
   }
-  
+  Arr = Array;
+  skeletoncount : number = 10;
   orderRef: AngularFireObject<any>;
   isAdmin : boolean = false;
   cartList = [];
   ngOnInit() {
 	  this.isAdmin = this.authService.getIsAdmin();
-	  this.loading.present();
-	  let getCartDetail = this.db.list('/orders', ref => ref.orderByChild('createdby').equalTo(this.authService.getUserID()));
+	  let getCartDetail = this.db.list('/cart', ref => ref.orderByChild('createdby').equalTo(this.authService.getUserID()));
 	  getCartDetail.snapshotChanges().subscribe(res => { 
 		  if(res != null) {
 			  this.cartList = [];
@@ -70,7 +70,6 @@ export class MycartPage implements OnInit {
 			  })
 		  }
 	});
-	this.loading.dismiss();
   }
   
   async presentAlert(status, msg) {
@@ -95,7 +94,7 @@ export class MycartPage implements OnInit {
   }
   
   deleteThisItem(index) {
-	  firebase.database().ref('/orders/'+index).remove().then(data => {
+	  firebase.database().ref('/cart/'+index).remove().then(data => {
 		  this.presentAlert('Delete','Item has been successfully deleted.');
 	  })
   }
