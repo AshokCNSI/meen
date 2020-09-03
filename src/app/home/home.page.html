@@ -143,23 +143,16 @@
 		<p class="no-items">No Assignments available</p>
 	</ng-container>
 	<ng-container *ngIf="productList.length > 0">
-	<ion-row>
-		<ion-col>
-			<ion-card *ngFor="let p of productList; let i = index;" (click)="routeStockDetail(p.index,p.productcode,p.currentstatus)">
-				<img alt="M" class="center" src="{{productList[i].imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
-				<ion-card-header>
-				  <ion-card-subtitle>{{productList[i].title}}</ion-card-subtitle>
-				  <ion-card-title>&#x20b9; {{productList[i].price}}</ion-card-title>
-				</ion-card-header>
-				<ion-card-content style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-				  {{productList[i].details}}
-				</ion-card-content>
-				<ion-card-content style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-				  Pickup available within {{productList[i].distance}} km
-				</ion-card-content>
-			</ion-card>
-		</ion-col>
-	</ion-row>
+	<ion-item *ngFor="let p of productList;" [routerLink]="['/orderdetails/'+p.index]">
+	  <ion-card-header>
+		  <ion-card-title>Order reference - {{p.orderref}}</ion-card-title>
+		  <ion-card-subtitle>{{p.modifieddate |  date:'MM/dd/yyyy h:mm:ss a'}}</ion-card-subtitle>
+		  <ion-card-subtitle>&#x20b9;{{p.totalamount}}</ion-card-subtitle>
+		  <ion-card-content style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+			  Pickup available within {{p.distance}} km
+		  </ion-card-content>
+	  </ion-card-header>
+	</ion-item>
 	</ng-container>
 </ng-container>
 </ion-content>

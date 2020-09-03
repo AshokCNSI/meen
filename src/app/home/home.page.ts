@@ -242,29 +242,21 @@ export class HomePage implements OnInit {
 	loadData() {
 		this.menuCtrl.enable(true);
 		  if(this.authService.getUserType() == 'D') {
-			  firebase.database().ref('/orders/').once('value').then((snapshot) => { 
+			  firebase.database().ref('/orders/').orderByChild('currentstatus').equalTo('WFP').once('value').then((snapshot) => { 
 				  if(snapshot != null) {
 					  this.productList = [];
 					  snapshot.forEach(item => {
 						let a = item.toJSON();
 						a['index'] = item.key;
-						 firebase.database().ref('/productsforselling/'+a['orderedto']).once('value').then((snapshot) => {
+						 firebase.database().ref('/productsforselling/'+a['seller']).once('value').then((snapshot) => {
 							if(snapshot != null) {
-								a['price'] = snapshot.child('price').val();
-								a['productcode'] = snapshot.child('productcode').val();
-								a['seller'] = snapshot.child('createdby').val();
 								 firebase.database().ref('/profile/'+a['seller']).once('value').then((snapshot) => {
 									if(snapshot != null) {
 										let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),snapshot.child('latitude').val(),snapshot.child('longitude').val());
 										a['distance'] = Math.round(distance * 100) / 100;
 										 firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
 											if(snapshot != null) {
-												a['title'] = snapshot.child('title').val();
-												a['details'] = snapshot.child('details').val();
-												a['imagepath'] = snapshot.child('imagepath').val();
-												if(a['currentstatus'] == 'WFP') {
-													this.productList.push(a);
-												}
+												this.productList.push(a);
 											}
 										}).catch((error: any) => {
 											

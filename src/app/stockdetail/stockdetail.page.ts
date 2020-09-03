@@ -388,43 +388,29 @@ export class StockdetailPage implements OnInit {
 	 this.loading.dismiss();
   }
   
-  orderConfirm() {
-	  if(!this.isProfileCreated) {
+  updateCart() {
 	  this.isSubmitted = true;
 	  if (!this.orderData.valid) {
 		return false;
 	  } else {
-		this.loading.present();			  
-		firebase.database().ref('/orders/'+this.index).update({
-			"productcode": this.productcode,
+		
+		this.loading.present();		  
+		firebase.database().ref('/cart/'+this.index).update({
 			"quantity": this.orderData.value.quantity,
 			"masala": this.orderData.value.masala,
-			"masalaquantity": this.orderData.value.masalaquantity,
+			"masalaquantity" : this.orderData.value.masalaquantity,
 			"cookingpurpose": this.orderData.value.cookingpurpose,
-			"currentstatus": "ORD",
 			"description" : this.orderData.value.description,
-			"modifieddate":new Date(),
-			"modifiedby":this.authService.getUserID(),
-			"finalprice":(this.price * this.quantity + this.delieverycharge),
-			"actualprice":(this.price + this.discountprice),
-			"sellingprice":(this.price),
-			"discountprice":(this.discountprice),
-			"totalprice":(this.price * this.quantity),
-			"deliverycharge":(this.delieverycharge),
-			"masalacharge":(this.masalacharge),
-			"masalatotalcharge":(this.masala == 'Y' ? this.quantity * this.masalacharge : 0),
-			"deliveryaddress" : this.dindex
-		  }).then(
-		   res => 
-		   {
-			   this.presentAlert('Ordered','Your item has been successfully ordered. Our executive will call you shortly.');
-		   }
-		 )
-		}
-	  } else {
-		  this.presentAlert('Profile','We are advising you to update profile to make sure all the transactions are safe with us.');
+			"modifieddate": Date(),
+			"modifiedby":this.authService.getUserID()
+		  }).then(res => { this.presentAlert('Cart','Product Updated to cart successfully.');})
+			.catch(res => {console.log(res)})
 	  }
-	  this.loading.dismiss();	
+	 this.loading.dismiss();
+  }
+  
+  clearCart() {
+	 this.presentAlertWithCancel('ClearCart','We found that this item is not belongs to the current seller. Press ok to clear the cart and try to add this item again.');
   }
   
   updateStatus() {

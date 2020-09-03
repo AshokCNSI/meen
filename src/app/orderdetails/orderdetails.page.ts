@@ -13,17 +13,19 @@ import { AuthenticateService } from '../authentication.service';
 import { LoadingService } from '../loading.service';
 import { MyaddressPage } from '../myaddress/myaddress.page';
 import { ModalController } from '@ionic/angular';
+import { DeliverylocationPage } from '../deliverylocation/deliverylocation.page';
+import { Location } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
 
 @Component({
-  selector: 'app-billingdetails',
-  templateUrl: './billingdetails.page.html',
-  styleUrls: ['./billingdetails.page.scss'],
+  selector: 'app-orderdetails',
+  templateUrl: './orderdetails.page.html',
+  styleUrls: ['./orderdetails.page.scss'],
 })
-export class BillingdetailsPage implements OnInit {
+export class OrderdetailsPage implements OnInit {
 
   constructor(
   public alertCtrl: AlertController, 
@@ -35,7 +37,8 @@ export class BillingdetailsPage implements OnInit {
   private routerService: RouterserviceService,
   private authService: AuthenticateService,
   public loading: LoadingService,
-  private modalController : ModalController
+  private modalController : ModalController,
+  private location : Location
 ) { 
   
   }
@@ -53,62 +56,66 @@ export class BillingdetailsPage implements OnInit {
   delieverycharge : number;
   masalacharge : number;
   totalAmount : number = 0;
+  productVisibility : string; 
+  oldStatus : string;
+  statusList = [];
+  assignedto : string;
   latitude : string;
   longitude : string;
   sellerlatitude : string;
   sellerlongitude : string;
-  
+  orderid : string;
+  seller : string;
   ngOnInit() {
 	  this.isAdmin = this.authService.getIsAdmin();
-	  
-	  firebase.database().ref('/profile/'+this.authService.getUserID()).once('value').then((snapshot) => {
+	  firebase.database().ref('/properties/status').once('value').then((snapshot) => {
 		  if(snapshot != null) {
-			  firebase.database().ref('/addressbook/'+snapshot.child('deliveryaddress').val()).once('value').then((snapshot) => {
-				if(snapshot != null) {
-					this.dindex = snapshot.key;
-					this.dname = snapshot.child('name').val();
-					this.dmobile = snapshot.child('mobile').val();
-					this.dhouseno = snapshot.child('houseno').val();
-					this.dstreetname = snapshot.child('streetname').val();
-					this.dlandmark = snapshot.child('landmark').val();
-				}
-			});
-		  }
-	  });
-	  
-	  firebase.database().ref('/properties/prop').once('value').then((snapshot) => {
-		  this.delieverycharge = snapshot.child('delieverycharge').val();
-		  this.masalacharge = snapshot.child('masalacharge').val();
-	  });
-	  
-	  firebase.database().ref('/cart').orderByChild('createdby').equalTo(this.authService.getUserID()).once('value').then((snapshot) => {
-		  if(snapshot != null) {
-			  this.cartList = [];
-			  snapshot.forEach(item => {
-				let a = item.toJSON();
-				a['index'] = item.key;
-				firebase.database().ref('/productsforselling/'+a['orderedto']).once('value').then((snapshot) => {
-					if(snapshot != null) {
-						a['price'] = snapshot.child('price').val();
-						a['discount'] = snapshot.child('discount').val() == 'Y' ? snapshot.child('discountprice').val() : 0;
-						a['productcode'] = snapshot.child('productcode').val();
-						a['seller'] = snapshot.child('createdby').val();
-						firebase.database().ref('/properties/products/'+snapshot.child('productcode').val()).once('value').then((snapshot) => {
-							if(snapshot != null) {
-								a['title'] = snapshot.child('title').val();
-								a['details'] = snapshot.child('details').val();
-								a['imagepath'] = snapshot.child('imagepath').val();
-								if(a['currentstatus'] == 'AC') {
-									this.totalAmount = this.totalAmount + a['quantity'] * a['price'] - a['quantity'] * a['discount'] + ((a['masala'] == 'Y' && a['masalaquantity']) ? (a['masalaquantity'] * this.masalacharge):0);
-									this.cartList.push(a);
-								}
-							}
-						})
-					}
-				});
+			  snapshot.forEach(item =>{
+				  let a = item.toJSON();
+				  this.statusList.push(a);
 			  })
 		  }
-	});
+	  });
+	  this.activatedRoute.queryParams.subscribe(params => {
+		  this.orderid = this.activatedRoute.snapshot.params['orderid'];
+		  firebase.database().ref('/orders/'+this.orderid).once('value').then((snapshot) => {
+			  if(snapshot != null) {
+					firebase.database().ref('/addressbook/'+snapshot.child('deliveryaddress').val()).once('value').then((snapshot) => {
+						if(snapshot != null) {
+							this.dindex = snapshot.key;
+							this.dname = snapshot.child('name').val();
+							this.dmobile = snapshot.child('mobile').val();
+							this.dhouseno = snapshot.child('houseno').val();
+							this.dstreetname = snapshot.child('streetname').val();
+							this.dlandmark = snapshot.child('landmark').val();
+							this.latitude = snapshot.child('latitude').val();
+							this.longitude = snapshot.child('longitude').val();
+						}
+					});
+					this.delieverycharge = snapshot.child('delieverycharge').val();
+					this.masalacharge = snapshot.child('masalacharge').val();
+					this.totalAmount = snapshot.child('totalamount').val();
+					this.productVisibility = snapshot.child('currentstatus').val();
+					this.oldStatus = snapshot.child('currentstatus').val();
+					this.seller = snapshot.child('seller').val();
+					this.assignedto = snapshot.child('assignedto').val();
+					snapshot.child('items').forEach(item => {
+						let a = item.toJSON();
+						this.cartList.push(a);
+					})
+					
+					firebase.database().ref('/profile/'+this.seller).once('value').then((snapshot) => {
+					if(snapshot != null) {
+						this.sellerlatitude = snapshot.child('latitude').val();
+						this.sellerlongitude = snapshot.child('longitude').val();
+					}
+				}).catch((error: any) => {
+					
+				});
+			  }
+		  });
+	  });
+	  
   }
   
   async presentAlert(status, msg) {
@@ -118,8 +125,10 @@ export class BillingdetailsPage implements OnInit {
       buttons: [{
           text: 'Ok',
           handler: () => {
-            if(status == 'Ordered'){
+            if(this.authService.getUserType() == 'S'){
 				this.navController.navigateRoot('/orders');
+			} else if(this.authService.getUserType() == 'D'){
+				this.navController.navigateRoot('/myassignments');
 			} 
 	  }}]
     });
@@ -185,6 +194,49 @@ export class BillingdetailsPage implements OnInit {
 			   })
 			   this.presentAlert('Ordered','Your item has been successfully ordered. Our executive will call you shortly.');
 		   })
+  }
+  
+  updateOrder() {
+	  this.loading.present();	
+	  firebase.database().ref('/orders/'+this.orderid).update({
+		"currentstatus": this.productVisibility,
+		"modifieddate":new Date(),
+		"modifiedby":this.authService.getUserID(),
+		"assignedto" : this.productVisibility == 'DS' || (this.assignedto == this.authService.getUserID() && this.productVisibility != 'WFP') ? this.authService.getUserID() : ""
+	  }).then(
+	   res => 
+	   {
+		   this.presentAlert('Status','Status updated successfully.');
+	   }
+	 )
+	 this.loading.dismiss();	
+  }
+  
+  cancelOrder() {
+	  this.loading.present();	
+	  firebase.database().ref('/orders/'+this.orderid).update({
+		"currentstatus": 'CL',
+		"modifieddate":new Date(),
+		"modifiedby":this.authService.getUserID()
+	  }).then(
+	   res => 
+	   {
+		   this.presentAlert('Status','Order cancelled successfully.');
+	   }
+	 )
+	 this.loading.dismiss();	
+  }
+  
+  async goToClientLocation() {
+	const modal = await this.modalController.create({
+	  component: DeliverylocationPage,
+	  cssClass: 'my-custom-class',
+	  componentProps: {
+		destinationlatitude: this.productVisibility == 'DS' ? this.sellerlatitude : this.latitude,
+		destinationlongitude: this.productVisibility == 'DS' ? this.sellerlongitude : this.longitude
+	  }
+	});
+	await modal.present();
   }
   
 }

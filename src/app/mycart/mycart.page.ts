@@ -98,4 +98,27 @@ export class MycartPage implements OnInit {
 		  this.presentAlert('Delete','Item has been successfully deleted.');
 	  })
   }
+  
+  clearCart() {
+	 this.presentAlertWithCancel('ClearCart','We found that this item is not belongs to the current seller. Press ok to clear the cart and try to add this item again.');
+  }
+  
+  async presentAlertWithCancel(status, msg) {
+    const alert = await this.alertCtrl.create({
+      header: status,
+      message: msg,
+      buttons: [{
+          text: 'Ok',
+          handler: () => {
+		  if(status == 'ClearCart') {
+			this.cartList.forEach(function(key,value){
+				   firebase.database().ref('/cart/'+key.index).remove().then(data => {
+					  
+				   })
+			   })
+		  } 
+	  }},{text : 'Cancel'}]
+    });
+    await alert.present();
+  }
 }

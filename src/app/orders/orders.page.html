@@ -10,15 +10,11 @@
 <ion-content>
 
 <ng-container *ngFor="let p of orderList;">
-	<ion-item (click)="routeStockDetail(p.index,p.productcode,p.currentstatus)">
-	  <ion-thumbnail slot="start">
-		<img alt="M" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
-	  </ion-thumbnail>
+	<ion-item [routerLink]="['/orderdetails/'+p.index]">
 	  <ion-card-header>
-		  <ion-card-title>{{p.title}}</ion-card-title>
-		  <ion-card-content style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{p.details}}</ion-card-content>
+		  <ion-card-title>Order reference - {{p.orderref}}</ion-card-title>
 		  <ion-card-subtitle>{{p.modifieddate |  date:'MM/dd/yyyy h:mm:ss a'}}</ion-card-subtitle>
-		  <ion-card-subtitle>{{p.quantity}} x &#x20b9;{{p.totalprice}}</ion-card-subtitle>
+		  <ion-card-subtitle>&#x20b9;{{p.totalamount}}</ion-card-subtitle>
 	  </ion-card-header>
 	</ion-item>
 	<ion-item>

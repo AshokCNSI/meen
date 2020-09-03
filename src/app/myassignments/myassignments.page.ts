@@ -45,12 +45,16 @@ export class MyassignmentsPage implements OnInit {
 			  })
 		  }
 	  });
-	  let getCartDetail = this.db.list('/orders', ref => ref.orderByChild('assignedto').equalTo(this.authService.getUserID()));
-	  getCartDetail.snapshotChanges().subscribe(res => { 
-		  if(res != null) {
+	  
+  }
+  
+    
+  ionViewWillEnter() {
+	firebase.database().ref('/orders').orderByChild('assignedto').equalTo(this.authService.getUserID()).once('value').then((snapshot) => {
+		  if(snapshot != null) {
 			  this.cartList = [];
-			  res.forEach(item => {
-				let a = item.payload.toJSON();
+			  snapshot.forEach(item => {
+				let a = item.toJSON();
 				a['index'] = item.key;
 				firebase.database().ref('/productsforselling/'+a['orderedto']).once('value').then((snapshot) => {
 					if(snapshot != null) {
@@ -71,7 +75,6 @@ export class MyassignmentsPage implements OnInit {
 		  }
 	});
   }
-  
   async presentAlert(status, msg) {
     const alert = await this.alertCtrl.create({
       header: status,

@@ -62,17 +62,7 @@ export class OrdersPage implements OnInit {
 				  res.forEach(item => {
 					let a = item.payload.toJSON();
 					a['index'] = item.key;
-					a['price'] = a['sellingprice'];
-					firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
-							if(snapshot != null) {
-								a['title'] = snapshot.child('title').val();
-								a['details'] = snapshot.child('details').val();
-								a['imagepath'] = snapshot.child('imagepath').val();
-								if(a['currentstatus'] != 'AC') {
-									this.orderList.push(a);
-								}
-							}
-						})
+					this.orderList.push(a);
 				  })
 			  }
 			  	this.orderList.sort(this.comp);
@@ -85,17 +75,7 @@ export class OrdersPage implements OnInit {
 				  res.forEach(item => {
 					let a = item.payload.toJSON();
 					a['index'] = item.key;
-					a['price'] = a['sellingprice'];
-					firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
-							if(snapshot != null) {
-								a['title'] = snapshot.child('title').val();
-								a['details'] = snapshot.child('details').val();
-								a['imagepath'] = snapshot.child('imagepath').val();
-								if(a['currentstatus'] != 'AC') {
-									this.orderList.push(a);
-								}
-							}
-						})
+					this.orderList.push(a);					
 				  })
 			  }
 			  	this.orderList.sort(this.comp);
