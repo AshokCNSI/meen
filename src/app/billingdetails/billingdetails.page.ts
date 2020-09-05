@@ -179,7 +179,9 @@ export class BillingdetailsPage implements OnInit {
 				   .then(res => {
 					   
 				   })
-				   firebase.database().ref('/cart/'+key.index).remove().then(data => {
+				   firebase.database().ref('/cart/'+key.index).update({
+					   "currentstatus" : 'ORD'
+				   }).then(data => {
 					  
 				   })
 			   })

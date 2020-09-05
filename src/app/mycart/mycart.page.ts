@@ -40,6 +40,7 @@ export class MycartPage implements OnInit {
   skeletoncount : number = 10;
   orderRef: AngularFireObject<any>;
   isAdmin : boolean = false;
+  shownoitems : boolean = false;
   cartList = [];
   ngOnInit() {
 	  this.isAdmin = this.authService.getIsAdmin();
@@ -68,6 +69,9 @@ export class MycartPage implements OnInit {
 					}
 				});
 			  })
+			  if(this.cartList.length == 0) {
+				  this.shownoitems = true;
+			  }
 		  }
 	});
   }

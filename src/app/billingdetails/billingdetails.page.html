@@ -11,6 +11,9 @@
 <ng-container *ngIf="cartList.length > 0">
 <ng-container *ngFor="let p of cartList;">
 <ion-item (click)="routeStockDetail(p.index,p.productcode,p.currentstatus)">
+	<ion-thumbnail slot="start">
+		<img alt="M" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+	  </ion-thumbnail>
 	<ion-card-header>
 		  <ion-card-title>{{p.title}}</ion-card-title>
 		  <ion-card-subtitle style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{p.details}}</ion-card-subtitle>
@@ -57,10 +60,10 @@
 </ng-container>
 <ion-item (click)="selectAddress()">
 	<ion-note slot="start">Delivering to</ion-note>
-	<ion-label *ngIf="!dindex">No Address Selected</ion-label>
-	<ion-label *ngIf="dindex">Click to change address</ion-label>
+	<ion-label *ngIf="!dmobile">No Address Selected</ion-label>
+	<ion-label *ngIf="dmobile">Click to change address</ion-label>
 </ion-item>
-<ion-card *ngIf="dindex">
+<ion-card *ngIf="dmobile">
   <ion-card-header>
 	<ion-card-subtitle>{{dname}}</ion-card-subtitle>
 	<ion-card-title>{{dmobile}}</ion-card-title>

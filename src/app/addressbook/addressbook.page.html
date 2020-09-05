@@ -3,7 +3,10 @@
 	<ion-buttons slot="start">
 		<ion-back-button defaultHref="home"></ion-back-button>
 	</ion-buttons>
-    <ion-title>Address Book</ion-title>
+    <ion-title>Address Book
+		<p class="subtitle">Swipe left to set/delete address</p>
+	</ion-title>
+	
   </ion-toolbar>
 </ion-header>
 
@@ -43,8 +46,7 @@
 
 <ng-container *ngIf="addressList.length > 0">
 <ion-list>
-  <ion-radio-group [(ngModel)]="customeraddress">
-  <ion-item-sliding *ngFor="let p of addressList;" (click)="selectAddress(p)">
+  <ion-item-sliding *ngFor="let p of addressList;">
   <ion-item>
 	<ion-card-header>
 		  <ion-card-title>{{p.name}}</ion-card-title>
@@ -52,24 +54,26 @@
 		  <ion-card-subtitle>{{p.houseno}}, {{p.streetname}}, {{p.landmark}}</ion-card-subtitle>
 		  
 	</ion-card-header>
-      <ion-radio slot="start" value="{{p.index}}"></ion-radio>
     </ion-item>
 	<ion-item-options>
+	  <ion-item-option color="primary" (click)="selectAddress(p)">
+        <ion-icon slot="start" name="compass-outline"></ion-icon>
+        Set
+      </ion-item-option>
       <ion-item-option color="danger" (click)="deleteAddress(p.index)">
         <ion-icon slot="start" name="trash"></ion-icon>
         Delete
       </ion-item-option>
     </ion-item-options>
   </ion-item-sliding>
-  </ion-radio-group>
 </ion-list>
 </ng-container>
 <ng-container *ngIf="addressList.length == 0">
 	<p class="no-items">No address available</p>
 </ng-container>
-<ion-row>
-  <ion-col style="text-align:center;">
-	 <ion-button expand="block" [routerLink]="['/addaddress']">Add Address</ion-button>
-  </ion-col>
-</ion-row>
 </ion-content>
+<ion-footer>
+	<ion-toolbar>
+		<ion-button expand="block" [routerLink]="['/addaddress']">Add Address</ion-button>
+	</ion-toolbar>
+</ion-footer>

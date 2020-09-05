@@ -10,7 +10,10 @@
 <ion-content>
 <ng-container *ngIf="cartList.length > 0">
 <ng-container *ngFor="let p of cartList;">
-<ion-item>
+<ion-item (click)="routeStockDetail(p.index,p.productcode,p.currentstatus)">
+	<ion-thumbnail slot="start">
+		<img alt="M" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+	  </ion-thumbnail>
 	<ion-card-header>
 		  <ion-card-title>{{p.title}}</ion-card-title>
 		  <ion-card-subtitle style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{p.details}}</ion-card-subtitle>

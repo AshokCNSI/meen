@@ -89,7 +89,7 @@ export class RegisterPage implements OnInit {
           text: 'Ok',
           handler: () => {
             if(status == 'Success') {
-				this.navController.navigateRoot('/home');
+				
 			}
 	  }}]
     });

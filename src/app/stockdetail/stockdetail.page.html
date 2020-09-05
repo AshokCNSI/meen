@@ -55,34 +55,7 @@
 		</ion-item>
 	</form>
 </ng-container>
-<ng-container *ngIf="((productVisibility != 'R') && (authService.getUserType() == 'C' || authService.getUserType() == 'S'))
-		|| ((authService.getUserType() == 'D'))">
-    <ion-item (click)="selectAddress()" *ngIf="(productVisibility == 'AC')">
-		<ion-note slot="start">Delivering to</ion-note>
-		<ion-label *ngIf="!dindex && productVisibility == 'AC'">No Address Selected</ion-label>
-		<ion-label *ngIf="dindex && productVisibility == 'AC'">Click to change address</ion-label>
-	</ion-item>
-	<ion-card *ngIf="dindex">
-	  <ion-card-header>
-		<ion-card-subtitle>{{dname}}</ion-card-subtitle>
-		<ion-card-title>{{dmobile}}</ion-card-title>
-	  </ion-card-header>
-
-	  <ion-card-content>
-		{{dhouseno}}
-		{{dstreetname}}
-		{{dlandmark}}
-		<ion-buttons (click)="goToClientLocation()" *ngIf="(authService.getUserType() == 'D') && (oldStatus == 'IPD' || oldStatus == 'DS') && (sellerlatitude || latitude)">
-			<ion-button color="primary">
-			<ng-container *ngIf="(oldStatus == 'DS')">Click to go to Seller Location</ng-container>
-			<ng-container *ngIf="(oldStatus == 'IPD')"> Click to go to Customer Location</ng-container>
-			</ion-button>
-		</ion-buttons>
-	  </ion-card-content>
-	  
-	</ion-card>
-</ng-container>
-<ng-container *ngIf="(productVisibility == 'R' || productVisibility == 'AC') && (authService.getUserType() == 'C' || !authService.getIsUserLoggedIn())">
+<ng-container *ngIf="(authService.getUserType() != 'SA' || authService.getUserType() != 'A')">
 	<div *ngIf="isSubmitted && errorOrderControl.quantity.errors?.required"
 		class="validator-error">
 	  Enter quantity of the product.

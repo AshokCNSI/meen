@@ -131,18 +131,14 @@ export class HomePage implements OnInit {
 				if(snapshot != null) {
 					this.authService.setUserType(snapshot.child('usertype').val());  
 					this.authService.setUserName(snapshot.child('firstname').val()+" "+snapshot.child('lastname').val());
-					this.loading.present();
 					this.locationService.setCurrentLocationFn();
 					this.loadData();
-					this.loading.dismiss();
 				}
 			})
 		} else {
 			this.authService.setIsUserLoggedIn(false);
-			this.loading.present();
 			this.locationService.setCurrentLocationFn();
 			this.loadData();
-			this.loading.dismiss();
 		}
 	  }, err => {
 		  console.log('err', err);
@@ -157,30 +153,23 @@ export class HomePage implements OnInit {
 			  }
 		  }
 	  }).catch((error: any) => {
-			this.loading.dismiss();
 	  });
 	firebase.database().ref('/properties/fishcategory').once('value').then((snapshot) => {
-		  this.loading.present();
 		  this.fishcategortList = [];
 		  snapshot.forEach(item => {
 			let a = item.toJSON();
 			this.fishcategortList.push(a);
 		  })
-		  this.loading.dismiss();
 	  }).catch((error: any) => {
-			this.loading.dismiss();
 		});
 		
 	firebase.database().ref('/properties/instbanner').once('value').then((snapshot) => {
-		  this.loading.present();
 		  this.instBanner = [];
 		  snapshot.forEach(item => {
 			let a = item.toJSON();
 			this.instBanner.push(a);
 		  })
-		  this.loading.dismiss();
 	  }).catch((error: any) => {
-			this.loading.dismiss();
 		});
 }
   

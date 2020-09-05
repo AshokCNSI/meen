@@ -45,7 +45,7 @@
 
 
 </ng-container>
-<ng-container *ngIf="cartList.length == 0">
+<ng-container *ngIf="cartList.length == 0 && !shownoitems">
 	<ion-row *ngFor="let i of Arr(skeletoncount).fill(1)">
 		<ion-col>
 			<ion-card>
@@ -66,8 +66,11 @@
 			</ion-card>
 		</ion-col>
 	</ion-row>
+	
 </ng-container>
-
+<ng-container *ngIf="cartList.length == 0 && shownoitems">
+		<p class="no-items">No address available</p>
+	</ng-container>
 </ion-content>
 <ion-footer class="ion-no-border" *ngIf="cartList.length > 0">
   <ion-toolbar>
