@@ -11,6 +11,7 @@ import { filter } from 'rxjs/operators';
 import { RouterserviceService } from '../routerservice.service';
 import { AuthenticateService } from '../authentication.service';
 import { LoadingService } from '../loading.service';
+import { timer } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -63,17 +64,22 @@ export class MycartPage implements OnInit {
 								a['imagepath'] = snapshot.child('imagepath').val();
 								if(a['currentstatus'] == 'AC') {
 									this.cartList.push(a);
+									this.cartList.sort(function (a, b) {
+										return new Date(b.modifieddate) - new Date(a.modifieddate);
+									});
 								}
 							}
 						})
 					}
 				});
 			  })
-			  if(this.cartList.length == 0) {
-				  this.shownoitems = true;
-			  }
 		  }
 	});
+	timer(3000).subscribe(() => {
+		if(this.cartList.length == 0) {
+		  this.shownoitems = true;
+		}
+	})
   }
   
   async presentAlert(status, msg) {

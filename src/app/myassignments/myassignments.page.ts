@@ -36,7 +36,8 @@ export class MyassignmentsPage implements OnInit {
 
   cartList = [];
   statusList = [];
-  ngOnInit() {			
+  ngOnInit() {	
+		
 		firebase.database().ref('/properties/status').once('value').then((snapshot) => {
 		  if(snapshot != null) {
 			  snapshot.forEach(item =>{
@@ -45,16 +46,11 @@ export class MyassignmentsPage implements OnInit {
 			  })
 		  }
 	  });
-	  
-  }
-  
-    
-  ionViewWillEnter() {
-	firebase.database().ref('/orders').orderByChild('assignedto').equalTo(this.authService.getUserID()).once('value').then((snapshot) => {
+	  this.db.list('/orders', ref => ref.orderByChild('assignedto').equalTo(this.authService.getUserID())).snapshotChanges().subscribe(snapshot => { 
 		  if(snapshot != null) {
 			  this.cartList = [];
 			  snapshot.forEach(item => {
-				let a = item.toJSON();
+				let a = item.payload.toJSON();
 				a['index'] = item.key;
 				firebase.database().ref('/productsforselling/'+a['orderedto']).once('value').then((snapshot) => {
 					if(snapshot != null) {
@@ -67,13 +63,21 @@ export class MyassignmentsPage implements OnInit {
 								a['details'] = snapshot.child('details').val();
 								a['imagepath'] = snapshot.child('imagepath').val();
 								this.cartList.push(a);
+								this.cartList.sort(function (a, b) {
+									return new Date(b.modifieddate) - new Date(a.modifieddate);
+								});
 							}
 						})
 					}
 				});
 			  })
 		  }
-	});
+	})
+  }
+  
+    
+  ionViewWillEnter() {
+	
   }
   async presentAlert(status, msg) {
     const alert = await this.alertCtrl.create({

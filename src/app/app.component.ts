@@ -20,6 +20,7 @@ import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@io
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
 import { SplashPage } from './splash/splash.page';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -32,7 +33,7 @@ export class AppComponent implements OnInit {
   public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
   public menuList = [];
   userEmail = null;
- 
+  showSplash : boolean = true;
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -109,8 +110,8 @@ export class AppComponent implements OnInit {
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
-      //this.splashScreen.hide();
-	  this.openSplash();
+      this.splashScreen.hide();
+	  timer(3000).subscribe(() => this.showSplash = false)
     });
   }
   

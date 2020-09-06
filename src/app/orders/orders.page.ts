@@ -63,9 +63,11 @@ export class OrdersPage implements OnInit {
 					let a = item.payload.toJSON();
 					a['index'] = item.key;
 					this.orderList.push(a);
+					this.orderList.sort(function (a, b) {
+						return new Date(b.modifieddate) - new Date(a.modifieddate);
+					});
 				  })
 			  }
-			  	this.orderList.sort(this.comp);
 
 		});
 	} else {
@@ -75,11 +77,12 @@ export class OrdersPage implements OnInit {
 				  res.forEach(item => {
 					let a = item.payload.toJSON();
 					a['index'] = item.key;
-					this.orderList.push(a);					
+					this.orderList.push(a);	
+					this.orderList.sort(function (a, b) {
+						return new Date(b.modifieddate) - new Date(a.modifieddate);
+					});					
 				  })
 			  }
-			  	this.orderList.sort(this.comp);
-
 		});
 	  }
 	   this.loading.dismiss();

@@ -101,6 +101,9 @@ export class BillingdetailsPage implements OnInit {
 								if(a['currentstatus'] == 'AC') {
 									this.totalAmount = this.totalAmount + a['quantity'] * a['price'] - a['quantity'] * a['discount'] + ((a['masala'] == 'Y' && a['masalaquantity']) ? (a['masalaquantity'] * this.masalacharge):0);
 									this.cartList.push(a);
+									this.cartList.sort(function (a, b) {
+										return new Date(b.modifieddate) - new Date(a.modifieddate);
+									});
 								}
 							}
 						})
@@ -162,9 +165,9 @@ export class BillingdetailsPage implements OnInit {
   confirmOrder() {
 	  firebase.database().ref('/orders').push({
 			"orderref" : Math.floor(Date.now() / 1000),
-			"createddate" :  Date(),
+			"createddate" :  new Date().toLocaleString(),
 			"createdby" : this.authService.getUserID(),
-			"modifieddate": Date(),
+			"modifieddate": new Date().toLocaleString(),
 			"modifiedby":this.authService.getUserID(),
 			"totalamount" : this.totalAmount,
 			"deliveryaddress" : this.dindex,

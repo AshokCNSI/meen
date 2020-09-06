@@ -168,39 +168,12 @@ export class OrderdetailsPage implements OnInit {
 	this.presentModal();
   }
   
-  confirmOrder() {
-	  firebase.database().ref('/orders').push({
-			"orderref" : Math.floor(Date.now() / 1000),
-			"createddate" :  Date(),
-			"createdby" : this.authService.getUserID(),
-			"modifieddate": Date(),
-			"modifiedby":this.authService.getUserID(),
-			"totalamount" : this.totalAmount,
-			"deliveryaddress" : this.dindex,
-			"seller" : this.cartList[0].seller,
-			"deliverycharge" : this.delieverycharge,
-			"masalacharge" : this.masalacharge,
-			"currentstatus" : "ORD"
-		  }).then(res => {
-			   this.cartList.forEach(function(key,value){
-				   key['currentstatus'] = 'ORD';
-				   firebase.database().ref('/orders/'+res.key+"/"+"items/").push(key)
-				   .then(res => {
-					   
-				   })
-				   firebase.database().ref('/cart/'+key.index).remove().then(data => {
-					  
-				   })
-			   })
-			   this.presentAlert('Ordered','Your item has been successfully ordered. Our executive will call you shortly.');
-		   })
-  }
   
   updateOrder() {
 	  this.loading.present();	
 	  firebase.database().ref('/orders/'+this.orderid).update({
 		"currentstatus": this.productVisibility,
-		"modifieddate":new Date(),
+		"modifieddate":new Date().toLocaleString(),
 		"modifiedby":this.authService.getUserID(),
 		"assignedto" : this.productVisibility == 'DS' || (this.assignedto == this.authService.getUserID() && this.productVisibility != 'WFP') ? this.authService.getUserID() : ""
 	  }).then(

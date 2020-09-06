@@ -176,20 +176,12 @@ export class StockdetailPage implements OnInit {
   
   ngOnInit() {
 	  this.loading.present();
-	   this.geolocation.getCurrentPosition().then((resp) => {
-			this.current_lat = (resp.coords.latitude).toString();
-			this.current_long = (resp.coords.longitude).toString();
-			
-		}).catch((error) => {
-			
-		});
-		
-		let getCartDetail = this.db.list('/cart', ref => ref.orderByChild('createdby').equalTo(this.authService.getUserID()));
-		getCartDetail.snapshotChanges().subscribe(res => { 
-		  if(res != null) {
+	  if(this.authService.getIsUserLoggedIn()) {
+	    firebase.database().ref('/cart').orderByChild('createdby').equalTo(this.authService.getUserID()).once('value').then((snapshot) => {
+		  if(snapshot != null) {
 			  this.cartList = [];
-			  res.forEach(item => {
-				let a = item.payload.toJSON();
+			  snapshot.forEach(item => {
+				let a = item.toJSON();
 					a['index'] = item.key;
 					firebase.database().ref('/productsforselling/'+a['orderedto']).once('value').then((snapshot) => {
 						if(snapshot != null) {
@@ -206,6 +198,7 @@ export class StockdetailPage implements OnInit {
 				  })
 			  }
 		});
+	  }
 	  firebase.database().ref('/properties/status').once('value').then((snapshot) => {
 		  if(snapshot != null) {
 			  snapshot.forEach(item =>{
@@ -378,9 +371,9 @@ export class StockdetailPage implements OnInit {
 			"orderedto" : this.index,
 			"seller" : this.seller,
 			"description" : this.orderData.value.description,
-			"createddate" : Date(),
+			"createddate" : new Date().toLocaleString(),
 			"createdby":this.authService.getUserID(),
-			"modifieddate": Date(),
+			"modifieddate": new Date().toLocaleString(),
 			"modifiedby":this.authService.getUserID()
 		  }).then(res => { this.presentAlert('Cart','Product added to cart successfully.');})
 			.catch(res => {console.log(res)})
@@ -401,7 +394,7 @@ export class StockdetailPage implements OnInit {
 			"masalaquantity" : this.orderData.value.masalaquantity,
 			"cookingpurpose": this.orderData.value.cookingpurpose,
 			"description" : this.orderData.value.description,
-			"modifieddate": Date(),
+			"modifieddate": new Date().toLocaleString(),
 			"modifiedby":this.authService.getUserID()
 		  }).then(res => { this.presentAlert('Cart','Product Updated to cart successfully.');})
 			.catch(res => {console.log(res)})
@@ -433,7 +426,7 @@ export class StockdetailPage implements OnInit {
 	  this.loading.present();	
 	  firebase.database().ref('/orders/'+this.index).update({
 		"currentstatus": 'CL',
-		"modifieddate":new Date(),
+		"modifieddate":new Date().toLocaleString(),
 		"modifiedby":this.authService.getUserID(),
 		"finalprice":(this.price * this.quantity + prop.delieverycharge),
 		"actualprice":(this.price + this.discountprice),

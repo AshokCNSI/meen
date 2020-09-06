@@ -52,54 +52,23 @@ export class LocationserviceService {
 		useLocale: true,
 		maxResults: 5
 	};
-	this.authService.userDetails().subscribe(res => { 
-		
-		if (res !== null) {
-			firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
-				if(snapshot != null) {
-					if(snapshot.child('latitude').val() == null 
-						|| snapshot.child('latitude').val() == undefined 
-						|| snapshot.child('latitude').val() == "") {
-						this.navController.navigateRoot('/locationassigner');
-					} else {
-						this.setLatitude(snapshot.child('latitude').val());
-						this.setLongitude(snapshot.child('longitude').val());
-						this.setCurrentLocation(snapshot.child('lastlocation').val());
-					}
-				}
-			}).catch((error: any) => {
-				
+	if(this.getLatitude() == undefined || this.getLatitude() == "" 
+		|| this.getLongitude() == undefined || this.getLongitude() == ""
+		|| this.getCurrentLocation() == undefined || this.getCurrentLocation() == "") {
+		this.geolocation.getCurrentPosition().then((resp) => {
+			this.setLatitude((resp.coords.latitude).toString());
+			this.setLongitude((resp.coords.longitude).toString());
+			this.nativeGeocoder.reverseGeocode(resp.coords.latitude, resp.coords.longitude, options)
+			.then((result: NativeGeocoderResult[]) => {
+				this.setCurrentLocation(this.generateAddress(result[0]));
+			})
+			.catch((error: any) => {
+				//this.navController.navigateRoot('/locationfinder');
 			});
-		  } else {
-			  if(this.getLatitude() == undefined || this.getLatitude() == "" 
-				|| this.getLongitude() == undefined || this.getLongitude() == ""
-				|| this.getCurrentLocation() == undefined || this.getCurrentLocation() == "") {
-				  this.geolocation.getCurrentPosition().then((resp) => {
-						this.setLatitude((resp.coords.latitude).toString());
-						this.setLongitude((resp.coords.longitude).toString());
-						this.nativeGeocoder.reverseGeocode(resp.coords.latitude, resp.coords.longitude, options)
-						.then((result: NativeGeocoderResult[]) => {
-							this.setCurrentLocation(this.generateAddress(result[0]));
-						})
-						.catch((error: any) => {
-							this.setLatitude("");
-							this.setLongitude("");
-							this.setCurrentLocation("");
-							
-						});
-					}).catch((error: any) => {
-						this.setLatitude("");
-						this.setLongitude("");
-						this.setCurrentLocation("");
-						
-					});
-			  } 
-		  }	
-		}, err => {
-		  console.log('err', err);
-		  
+		}).catch((error: any) => {
+			//this.navController.navigateRoot('/locationfinder');
 		});
-		
+	}	
   }
   
   	generateAddress(addressObj) {
