@@ -145,6 +145,10 @@ const routes: Routes = [
   {
     path: 'orderdetails/:orderid',
     loadChildren: () => import('./orderdetails/orderdetails.module').then( m => m.OrderdetailsPageModule)
+  },
+  {
+    path: 'trackmyorder',
+    loadChildren: () => import('./trackmyorder/trackmyorder.module').then( m => m.TrackmyorderPageModule)
   }
 
 ];

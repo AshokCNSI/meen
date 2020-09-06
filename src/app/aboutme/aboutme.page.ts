@@ -27,7 +27,8 @@ export class AboutmePage implements OnInit {
     const alert = await this.alertCtrl.create({
       header: status,
       message: msg,
-      buttons: ['Ok']
+      buttons: ['Ok'],
+	  backdropDismiss : false,
     });
     await alert.present();
   }

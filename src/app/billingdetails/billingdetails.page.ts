@@ -102,7 +102,7 @@ export class BillingdetailsPage implements OnInit {
 									this.totalAmount = this.totalAmount + a['quantity'] * a['price'] - a['quantity'] * a['discount'] + ((a['masala'] == 'Y' && a['masalaquantity']) ? (a['masalaquantity'] * this.masalacharge):0);
 									this.cartList.push(a);
 									this.cartList.sort(function (a, b) {
-										return new Date(b.modifieddate) - new Date(a.modifieddate);
+										return (new Date(b.modifieddate).getTime() - new Date(a.modifieddate).getTime());
 									});
 								}
 							}
@@ -118,6 +118,7 @@ export class BillingdetailsPage implements OnInit {
     const alert = await this.alertCtrl.create({
       header: status,
       message: msg,
+	  backdropDismiss : false,
       buttons: [{
           text: 'Ok',
           handler: () => {

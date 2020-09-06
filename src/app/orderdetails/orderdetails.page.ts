@@ -122,6 +122,7 @@ export class OrderdetailsPage implements OnInit {
     const alert = await this.alertCtrl.create({
       header: status,
       message: msg,
+	  backdropDismiss : false,
       buttons: [{
           text: 'Ok',
           handler: () => {
@@ -129,6 +130,9 @@ export class OrderdetailsPage implements OnInit {
 				this.navController.navigateRoot('/orders');
 			} else if(this.authService.getUserType() == 'D'){
 				this.navController.navigateRoot('/myassignments');
+			} else {
+				console.log('/orderdetails/'+this.orderid)
+				this.router.navigate(['/orderdetails/'+this.orderid]);
 			} 
 	  }}]
     });

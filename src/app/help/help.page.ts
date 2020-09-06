@@ -44,6 +44,7 @@ comments : string;
     const alert = await this.alertCtrl.create({
       header: status,
       message: msg,
+	  backdropDismiss : false,
       buttons: ['Ok']
     });
     await alert.present();

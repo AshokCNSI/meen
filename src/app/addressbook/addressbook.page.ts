@@ -57,6 +57,7 @@ export class AddressbookPage implements OnInit {
     const alert = await this.alertCtrl.create({
       header: status,
       message: msg,
+	  backdropDismiss : false,
       buttons: ['Ok']
     });
     await alert.present();

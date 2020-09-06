@@ -64,7 +64,7 @@ export class OrdersPage implements OnInit {
 					a['index'] = item.key;
 					this.orderList.push(a);
 					this.orderList.sort(function (a, b) {
-						return new Date(b.modifieddate) - new Date(a.modifieddate);
+						return (new Date(b.modifieddate).getTime() - new Date(a.modifieddate).getTime());
 					});
 				  })
 			  }
@@ -79,7 +79,7 @@ export class OrdersPage implements OnInit {
 					a['index'] = item.key;
 					this.orderList.push(a);	
 					this.orderList.sort(function (a, b) {
-						return new Date(b.modifieddate) - new Date(a.modifieddate);
+						return (new Date(b.modifieddate).getTime() - new Date(a.modifieddate).getTime());
 					});					
 				  })
 			  }
@@ -92,6 +92,7 @@ export class OrdersPage implements OnInit {
     const alert = await this.alertCtrl.create({
       header: status,
       message: msg,
+	  backdropDismiss : false,
       buttons: [{
           text: 'Ok',
           handler: () => {

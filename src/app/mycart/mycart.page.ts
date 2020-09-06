@@ -65,7 +65,7 @@ export class MycartPage implements OnInit {
 								if(a['currentstatus'] == 'AC') {
 									this.cartList.push(a);
 									this.cartList.sort(function (a, b) {
-										return new Date(b.modifieddate) - new Date(a.modifieddate);
+										return (new Date(b.modifieddate).getTime() - new Date(a.modifieddate).getTime());
 									});
 								}
 							}
@@ -86,6 +86,7 @@ export class MycartPage implements OnInit {
     const alert = await this.alertCtrl.create({
       header: status,
       message: msg,
+	  backdropDismiss : false,
       buttons: [{
           text: 'Ok',
           handler: () => {
@@ -117,6 +118,7 @@ export class MycartPage implements OnInit {
     const alert = await this.alertCtrl.create({
       header: status,
       message: msg,
+	  backdropDismiss : false,
       buttons: [{
           text: 'Ok',
           handler: () => {
