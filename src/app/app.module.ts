@@ -36,13 +36,13 @@ import { StarRatingModule } from 'ionic5-star-rating';
   entryComponents: [],
   imports: [
     BrowserModule,
+	BrowserAnimationsModule,
     IonicModule.forRoot(),
     AppRoutingModule,
 	AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFireDatabaseModule,
     AngularFireStorageModule,
-	BrowserAnimationsModule,
 	StarRatingModule
   ],
   providers: [

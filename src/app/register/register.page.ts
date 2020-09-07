@@ -9,6 +9,7 @@ import * as firebase from 'firebase';
 import { AuthenticateService } from '../authentication.service';
 import {  MenuController } from '@ionic/angular';
 import { LoadingService } from '../loading.service';
+import { ModalController, NavParams } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +32,11 @@ export class RegisterPage implements OnInit {
   private navController: NavController, 
   private router: Router,
   private menuCtrl : MenuController,
-  public loading: LoadingService) { }
+  public loading: LoadingService,
+  public modalController: ModalController,
+  private navParams: NavParams) { 
+	this.pagemode = this.navParams.data.pagemode;
+  }
 
   enableseller : string;
   ngOnInit() {
@@ -90,7 +95,11 @@ export class RegisterPage implements OnInit {
           text: 'Ok',
           handler: () => {
             if(status == 'Success') {
-				
+				if(this.pagemode == 'M') {
+					this.modalController.dismiss();
+				} else {
+					this.navController.navigateRoot('/home');
+				}
 			}
 	  }}]
     });
@@ -102,7 +111,7 @@ export class RegisterPage implements OnInit {
 	   password: ['', [Validators.required, Validators.minLength(8)]],
 	   firstname: ['', [Validators.required]],
 	   lastname: ['', [Validators.required]],
-	   usertype: ['', [Validators.required]],
+	   usertype: ['', []],
 	   shopname: ['', this.usertype == 'S' ? [Validators.required] : []],
 	   mobilenumber: ['', Validators.compose([Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern('^[0-9]+$')])],
 	   street1: ['', [Validators.required]],

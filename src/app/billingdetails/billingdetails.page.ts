@@ -57,6 +57,7 @@ export class BillingdetailsPage implements OnInit {
   longitude : string;
   sellerlatitude : string;
   sellerlongitude : string;
+  orderId : string;
   
   ngOnInit() {
 	  this.isAdmin = this.authService.getIsAdmin();
@@ -123,7 +124,7 @@ export class BillingdetailsPage implements OnInit {
           text: 'Ok',
           handler: () => {
             if(status == 'Ordered'){
-				this.navController.navigateRoot('/orders');
+				this.navController.navigateRoot('/trackmyorder/'+this.orderId+'/0');
 			} 
 	  }}]
     });
@@ -177,6 +178,7 @@ export class BillingdetailsPage implements OnInit {
 			"masalacharge" : this.masalacharge,
 			"currentstatus" : "ORD"
 		  }).then(res => {
+			   this.orderId = res.key;
 			   this.cartList.forEach(function(key,value){
 				   key['currentstatus'] = 'ORD';
 				   firebase.database().ref('/orders/'+res.key+"/"+"items/").push(key)

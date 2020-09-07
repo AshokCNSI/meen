@@ -9,6 +9,7 @@ import { NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AuthenticateService } from '../authentication.service';
 import {  MenuController } from '@ionic/angular';
+import { ModalController, NavParams } from '@ionic/angular';
 import { LoadingService } from '../loading.service';
 
 @Injectable({
@@ -29,7 +30,11 @@ export class LoginPage implements OnInit {
   private router: Router, 
   private authService: AuthenticateService,
   private menuCtrl : MenuController,
-  public loading: LoadingService) { }
+  public loading: LoadingService,
+  public modalController: ModalController,
+  private navParams: NavParams) { 
+	this.pagemode = this.navParams.data.pagemode;
+  }
 
   ngOnInit() {
 	  this.menuCtrl.enable(false);
@@ -42,6 +47,7 @@ export class LoginPage implements OnInit {
   isSubmitted = false;
   firebaseErrors = false;
   firebaseErrorMessage = "";
+  pagemode : string;
   
   async presentAlert(status, msg) {
     const alert = await this.alertCtrl.create({
@@ -82,7 +88,11 @@ export class LoginPage implements OnInit {
 						if(snapshot != null) {
 							this.authService.setUserType(snapshot.child('usertype').val());  
 							this.authService.setUserName(snapshot.child('firstname').val()+" "+snapshot.child('lastname').val());
-							this.navController.navigateRoot('/home');
+							if(this.pagemode == 'M') {
+								this.modalController.dismiss();
+							} else {
+								this.navController.navigateRoot('/home');
+							}
 						}
 					}).catch((error: any) => {
 						this.loading.dismiss();

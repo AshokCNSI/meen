@@ -1,9 +1,58 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>trackmyorder</ion-title>
+    <ion-buttons style="font-size: 25px;margin: 10px;" slot="start" [routerLink]="['/orders']">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+	</ion-buttons>
+    <ion-title>Order ID #{{orderref}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+	<mat-vertical-stepper [linear]="true" #stepper [selectedIndex]="currentIndex">
+	  <ng-container *ngFor="let p of statusList" >
+		  <mat-step *ngIf="p.code!='CL'" label="{{p.name}}" [editable]="false" [completed]="false">
+		  </mat-step>
+	  </ng-container>
+	</mat-vertical-stepper>
+	
+	<ion-item style="text-align:center;">
+		Your item has been successfully placed. Please note the current status of your item.
+	</ion-item>
+		
+	<ion-item-divider *ngFor="let p of cartList;">
+		<ion-grid>
+		  <ion-row>
+				  <ion-col>
+					<ion-card-subtitle>{{p.title}}</ion-card-subtitle>
+				  </ion-col>
+				  <ion-col style="text-align:right;">
+					 <ion-card-subtitle>{{p.quantity}} kg x {{p.price}}</ion-card-subtitle>
+				  </ion-col>
+			</ion-row>
+		</ion-grid>
+	</ion-item-divider>
+	<ion-item-divider>
+		<ion-grid>
+		  <ion-row>
+				  <ion-col>
+					<ion-card-subtitle>Delivery charge</ion-card-subtitle>
+				  </ion-col>
+				  <ion-col style="text-align:right;">
+					 <ion-card-subtitle>&#x20b9; {{deliverycharge}}</ion-card-subtitle>
+				  </ion-col>
+			</ion-row>
+		</ion-grid>
+	</ion-item-divider>
+	<ion-item-divider>
+		<ion-grid>
+		  <ion-row>
+				  <ion-col>
+					<ion-card-title>Total</ion-card-title>
+				  </ion-col>
+				  <ion-col style="text-align:right;">
+					 <ion-card-subtitle>&#x20b9; {{totalAmount}}</ion-card-subtitle>
+				  </ion-col>
+			</ion-row>
+		</ion-grid>
+	</ion-item-divider>
 </ion-content>

@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { TrackmyorderPageRoutingModule } from './trackmyorder-routing.module';
 
 import { TrackmyorderPage } from './trackmyorder.page';
+import { MatStepperModule } from '@angular/material/stepper';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    TrackmyorderPageRoutingModule
+    TrackmyorderPageRoutingModule,
+	MatStepperModule
   ],
   declarations: [TrackmyorderPage]
 })

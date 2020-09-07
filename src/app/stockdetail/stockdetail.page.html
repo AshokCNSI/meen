@@ -3,6 +3,7 @@
 	<ion-buttons style="font-size: 25px;margin: 10px;" slot="start" (click)="location.back()">
 		<ion-icon name="arrow-back-outline"></ion-icon>
 	</ion-buttons>
+	
 	<ion-title>{{title}}</ion-title>
 	<ion-buttons slot="secondary" style="font-size: 25px;margin: 10px;" (click)="saveStock()" *ngIf="(authService.getUserType() == 'A' || authService.getUserType() == 'SA') && productVisibility == 'R'">
         <ion-icon name="push-outline"></ion-icon>
@@ -18,6 +19,7 @@
 <ion-card>
 	<img alt="M" style="width:100%;height:200px;" src="{{imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
 	<ion-card-header>
+	  <ion-card-title>{{shopname}}</ion-card-title>
 	  <ion-card-subtitle>{{title}}</ion-card-subtitle>
 	  <ion-card-title>&#x20b9; {{price}}</ion-card-title>
 	  <ionic5-star-rating #rating

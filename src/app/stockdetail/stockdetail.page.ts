@@ -14,6 +14,9 @@ import { LocationserviceService } from '../locationservice.service';
 import { ModalController } from '@ionic/angular';
 import { MyaddressPage } from '../myaddress/myaddress.page';
 import { DeliverylocationPage } from '../deliverylocation/deliverylocation.page';
+import { LoginPage } from '../login/login.page';
+import { RegisterPage } from '../register/register.page';
+
 import { Location } from '@angular/common';
 import { LoadingService } from '../loading.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
@@ -48,7 +51,7 @@ export class StockdetailPage implements OnInit {
   public loading: LoadingService,
   private geolocation: Geolocation
 ) { 
-  
+	
   }
   
   stockRef: AngularFireObject<any>;
@@ -56,7 +59,7 @@ export class StockdetailPage implements OnInit {
   getOrderDetail : AngularFireObject<any>;
   getOrderDetailList = [];
 	//
- uid : string;
+  uid : string;
   productcode: string;
   seller : string;
   stockDetail = [];
@@ -119,6 +122,7 @@ export class StockdetailPage implements OnInit {
   sellerlatitude : string;
   sellerlongitude : string;
   cartList = [];
+  shopname : string;
   async presentModal() {
     const modal = await this.modalController.create({
       component: MyaddressPage,
@@ -147,10 +151,28 @@ export class StockdetailPage implements OnInit {
           text: 'Ok',
           handler: () => {
 		  if(status == 'Login') {
-			this.navController.navigateRoot('/login');
+			this.openLogin();
 		  } else {
 			this.location.back();
 		  }
+	  }}]
+    });
+    await alert.present();
+  }
+  
+  async presentAlertWithLoginRegister(status, msg) {
+    const alert = await this.alertCtrl.create({
+      header: status,
+      message: msg,
+	  backdropDismiss : false,
+      buttons: [{
+          text: 'Login',
+          handler: () => {
+			this.openLogin();
+	  }},{
+          text: 'Register',
+          handler: () => {
+			this.openRegister();
 	  }}]
     });
     await alert.present();
@@ -281,6 +303,7 @@ export class StockdetailPage implements OnInit {
 							if(snapshot != null) {
 								this.sellerlatitude = snapshot.child('latitude').val();
 								this.sellerlongitude = snapshot.child('longitude').val();
+								this.shopname = snapshot.child('shopname').val();
 							}
 						}).catch((error: any) => {
 							
@@ -301,6 +324,13 @@ export class StockdetailPage implements OnInit {
 								this.imagepath = snapshot.child('imagepath').val();
 							}
 						})
+						firebase.database().ref('/profile/'+this.seller).once('value').then((snapshot) => {
+							if(snapshot != null) {
+								this.shopname = snapshot.child('shopname').val();
+							}
+						}).catch((error: any) => {
+							
+						});
 					}
 				});
 		  }
@@ -356,7 +386,7 @@ export class StockdetailPage implements OnInit {
 		return false;
 	  } else {
 		if(!this.authService.getIsUserLoggedIn()) {
-		  this.presentAlert('Login','We are advising you to Login to make sure all the transactions are safe with us.');
+		  this.presentAlertWithLoginRegister('Login','We are advising you to Login or Register to make sure all the transactions are safe with us.');
 		  return;
 		} else if(this.cartList.length != 0 && this.cartList[0].seller != this.seller) {
 		   this.presentAlertWithCancel('ClearCart','We found that this item is not belongs to the current seller. Press ok to clear the cart and try to add this item again.');
@@ -485,6 +515,28 @@ export class StockdetailPage implements OnInit {
 	  componentProps: {
 		destinationlatitude: this.productVisibility == 'DS' ? this.sellerlatitude : this.latitude,
 		destinationlongitude: this.productVisibility == 'DS' ? this.sellerlongitude : this.longitude
+	  }
+	});
+	await modal.present();
+  }
+  
+  async openLogin() {
+	const modal = await this.modalController.create({
+	  component: LoginPage,
+	  cssClass: 'my-custom-class',
+	  componentProps: {
+		pagemode : 'M'
+	  }
+	});
+	await modal.present();
+  }
+  
+  async openRegister() {
+	const modal = await this.modalController.create({
+	  component: RegisterPage,
+	  cssClass: 'my-custom-class',
+	  componentProps: {
+		pagemode : 'M'
 	  }
 	});
 	await modal.present();

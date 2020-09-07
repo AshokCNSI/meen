@@ -147,7 +147,7 @@ const routes: Routes = [
     loadChildren: () => import('./orderdetails/orderdetails.module').then( m => m.OrderdetailsPageModule)
   },
   {
-    path: 'trackmyorder',
+    path: 'trackmyorder/:orderid/:statusindex',
     loadChildren: () => import('./trackmyorder/trackmyorder.module').then( m => m.TrackmyorderPageModule)
   }
 

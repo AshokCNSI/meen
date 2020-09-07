@@ -1,7 +1,10 @@
 <ion-header translucent>
   <ion-toolbar>
-	<ion-buttons slot="start">
+	<ion-buttons slot="start" *ngIf="!pagemode">
 		<ion-back-button defaultHref="/"></ion-back-button>
+	</ion-buttons>
+	<ion-buttons style="font-size: 25px;margin: 10px;" slot="start" *ngIf="pagemode && pagemode == 'M'" (click)="modalController.dismiss()">
+		<ion-icon name="arrow-back-outline"></ion-icon>
 	</ion-buttons>
     <ion-title>Login</ion-title>
   </ion-toolbar>
