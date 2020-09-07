@@ -111,7 +111,13 @@ export class AppComponent implements OnInit {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-	  timer(3000).subscribe(() => this.showSplash = false)
+	  timer(3000).subscribe(() => this.showSplash = false);
+	  this.platform.backButton.subscribeWithPriority(9999, () => {
+        document.addEventListener('backbutton', function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+        }, false);
+      });
     });
   }
   

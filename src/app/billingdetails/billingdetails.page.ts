@@ -124,7 +124,7 @@ export class BillingdetailsPage implements OnInit {
           text: 'Ok',
           handler: () => {
             if(status == 'Ordered'){
-				this.navController.navigateRoot('/trackmyorder/'+this.orderId+'/0');
+				this.navController.navigateRoot('/ordersuccess/'+this.orderId);
 			} 
 	  }}]
     });

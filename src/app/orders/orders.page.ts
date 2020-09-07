@@ -48,6 +48,7 @@ export class OrdersPage implements OnInit {
 	  this.loading.present();
 	  firebase.database().ref('/properties/status').once('value').then((snapshot) => {
 		  if(snapshot != null) {
+			  this.statusList = [];
 			  snapshot.forEach(item =>{
 				  let a = item.toJSON();
 				  this.statusList.push(a);
@@ -62,10 +63,19 @@ export class OrdersPage implements OnInit {
 				  res.forEach(item => {
 					let a = item.payload.toJSON();
 					a['index'] = item.key;
-					this.orderList.push(a);
-					this.orderList.sort(function (a, b) {
-						return (new Date(b.modifieddate).getTime() - new Date(a.modifieddate).getTime());
-					});
+					this.statusList.forEach(item => {
+						if(a['currentstatus'] == item.code) {
+						  a['statusname'] = item.name;
+						  a['statusicon'] = item.icon;
+						  a['statuscode'] = item.code;
+						  a['statusindex'] = item.index;
+						  a['statuscolor'] = item.color;
+						  this.orderList.push(a);
+						  this.orderList.sort(function (a, b) {
+							return (new Date(b.modifieddate).getTime() - new Date(a.modifieddate).getTime());
+						  });
+						}
+					})
 				  })
 			  }
 

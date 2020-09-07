@@ -85,6 +85,7 @@ export class RegisterPage implements OnInit {
   spinnerShow = false;
   stateList = [];
   locationList = [];
+  pagemode :  string;
   
   async presentAlert(status, msg) {
     const alert = await this.alertCtrl.create({

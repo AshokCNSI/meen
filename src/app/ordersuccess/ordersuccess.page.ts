@@ -1,4 +1,3 @@
-
 import { Component, OnInit, Injectable, ViewChild } from '@angular/core';
 import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -23,11 +22,11 @@ import { timer } from 'rxjs';
 })
 
 @Component({
-  selector: 'app-trackmyorder',
-  templateUrl: './trackmyorder.page.html',
-  styleUrls: ['./trackmyorder.page.scss'],
+  selector: 'app-ordersuccess',
+  templateUrl: './ordersuccess.page.html',
+  styleUrls: ['./ordersuccess.page.scss'],
 })
-export class TrackmyorderPage implements OnInit {
+export class OrdersuccessPage implements OnInit {
 
   constructor(
   public alertCtrl: AlertController, 
@@ -56,24 +55,9 @@ export class TrackmyorderPage implements OnInit {
   totalAmount : string;
   productVisibility : string;
   
-  ngAfterViewInit()
-  {
-	  
-  }
-  
   ngOnInit() {
 	  this.activatedRoute.queryParams.subscribe(params => {
 		  this.orderid = this.activatedRoute.snapshot.params['orderid'];
-		  this.currentIndex = this.activatedRoute.snapshot.params['statusindex'];
-		  firebase.database().ref('/properties/status').once('value').then((snapshot) => {
-			  if(snapshot != null) {
-				  this.statusList = [];
-				  snapshot.forEach(item =>{
-					  let a = item.toJSON();
-					  this.statusList.push(a);
-				  })
-			  }
-		  });
 		  firebase.database().ref('/orders/'+this.orderid).once('value').then((snapshot) => {
 			  if(snapshot != null) {
 					this.productVisibility = snapshot.child('currentstatus').val();
@@ -81,18 +65,8 @@ export class TrackmyorderPage implements OnInit {
 					this.masalacharge = snapshot.child('masalacharge').val();
 					this.totalAmount = snapshot.child('totalamount').val();
 					this.orderref = snapshot.child('orderref').val();
-					this.cartList = [];
-					snapshot.child('items').forEach(item => {
-						let a = item.toJSON();
-						this.cartList.push(a);
-					})
 			  }
 		  });
 	  });
-	  
-  }
-
-  routeStockDetail(index,productcode,status){
-	  this.navController.navigateRoot('/stockdetail',{queryParams : {index : index, productcode : productcode, status : status}});
   }
 }

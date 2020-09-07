@@ -149,6 +149,10 @@ const routes: Routes = [
   {
     path: 'trackmyorder/:orderid/:statusindex',
     loadChildren: () => import('./trackmyorder/trackmyorder.module').then( m => m.TrackmyorderPageModule)
+  },
+  {
+    path: 'ordersuccess/:orderid',
+    loadChildren: () => import('./ordersuccess/ordersuccess.module').then( m => m.OrdersuccessPageModule)
   }
 
 ];

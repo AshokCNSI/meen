@@ -11,32 +11,19 @@
 <ion-content>
 
 <ng-container *ngFor="let p of orderList;">
-	<ion-item [routerLink]="['/orderdetails/'+p.index]">
+	<ion-item>
+	  <ion-thumbnail slot="start">
+	    <ion-icon name="{{p.statusicon}}" size="large"></ion-icon>
+	  </ion-thumbnail>
 	  <ion-card-header>
-		  <ion-card-title>Order reference - {{p.orderref}}</ion-card-title>
+		  <ion-card-title [routerLink]="['/orderdetails/'+p.index]">Order reference - {{p.orderref}}</ion-card-title>
 		  <ion-card-subtitle>{{p.modifieddate |  date:'MM/dd/yyyy h:mm:ss a'}}</ion-card-subtitle>
 		  <ion-card-subtitle>&#x20b9;{{p.totalamount}}</ion-card-subtitle>
+		  <ion-card-subtitle style="color:{{p.statuscolor}}">{{p.statusname}}</ion-card-subtitle>
+		  <ion-card-title color="primary" [routerLink]="['/trackmyorder/'+p.index+'/'+p.statusindex]" *ngIf="(authService.getUserType() == 'C' && p.currentstatus != 'DE' && p.currentstatus != 'CL')">Track my Order</ion-card-title>
 	  </ion-card-header>
 	</ion-item>
-	<ion-item>
-		<ion-grid>
-			<ion-row>
-				<ion-col>
-					<ng-container>
-						<ion-icon name="{{p.statusicon}}"></ion-icon>
-						<ion-label style="color:{{p.statuscolor}}">{{p.statusname}}</ion-label>			
-					</ng-container>
-				</ion-col>
-				<ion-col style="text-align:right;">
-					<ion-buttons [routerLink]="['/trackmyorder/'+p.index+'/'+p.statusindex]" *ngIf="(authService.getUserType() == 'C' && p.currentstatus != 'DE' && p.currentstatus != 'CL')">
-						<ion-button color="primary">
-							Track my Order
-						</ion-button>
-					</ion-buttons>
-				</ion-col>
-			</ion-row>
-		</ion-grid>
-	</ion-item>
+	
 </ng-container>
 
 		
