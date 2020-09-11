@@ -4,8 +4,13 @@
       <ion-icon name="locate-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-  <ion-fab vertical="top" horizontal="end" slot="fixed" *ngIf="!isHidden">
+  <ion-fab vertical="top" horizontal="end" slot="fixed" *ngIf="!isHidden && !pagemode">
     <ion-fab-button (click)="goBack()">
+      <ion-icon name="chevron-back-circle-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <ion-fab vertical="top" horizontal="end" slot="fixed" *ngIf="pagemode && pagemode == 'M'">
+    <ion-fab-button (click)="closeModal()">
       <ion-icon name="chevron-back-circle-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
@@ -36,6 +41,6 @@
 	  <ion-input type="text" placeholder="Landmark" [(ngModel)]="landmark"></ion-input>
 	</ion-item>
 	<ion-toolbar>
-		<ion-button expand="block" fill="outline" (click)="confirmMyLocation()">Confirm my location</ion-button>
+		<ion-button expand="block" (click)="confirmMyLocation()">Confirm my location</ion-button>
 	</ion-toolbar>
 </ion-footer>

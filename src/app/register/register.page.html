@@ -1,7 +1,10 @@
 <ion-header translucent>
   <ion-toolbar>
-	<ion-buttons slot="start">
+	<ion-buttons slot="start" *ngIf="!pagemode">
 		<ion-back-button defaultHref="/"></ion-back-button>
+	</ion-buttons>
+	<ion-buttons style="font-size: 25px;margin: 10px;" slot="start" *ngIf="pagemode && pagemode == 'M'" (click)="modalController.dismiss()">
+		<ion-icon name="arrow-back-outline"></ion-icon>
 	</ion-buttons>
     <ion-title>Register with us</ion-title>
   </ion-toolbar>
@@ -61,7 +64,7 @@
 			</div>
 		</ion-col>
 	</ion-row>
-	<ion-radio-group *ngIf="!authService.getIsUserLoggedIn()" formControlName="usertype" [(ngModel)]="usertype">
+	<ion-radio-group *ngIf="!authService.getIsUserLoggedIn() && !pagemode" formControlName="usertype" [(ngModel)]="usertype">
 		<ion-row>
 			<ion-col>
 				<ion-item>
@@ -98,6 +101,18 @@
 			</div>
 		</ion-row>
 	</ion-radio-group>
+	<ion-row *ngIf="usertype == 'S'">
+		<ion-col>
+			<ion-item>
+			  <ion-label position="floating">Shop Name<span>*</span></ion-label>
+			  <ion-input type="text" formControlName="shopname" [(ngModel)]="shopname" required></ion-input>
+			</ion-item>
+			<div *ngIf="isSubmitted && errorControl.shopname.errors?.required"
+					class="validator-error">
+				  <ion-icon name="alert-circle-outline"></ion-icon>  Shop name is required.
+				</div>
+		</ion-col>
+	</ion-row>
    <ion-row>
 			<ion-col>
 				<ion-item>

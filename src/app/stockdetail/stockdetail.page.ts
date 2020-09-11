@@ -13,8 +13,13 @@ import { AuthenticateService } from '../authentication.service';
 import { LocationserviceService } from '../locationservice.service';
 import { ModalController } from '@ionic/angular';
 import { MyaddressPage } from '../myaddress/myaddress.page';
+import { DeliverylocationPage } from '../deliverylocation/deliverylocation.page';
+import { LoginPage } from '../login/login.page';
+import { RegisterPage } from '../register/register.page';
+
 import { Location } from '@angular/common';
 import { LoadingService } from '../loading.service';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 import { prop } from '../../environments/environment';
 
@@ -43,9 +48,10 @@ export class StockdetailPage implements OnInit {
   private locationService: LocationserviceService,
   public modalController: ModalController,
   public location : Location,
-  public loading: LoadingService
+  public loading: LoadingService,
+  private geolocation: Geolocation
 ) { 
-  
+	
   }
   
   stockRef: AngularFireObject<any>;
@@ -53,7 +59,7 @@ export class StockdetailPage implements OnInit {
   getOrderDetail : AngularFireObject<any>;
   getOrderDetailList = [];
 	//
- uid : string;
+  uid : string;
   productcode: string;
   seller : string;
   stockDetail = [];
@@ -108,7 +114,15 @@ export class StockdetailPage implements OnInit {
   dlandmark : string;
   statusList = [];
   assignedto : string;
-  masalaquantity : number = 0;
+  masalaquantity : number = 1;
+  latitude : string;
+  longitude : string;
+  current_lat : string;
+  current_long : string;
+  sellerlatitude : string;
+  sellerlongitude : string;
+  cartList = [];
+  shopname : string;
   async presentModal() {
     const modal = await this.modalController.create({
       component: MyaddressPage,
@@ -132,11 +146,12 @@ export class StockdetailPage implements OnInit {
     const alert = await this.alertCtrl.create({
       header: status,
       message: msg,
+	  backdropDismiss : false,
       buttons: [{
           text: 'Ok',
           handler: () => {
 		  if(status == 'Login') {
-			this.navController.navigateRoot('/login');
+			this.openLogin();
 		  } else {
 			this.location.back();
 		  }
@@ -145,8 +160,69 @@ export class StockdetailPage implements OnInit {
     await alert.present();
   }
   
+  async presentAlertWithLoginRegister(status, msg) {
+    const alert = await this.alertCtrl.create({
+      header: status,
+      message: msg,
+	  backdropDismiss : false,
+      buttons: [{
+          text: 'Login',
+          handler: () => {
+			this.openLogin();
+	  }},{
+          text: 'Register',
+          handler: () => {
+			this.openRegister();
+	  }}]
+    });
+    await alert.present();
+  }
+  
+  async presentAlertWithCancel(status, msg) {
+    const alert = await this.alertCtrl.create({
+      header: status,
+      message: msg,
+	  backdropDismiss : false,
+      buttons: [{
+          text: 'Ok',
+          handler: () => {
+		  if(status == 'ClearCart') {
+			this.cartList.forEach(function(key,value){
+				   firebase.database().ref('/cart/'+key.index).remove().then(data => {
+					  
+				   })
+			   })
+		  } 
+	  }},{text : 'Cancel'}]
+    });
+    await alert.present();
+  }
+  
   ngOnInit() {
 	  this.loading.present();
+	  if(this.authService.getIsUserLoggedIn()) {
+	    firebase.database().ref('/cart').orderByChild('createdby').equalTo(this.authService.getUserID()).once('value').then((snapshot) => {
+		  if(snapshot != null) {
+			  this.cartList = [];
+			  snapshot.forEach(item => {
+				let a = item.toJSON();
+					a['index'] = item.key;
+					firebase.database().ref('/productsforselling/'+a['orderedto']).once('value').then((snapshot) => {
+						if(snapshot != null) {
+							a['seller'] = snapshot.child('createdby').val();
+							firebase.database().ref('/properties/products/'+snapshot.child('productcode').val()).once('value').then((snapshot) => {
+								if(snapshot != null) {
+									if(a['currentstatus'] == 'AC') {
+										this.cartList.push(a);
+									}
+								}
+							})
+						}
+					});
+				  })
+			  }
+		});
+	  }
 	  firebase.database().ref('/properties/status').once('value').then((snapshot) => {
 		  if(snapshot != null) {
 			  snapshot.forEach(item =>{
@@ -175,8 +251,9 @@ export class StockdetailPage implements OnInit {
 		}
 		
 		if(this.productVisibility != 'R') {
-			  firebase.database().ref('/orders/'+this.index).once('value').then((snapshot) => {
+			  firebase.database().ref('/cart/'+this.index).once('value').then((snapshot) => {
 				  this.masala = snapshot.child('masala').val();
+				  this.masalaquantity = snapshot.child('masalaquantity').val();
 				  this.quantity = snapshot.child('quantity').val();
 				  this.description = snapshot.child('description').val();
 				  this.cookingpurpose = snapshot.child('cookingpurpose').val();
@@ -204,6 +281,8 @@ export class StockdetailPage implements OnInit {
 						this.dhouseno = snapshot.child('houseno').val();
 						this.dstreetname = snapshot.child('streetname').val();
 						this.dlandmark = snapshot.child('landmark').val();
+						this.latitude = snapshot.child('latitude').val();
+						this.longitude = snapshot.child('longitude').val();
 					}
 				});
 				  
@@ -220,6 +299,15 @@ export class StockdetailPage implements OnInit {
 								this.imagepath = snapshot.child('imagepath').val();
 							}
 						})
+						firebase.database().ref('/profile/'+this.seller).once('value').then((snapshot) => {
+							if(snapshot != null) {
+								this.sellerlatitude = snapshot.child('latitude').val();
+								this.sellerlongitude = snapshot.child('longitude').val();
+								this.shopname = snapshot.child('shopname').val();
+							}
+						}).catch((error: any) => {
+							
+						});
 					}
 				});
 			  });
@@ -236,6 +324,13 @@ export class StockdetailPage implements OnInit {
 								this.imagepath = snapshot.child('imagepath').val();
 							}
 						})
+						firebase.database().ref('/profile/'+this.seller).once('value').then((snapshot) => {
+							if(snapshot != null) {
+								this.shopname = snapshot.child('shopname').val();
+							}
+						}).catch((error: any) => {
+							
+						});
 					}
 				});
 		  }
@@ -252,8 +347,8 @@ export class StockdetailPage implements OnInit {
 	   quantity: ['', [Validators.required]],
 	   cookingpurpose: ['', [Validators.required]],
 	   masala: ['', [Validators.required]],
-	   masalaquantity : ['', [Validators.required]],
-	   description: ['', [Validators.required]]
+	   masalaquantity : [''],
+	   description: ['']
 	});
 	
   get errorControl() {
@@ -285,73 +380,62 @@ export class StockdetailPage implements OnInit {
   }
   
   addToCart() {
-	  if(this.authService.getIsUserLoggedIn()) {
+	  
 	  this.isSubmitted = true;
 	  if (!this.orderData.valid) {
 		return false;
 	  } else {
+		if(!this.authService.getIsUserLoggedIn()) {
+		  this.presentAlertWithLoginRegister('Login','We are advising you to Login or Register to make sure all the transactions are safe with us.');
+		  return;
+		} else if(this.cartList.length != 0 && this.cartList[0].seller != this.seller) {
+		   this.presentAlertWithCancel('ClearCart','We found that this item is not belongs to the current seller. Press ok to clear the cart and try to add this item again.');
+		   return;
+		}
 		this.loading.present();		  
-		firebase.database().ref('/orders').push({
+		firebase.database().ref('/cart').push({
 			"productcode": this.productcode,
 			"quantity": this.orderData.value.quantity,
 			"masala": this.orderData.value.masala,
+			"masalaquantity" : this.orderData.value.masalaquantity,
 			"cookingpurpose": this.orderData.value.cookingpurpose,
 			"currentstatus": "AC",
 			"orderedto" : this.index,
 			"seller" : this.seller,
-			"order_latitude" : this.locationService.getLatitude(),
-			"order_longitude" : this.locationService.getLongitude(),
-			"order_location" : this.locationService.getCurrentLocation(),
 			"description" : this.orderData.value.description,
-			"createddate" : Date(),
+			"createddate" : new Date().toLocaleString(),
 			"createdby":this.authService.getUserID(),
-			"modifieddate": Date(),
+			"modifieddate": new Date().toLocaleString(),
 			"modifiedby":this.authService.getUserID()
 		  }).then(res => { this.presentAlert('Cart','Product added to cart successfully.');})
 			.catch(res => {console.log(res)})
 	  }
-	 } else {
-		 this.presentAlert('Login','We are advising you to Login to make sure all the transactions are safe with us.');
-	 }
 	 this.loading.dismiss();
   }
   
-  orderConfirm() {
-	  if(!this.isProfileCreated) {
+  updateCart() {
 	  this.isSubmitted = true;
 	  if (!this.orderData.valid) {
 		return false;
 	  } else {
-		this.loading.present();			  
-		firebase.database().ref('/orders/'+this.index).update({
-			"productcode": this.productcode,
+		
+		this.loading.present();		  
+		firebase.database().ref('/cart/'+this.index).update({
 			"quantity": this.orderData.value.quantity,
 			"masala": this.orderData.value.masala,
+			"masalaquantity" : this.orderData.value.masalaquantity,
 			"cookingpurpose": this.orderData.value.cookingpurpose,
-			"currentstatus": "ORD",
 			"description" : this.orderData.value.description,
-			"modifieddate":new Date(),
-			"modifiedby":this.authService.getUserID(),
-			"finalprice":(this.price * this.quantity + this.delieverycharge),
-			"actualprice":(this.price + this.discountprice),
-			"sellingprice":(this.price),
-			"discountprice":(this.discountprice),
-			"totalprice":(this.price * this.quantity),
-			"deliverycharge":(this.delieverycharge),
-			"masalacharge":(this.masalacharge),
-			"masalatotalcharge":(this.masala == 'Y' ? this.quantity * this.masalacharge : 0),
-			"deliveryaddress" : this.dindex
-		  }).then(
-		   res => 
-		   {
-			   this.presentAlert('Ordered','Your item has been successfully ordered. Our executive will call you shortly.');
-		   }
-		 )
-		}
-	  } else {
-		  this.presentAlert('Profile','We are advising you to update profile to make sure all the transactions are safe with us.');
+			"modifieddate": new Date().toLocaleString(),
+			"modifiedby":this.authService.getUserID()
+		  }).then(res => { this.presentAlert('Cart','Product Updated to cart successfully.');})
+			.catch(res => {console.log(res)})
 	  }
-	  this.loading.dismiss();	
+	 this.loading.dismiss();
+  }
+  
+  clearCart() {
+	 this.presentAlertWithCancel('ClearCart','We found that this item is not belongs to the current seller. Press ok to clear the cart and try to add this item again.');
   }
   
   updateStatus() {
@@ -374,7 +458,7 @@ export class StockdetailPage implements OnInit {
 	  this.loading.present();	
 	  firebase.database().ref('/orders/'+this.index).update({
 		"currentstatus": 'CL',
-		"modifieddate":new Date(),
+		"modifieddate":new Date().toLocaleString(),
 		"modifiedby":this.authService.getUserID(),
 		"finalprice":(this.price * this.quantity + prop.delieverycharge),
 		"actualprice":(this.price + this.discountprice),
@@ -422,6 +506,40 @@ export class StockdetailPage implements OnInit {
 		  this.masalaquantity = 0;
 	  else
 		this.masalaquantity = this.masalaquantity - 1;
+  }
+  
+  async goToClientLocation() {
+	const modal = await this.modalController.create({
+	  component: DeliverylocationPage,
+	  cssClass: 'my-custom-class',
+	  componentProps: {
+		destinationlatitude: this.productVisibility == 'DS' ? this.sellerlatitude : this.latitude,
+		destinationlongitude: this.productVisibility == 'DS' ? this.sellerlongitude : this.longitude
+	  }
+	});
+	await modal.present();
+  }
+  
+  async openLogin() {
+	const modal = await this.modalController.create({
+	  component: LoginPage,
+	  cssClass: 'my-custom-class',
+	  componentProps: {
+		pagemode : 'M'
+	  }
+	});
+	await modal.present();
+  }
+  
+  async openRegister() {
+	const modal = await this.modalController.create({
+	  component: RegisterPage,
+	  cssClass: 'my-custom-class',
+	  componentProps: {
+		pagemode : 'M'
+	  }
+	});
+	await modal.present();
   }
 
 }

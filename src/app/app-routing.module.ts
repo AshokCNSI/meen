@@ -125,6 +125,34 @@ const routes: Routes = [
   {
     path: 'addaddress',
     loadChildren: () => import('./addaddress/addaddress.module').then( m => m.AddaddressPageModule)
+  },
+  {
+    path: 'splash',
+    loadChildren: () => import('./splash/splash.module').then( m => m.SplashPageModule)
+  },
+  {
+    path: 'deliverylocation',
+    loadChildren: () => import('./deliverylocation/deliverylocation.module').then( m => m.DeliverylocationPageModule)
+  },
+  {
+    path: 'sellerproducts/:selleruid',
+    loadChildren: () => import('./sellerproducts/sellerproducts.module').then( m => m.SellerproductsPageModule)
+  },
+  {
+    path: 'billingdetails',
+    loadChildren: () => import('./billingdetails/billingdetails.module').then( m => m.BillingdetailsPageModule)
+  },
+  {
+    path: 'orderdetails/:orderid',
+    loadChildren: () => import('./orderdetails/orderdetails.module').then( m => m.OrderdetailsPageModule)
+  },
+  {
+    path: 'trackmyorder/:orderid/:statusindex',
+    loadChildren: () => import('./trackmyorder/trackmyorder.module').then( m => m.TrackmyorderPageModule)
+  },
+  {
+    path: 'ordersuccess/:orderid',
+    loadChildren: () => import('./ordersuccess/ordersuccess.module').then( m => m.OrdersuccessPageModule)
   }
 
 ];

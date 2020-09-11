@@ -1,0 +1,78 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons style="font-size: 25px;margin: 10px;" slot="start" (click)="location.back()">
+		<ion-icon name="arrow-back-outline"></ion-icon>
+	</ion-buttons>
+    <ion-title>{{isAdmin ? 'Stock' : 'Products'}}</ion-title>
+	<ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" (click)="openSearch()">
+        <ion-icon name="search"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<ng-container *ngIf="searchInput != null">
+<ion-searchbar #search animated showCancelButton="always" debounce="500" (ionCancel)="onCancel($event)" cancelButtonText="Custom Cancel"
+    (ionInput)="filterList($event)" [value]="searchVal" autofocus="true"></ion-searchbar>
+</ng-container>
+
+<ng-container *ngIf="stockList.length > 0">
+<ion-row *ngIf="stockList.length > 0">
+	<ion-col>
+		<ion-card *ngFor="let p of stockList; let i = index;">
+			<div style="position:relative;" (click)="routeProductDetail(p.index)">
+			<img alt="M" class="center" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+				<div>
+					<ion-card-header>
+					  <ion-card-subtitle><b>{{p.distance}}</b> km</ion-card-subtitle>
+					  <ion-card-subtitle *ngIf="p.discount == 'Y' && p.discountprice > 0">&#x20b9; {{p.discountprice}} off</ion-card-subtitle>
+					  <ion-card-subtitle *ngIf="p.discount == 'N'">No Offer available</ion-card-subtitle>
+					</ion-card-header>
+				</div>
+			</div>
+			<ion-card-header>
+			  <ion-card-title>{{p.shopname}}</ion-card-title>
+			  <ion-card-subtitle><b>{{p.title}}</b></ion-card-subtitle>
+			  <ion-card-title>&#x20b9; {{p.price}}</ion-card-title>
+			  <ionic5-star-rating #rating
+				activeIcon = "star"
+				defaultIcon = "star-outline"
+				activeColor = "#488aff" 
+				defaultColor = "#488aff"
+				readonly="true"
+				rating="3"
+				fontSize = "15px"
+				(ratingChanged)="logRatingChange($event)">
+			</ionic5-star-rating>
+			</ion-card-header>
+			<!-- <italic style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+			  {{p.details}}
+			</italic> -->
+			
+		</ion-card>
+	</ion-col>
+</ion-row>
+</ng-container>
+<div *ngIf="stockList.length == 0">
+	<ion-row *ngFor="let i of Arr(skeletoncount).fill(1)">
+		<ion-col>
+			<ion-card>
+				<ion-skeleton-text animated></ion-skeleton-text>
+				<ion-card-header>
+				  <ion-card-subtitle><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-subtitle>
+				  <ion-card-title><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-title>
+				  
+				</ion-card-header>
+				<italic style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+				  <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+				</italic>
+				
+				<ion-card-header>
+				  <ion-card-subtitle><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-subtitle>
+				  <ion-card-subtitle><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-subtitle>
+				</ion-card-header>
+			</ion-card>
+		</ion-col>
+	</ion-row>
+</div>
+</ion-content>

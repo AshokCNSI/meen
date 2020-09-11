@@ -13,6 +13,18 @@
 	</div>
 
 	<form [formGroup]="profileData" id="profileData" (ngSubmit)="addProfile()" novalidate>
+	<ion-row *ngIf="usertype == 'S'">
+		<ion-col>
+			<ion-item>
+			  <ion-label position="floating">Shop Name<span>*</span></ion-label>
+			  <ion-input type="text" formControlName="shopname" [(ngModel)]="shopname" required></ion-input>
+			</ion-item>
+			<div *ngIf="isSubmitted && errorControl.shopname.errors?.required"
+					class="validator-error">
+				  <ion-icon name="alert-circle-outline"></ion-icon>  Shop name is required.
+				</div>
+		</ion-col>
+	</ion-row>
 		<ion-row>
 			<ion-col>
 				<ion-item>

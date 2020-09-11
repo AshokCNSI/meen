@@ -9,6 +9,7 @@ import * as firebase from 'firebase';
 import { AuthenticateService } from '../authentication.service';
 import {  MenuController } from '@ionic/angular';
 import { LoadingService } from '../loading.service';
+import { ModalController, NavParams } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +32,11 @@ export class RegisterPage implements OnInit {
   private navController: NavController, 
   private router: Router,
   private menuCtrl : MenuController,
-  public loading: LoadingService) { }
+  public loading: LoadingService,
+  public modalController: ModalController,
+  private navParams: NavParams) { 
+	this.pagemode = this.navParams.data.pagemode;
+  }
 
   enableseller : string;
   ngOnInit() {
@@ -80,16 +85,22 @@ export class RegisterPage implements OnInit {
   spinnerShow = false;
   stateList = [];
   locationList = [];
+  pagemode :  string;
   
   async presentAlert(status, msg) {
     const alert = await this.alertCtrl.create({
       header: status,
       message: msg,
+	  backdropDismiss : false,
       buttons: [{
           text: 'Ok',
           handler: () => {
             if(status == 'Success') {
-				this.navController.navigateRoot('/home');
+				if(this.pagemode == 'M') {
+					this.modalController.dismiss();
+				} else {
+					this.navController.navigateRoot('/home');
+				}
 			}
 	  }}]
     });
@@ -101,7 +112,8 @@ export class RegisterPage implements OnInit {
 	   password: ['', [Validators.required, Validators.minLength(8)]],
 	   firstname: ['', [Validators.required]],
 	   lastname: ['', [Validators.required]],
-	   usertype: ['', [Validators.required]],
+	   usertype: ['', []],
+	   shopname: ['', this.usertype == 'S' ? [Validators.required] : []],
 	   mobilenumber: ['', Validators.compose([Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern('^[0-9]+$')])],
 	   street1: ['', [Validators.required]],
 	   street2: ['', []],
@@ -141,6 +153,7 @@ export class RegisterPage implements OnInit {
 	   lastname: this.formData.value.lastname,
 	   usertype: this.usertype,
 	   mobilenumber: this.formData.value.mobilenumber,
+	   shopname: this.formData.value.shopname,
 	   street1: this.formData.value.street1,
 	   street2: this.formData.value.street2,
 	   district: this.formData.value.district,

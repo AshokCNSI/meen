@@ -1,7 +1,8 @@
 <ion-header style="z-index : 0;">
   <ion-toolbar>
-	<ion-buttons slot="start">
-		<ion-back-button defaultHref="home"></ion-back-button>
+	
+	<ion-buttons style="font-size: 25px;margin: 10px;" slot="start" [routerLink]="['/home']">
+		<ion-icon name="arrow-back-outline"></ion-icon>
 	</ion-buttons>
     <ion-title>Your Orders</ion-title>
   </ion-toolbar>
@@ -10,25 +11,19 @@
 <ion-content>
 
 <ng-container *ngFor="let p of orderList;">
-	<ion-item (click)="routeStockDetail(p.index,p.productcode,p.currentstatus)">
+	<ion-item>
 	  <ion-thumbnail slot="start">
-		<img alt="M" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+	    <ion-icon name="{{p.statusicon}}" size="large"></ion-icon>
 	  </ion-thumbnail>
 	  <ion-card-header>
-		  <ion-card-title>{{p.title}}</ion-card-title>
-		  <ion-card-content style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{p.details}}</ion-card-content>
+		  <ion-card-title [routerLink]="['/orderdetails/'+p.index]">Order reference - {{p.orderref}}</ion-card-title>
 		  <ion-card-subtitle>{{p.modifieddate |  date:'MM/dd/yyyy h:mm:ss a'}}</ion-card-subtitle>
-		  <ion-card-subtitle>{{p.quantity}} x &#x20b9;{{p.totalprice}}</ion-card-subtitle>
+		  <ion-card-subtitle>&#x20b9;{{p.totalamount}}</ion-card-subtitle>
+		  <ion-card-subtitle style="color:{{p.statuscolor}}">{{p.statusname}}</ion-card-subtitle>
+		  <ion-card-title color="primary" [routerLink]="['/trackmyorder/'+p.index+'/'+p.statusindex]" *ngIf="(authService.getUserType() == 'C' && p.currentstatus != 'DE' && p.currentstatus != 'CL')">Track my Order</ion-card-title>
 	  </ion-card-header>
 	</ion-item>
-	<ion-item>
-		<ng-container *ngFor="let g of statusList">
-			<ng-container *ngIf="p.currentstatus == g.code">
-				<ion-icon name="{{g.icon}}"></ion-icon>
-				<ion-label style="color:{{g.color}}">{{g.name}}</ion-label>			
-			</ng-container>
-		</ng-container>
-	</ion-item>
+	
 </ng-container>
 
 		

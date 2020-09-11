@@ -19,6 +19,7 @@ export class ErrorhandlerService implements ErrorHandler {
     const alert = await this.alertCtrl.create({
       header: status,
       message: msg,
+	  backdropDismiss : false,
       buttons: ['Ok']
     });
     await alert.present();

@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-buttons slot="start">
-		<ion-back-button defaultHref="/"></ion-back-button>
+    <ion-buttons style="font-size: 25px;margin: 10px;" slot="start" (click)="location.back()">
+		<ion-icon name="arrow-back-outline"></ion-icon>
 	</ion-buttons>
     <ion-title>{{isAdmin ? 'Stock' : 'Products'}}</ion-title>
 	<ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" (click)="openSearch()">
@@ -17,36 +17,21 @@
 </ng-container>
 
 <ng-container *ngIf="stockList.length > 0">
-<!-- <ion-grid *ngIf="stockList.length > 1">
-	<ion-row>
-		<ion-col sizeLg="4" sizeMd="4" sizeXs="6" *ngFor="let p of stockList; let i = index;" lines="inset" (click)="routeProductDetail(p.index)">
-			<ion-row>
-				<ion-col size="12">
-					<img alt="M" class="center" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
-				</ion-col>
-				<ion-col size="12">
-					<ion-card-header>
-					  <ion-card-title>{{p.title}}</ion-card-title>
-					  <ion-card-subtitle>&#x20b9; {{p.price}}</ion-card-subtitle>
-					</ion-card-header>
-					<ion-card-content style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-					  {{p.details}}
-					</ion-card-content>
-					<ion-card-header>
-					  <ion-card-subtitle>Product available Within <b>{{p.distance}}</b> km</ion-card-subtitle>
-					  <ion-card-subtitle *ngIf="p.discount == 'Y' && p.discountprice > 0">Offer available upto &#x20b9; {{p.discountprice}}</ion-card-subtitle>
-					  <ion-card-subtitle *ngIf="p.discount == 'N'">No Offer available</ion-card-subtitle>
-					</ion-card-header>
-				</ion-col>
-			</ion-row>
-		</ion-col>
-	</ion-row>
-</ion-grid> -->
 <ion-row *ngIf="stockList.length > 0">
 	<ion-col>
-		<ion-card *ngFor="let p of stockList; let i = index;" (click)="routeProductDetail(p.index)">
+		<ion-card *ngFor="let p of stockList; let i = index;">
+			<div style="position:relative;" (click)="routeProductDetail(p.index)">
 			<img alt="M" class="center" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+				<div>
+					<ion-card-header>
+					  <ion-card-subtitle><b>{{p.distance}}</b> km</ion-card-subtitle>
+					  <ion-card-subtitle *ngIf="p.discount == 'Y' && p.discountprice > 0">&#x20b9; {{p.discountprice}} off</ion-card-subtitle>
+					  <ion-card-subtitle *ngIf="p.discount == 'N'">No Offer available</ion-card-subtitle>
+					</ion-card-header>
+				</div>
+			</div>
 			<ion-card-header>
+			  <ion-card-title>{{p.shopname}}</ion-card-title>
 			  <ion-card-subtitle><b>{{p.title}}</b></ion-card-subtitle>
 			  <ion-card-title>&#x20b9; {{p.price}}</ion-card-title>
 			  <ionic5-star-rating #rating
@@ -60,20 +45,39 @@
 				(ratingChanged)="logRatingChange($event)">
 			</ionic5-star-rating>
 			</ion-card-header>
-			<italic style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+			<ion-buttons [routerLink]="['/sellerproducts/'+p.selleruid]">
+				<ion-button color="primary">
+					view the seller's products
+				</ion-button>
+			</ion-buttons>
+			<!-- <italic style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
 			  {{p.details}}
-			</italic>
+			</italic> -->
 			
-			<ion-card-header>
-			  <ion-card-subtitle>Product available Within <b>{{p.distance}}</b> km</ion-card-subtitle>
-			  <ion-card-subtitle *ngIf="p.discount == 'Y' && p.discountprice > 0">Offer available upto &#x20b9; {{p.discountprice}}</ion-card-subtitle>
-			  <ion-card-subtitle *ngIf="p.discount == 'N'">No Offer available</ion-card-subtitle>
-			</ion-card-header>
 		</ion-card>
 	</ion-col>
 </ion-row>
 </ng-container>
-<ng-container *ngIf="stockList.length == 0">
-	<p class="no-items">No Products available in your area.</p>
-</ng-container>
+<div *ngIf="stockList.length == 0">
+	<ion-row *ngFor="let i of Arr(skeletoncount).fill(1)">
+		<ion-col>
+			<ion-card>
+				<ion-skeleton-text animated></ion-skeleton-text>
+				<ion-card-header>
+				  <ion-card-subtitle><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-subtitle>
+				  <ion-card-title><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-title>
+				  
+				</ion-card-header>
+				<italic style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+				  <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+				</italic>
+				
+				<ion-card-header>
+				  <ion-card-subtitle><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-subtitle>
+				  <ion-card-subtitle><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-subtitle>
+				</ion-card-header>
+			</ion-card>
+		</ion-col>
+	</ion-row>
+</div>
 </ion-content>

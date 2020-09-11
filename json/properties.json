@@ -53,6 +53,7 @@
       "name": "Ordered",
       "code": "ORD",
       "buffer": "0.2",
+	  "index" : 0,
       "icon": "pizza-outline",
       "color": "black"
     },
@@ -60,6 +61,7 @@
       "name": "In Progress",
       "code": "INP",
       "buffer": "0.3",
+	  "index" : 1,
       "icon": "file-tray-full-outline",
       "color": "black"
     },
@@ -67,6 +69,7 @@
       "name": "Waiting for pickup",
       "code": "WFP",
       "buffer": "0.4",
+	  "index" : 2,
       "icon": "rocket-outline",
       "color": "black"
     },
@@ -74,6 +77,7 @@
       "name": "Delivery assigned",
       "code": "DS",
       "buffer": "0.6",
+	  "index" : 3,
       "icon": "man-outline",
       "color": "black"
     },
@@ -81,6 +85,7 @@
       "name": "Item picked for Delivery",
       "code": "IPD",
       "buffer": "0.7",
+	  "index" : 4,
       "icon": "fast-food-outline",
       "color": "black"
     },
@@ -88,6 +93,7 @@
       "name": "Delievered",
       "code": "DE",
       "buffer": "1",
+	  "index" : 5,
       "icon": "basket-outline",
       "color": "green"
     },
@@ -95,6 +101,7 @@
       "name": "Cancel Order",
       "code": "CL",
       "buffer": "1",
+	  "index" : 6,
       "icon": "trash-bin-outline",
       "color": "red"
     }

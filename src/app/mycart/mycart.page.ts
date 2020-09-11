@@ -11,6 +11,7 @@ import { filter } from 'rxjs/operators';
 import { RouterserviceService } from '../routerservice.service';
 import { AuthenticateService } from '../authentication.service';
 import { LoadingService } from '../loading.service';
+import { timer } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -36,14 +37,15 @@ export class MycartPage implements OnInit {
 ) { 
   
   }
-  
+  Arr = Array;
+  skeletoncount : number = 10;
   orderRef: AngularFireObject<any>;
   isAdmin : boolean = false;
+  shownoitems : boolean = false;
   cartList = [];
   ngOnInit() {
 	  this.isAdmin = this.authService.getIsAdmin();
-	  this.loading.present();
-	  let getCartDetail = this.db.list('/orders', ref => ref.orderByChild('createdby').equalTo(this.authService.getUserID()));
+	  let getCartDetail = this.db.list('/cart', ref => ref.orderByChild('createdby').equalTo(this.authService.getUserID()));
 	  getCartDetail.snapshotChanges().subscribe(res => { 
 		  if(res != null) {
 			  this.cartList = [];
@@ -62,6 +64,9 @@ export class MycartPage implements OnInit {
 								a['imagepath'] = snapshot.child('imagepath').val();
 								if(a['currentstatus'] == 'AC') {
 									this.cartList.push(a);
+									this.cartList.sort(function (a, b) {
+										return (new Date(b.modifieddate).getTime() - new Date(a.modifieddate).getTime());
+									});
 								}
 							}
 						})
@@ -70,13 +75,18 @@ export class MycartPage implements OnInit {
 			  })
 		  }
 	});
-	this.loading.dismiss();
+	timer(3000).subscribe(() => {
+		if(this.cartList.length == 0) {
+		  this.shownoitems = true;
+		}
+	})
   }
   
   async presentAlert(status, msg) {
     const alert = await this.alertCtrl.create({
       header: status,
       message: msg,
+	  backdropDismiss : false,
       buttons: [{
           text: 'Ok',
           handler: () => {
@@ -95,8 +105,32 @@ export class MycartPage implements OnInit {
   }
   
   deleteThisItem(index) {
-	  firebase.database().ref('/orders/'+index).remove().then(data => {
+	  firebase.database().ref('/cart/'+index).remove().then(data => {
 		  this.presentAlert('Delete','Item has been successfully deleted.');
 	  })
+  }
+  
+  clearCart() {
+	 this.presentAlertWithCancel('ClearCart','We found that this item is not belongs to the current seller. Press ok to clear the cart and try to add this item again.');
+  }
+  
+  async presentAlertWithCancel(status, msg) {
+    const alert = await this.alertCtrl.create({
+      header: status,
+      message: msg,
+	  backdropDismiss : false,
+      buttons: [{
+          text: 'Ok',
+          handler: () => {
+		  if(status == 'ClearCart') {
+			this.cartList.forEach(function(key,value){
+				   firebase.database().ref('/cart/'+key.index).remove().then(data => {
+					  
+				   })
+			   })
+		  } 
+	  }},{text : 'Cancel'}]
+    });
+    await alert.present();
   }
 }

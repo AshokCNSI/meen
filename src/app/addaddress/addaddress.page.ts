@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, NgZone } from '@angular/core'
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
 import { Location } from '@angular/common';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavParams } from '@ionic/angular';
 import { LocationsearchPage } from '../locationsearch/locationsearch.page';
 import { AuthenticateService } from '../authentication.service';
 import { LocationserviceService } from '../locationservice.service';
@@ -43,6 +43,7 @@ export class AddaddressPage implements OnInit {
   latitude : string;
   longitude : string;
   customeraddress : string;
+  pageMode : string;
   
   constructor(
     private geolocation: Geolocation,
@@ -54,11 +55,13 @@ export class AddaddressPage implements OnInit {
 	private navController: NavController, 
 	private authService: AuthenticateService,
 	private locationService: LocationserviceService,
-	private menuCtrl : MenuController
+	private menuCtrl : MenuController,
+	private navParams: NavParams
   ) {
     this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
     this.autocomplete = { input: '' };
     this.autocompleteItems = [];
+	this.pageMode = this.navParams.data.pagemode;
   }
  
   //LOAD THE MAP ONINIT.
@@ -86,6 +89,7 @@ export class AddaddressPage implements OnInit {
     const alert = await this.alertCtrl.create({
       header: status,
       message: msg,
+	  backdropDismiss : false,
       buttons: ['Ok']
     });
     await alert.present();
@@ -287,11 +291,12 @@ export class AddaddressPage implements OnInit {
   }
   
   confirmMyLocation() {
+	  
 	  if(this.current_lat != undefined && this.current_lat != "" 
 		&& this.current_long != undefined && this.current_long != ""
 		&& this.current_location != undefined && this.current_location != "") {
 			
-			if(!this.name || !this.mobile || !this.houseno || !this.streetname || !this.landmark || !this.latitude || !this.longitude || this.mobile.toString().length != 10) {
+			if(!this.name || !this.mobile || !this.houseno || !this.streetname || !this.landmark || !this.current_lat || !this.current_long || this.mobile.toString().length != 10) {
 			  if(!this.mobile) {
 				  this.presentAlert('Error','Please give Contact Number.');
 			  } else if(this.mobile.toString().length != 10) {
@@ -306,8 +311,8 @@ export class AddaddressPage implements OnInit {
 					"houseno" : this.houseno,
 					"streetname" : this.streetname,
 					"landmark" : this.landmark,
-					"latitude" : this.latitude,
-					"longitude" : this.longitude,
+					"latitude" : this.current_lat,
+					"longitude" : this.current_long,
 					"address" : this.address,
 					"createddate" : Date(),
 					"createdby":this.authService.getUserID(),
@@ -328,7 +333,11 @@ export class AddaddressPage implements OnInit {
 						this.locationService.setLatitude(this.current_lat);
 						this.locationService.setLongitude(this.current_long);
 						this.locationService.setCurrentLocation(this.current_location);
-						this.navController.navigateRoot('/addressbook');
+						if(this.pageMode == 'M') {
+							this.modalController.dismiss();
+						} else {
+							this.navController.navigateRoot('/addressbook');
+						}
 				   }
 				 ).catch(error => {
 					this.presentAlert('Error',error);
@@ -339,8 +348,8 @@ export class AddaddressPage implements OnInit {
 				   this.houseno = '';
 				   this.streetname = '';
 				   this.landmark = '';
-				   this.latitude = '';
-				   this.longitude = '';
+				   this.current_lat = '';
+				   this.current_long = '';
 				   this.address = '';
 			   }
 			 ).catch(res => console.log(res))
@@ -349,6 +358,10 @@ export class AddaddressPage implements OnInit {
 	} else {
 		this.presentAlert('Error','No address found');
 	}
+  }
+  
+  closeModal() {
+	  this.modalController.dismiss();
   }
   
 }

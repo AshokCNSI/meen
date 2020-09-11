@@ -48,6 +48,7 @@ export class OrdersPage implements OnInit {
 	  this.loading.present();
 	  firebase.database().ref('/properties/status').once('value').then((snapshot) => {
 		  if(snapshot != null) {
+			  this.statusList = [];
 			  snapshot.forEach(item =>{
 				  let a = item.toJSON();
 				  this.statusList.push(a);
@@ -62,44 +63,45 @@ export class OrdersPage implements OnInit {
 				  res.forEach(item => {
 					let a = item.payload.toJSON();
 					a['index'] = item.key;
-					a['price'] = a['sellingprice'];
-					firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
-							if(snapshot != null) {
-								a['title'] = snapshot.child('title').val();
-								a['details'] = snapshot.child('details').val();
-								a['imagepath'] = snapshot.child('imagepath').val();
-								if(a['currentstatus'] != 'AC') {
-									this.orderList.push(a);
-								}
-							}
-						})
+					this.statusList.forEach(item => {
+						if(a['currentstatus'] == item.code) {
+						  a['statusname'] = item.name;
+						  a['statusicon'] = item.icon;
+						  a['statuscode'] = item.code;
+						  a['statusindex'] = item.index;
+						  a['statuscolor'] = item.color;
+						  this.orderList.push(a);
+						  this.orderList.sort(function (a, b) {
+							return (new Date(b.modifieddate).getTime() - new Date(a.modifieddate).getTime());
+						  });
+						}
+					})
 				  })
 			  }
-			  	this.orderList.sort(this.comp);
 
 		});
 	} else {
-		  this.db.list('/orders', ref => ref.orderByChild('createdby').equalTo(this.authService.getUserID())).snapshotChanges().subscribe(res => { 
-			  if(res != null) {
+		firebase.database().ref('/orders').orderByChild('createdby').equalTo(this.authService.getUserID()).once('value').then((snapshot) => {
+			  if(snapshot != null) {
 				  this.orderList = [];
-				  res.forEach(item => {
-					let a = item.payload.toJSON();
+				  snapshot.forEach(item => {
+					let a = item.toJSON();
 					a['index'] = item.key;
-					a['price'] = a['sellingprice'];
-					firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
-							if(snapshot != null) {
-								a['title'] = snapshot.child('title').val();
-								a['details'] = snapshot.child('details').val();
-								a['imagepath'] = snapshot.child('imagepath').val();
-								if(a['currentstatus'] != 'AC') {
-									this.orderList.push(a);
-								}
-							}
-						})
+					this.statusList.forEach(item => {
+						if(a['currentstatus'] == item.code) {
+						  a['statusname'] = item.name;
+						  a['statusicon'] = item.icon;
+						  a['statuscode'] = item.code;
+						  a['statusindex'] = item.index;
+						  a['statuscolor'] = item.color;
+						  this.orderList.push(a);
+						  this.orderList.sort(function (a, b) {
+							return (new Date(b.modifieddate).getTime() - new Date(a.modifieddate).getTime());
+						  });
+						}
+					})			
 				  })
 			  }
-			  	this.orderList.sort(this.comp);
-
 		});
 	  }
 	   this.loading.dismiss();
@@ -109,6 +111,7 @@ export class OrdersPage implements OnInit {
     const alert = await this.alertCtrl.create({
       header: status,
       message: msg,
+	  backdropDismiss : false,
       buttons: [{
           text: 'Ok',
           handler: () => {

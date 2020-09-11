@@ -25,6 +25,7 @@ import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@io
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { ErrorhandlerService } from './errorhandler.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NavParams } from '@ionic/angular';
 
 // environment
 import { environment } from '../environments/environment';
@@ -35,13 +36,13 @@ import { StarRatingModule } from 'ionic5-star-rating';
   entryComponents: [],
   imports: [
     BrowserModule,
+	BrowserAnimationsModule,
     IonicModule.forRoot(),
     AppRoutingModule,
 	AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFireDatabaseModule,
     AngularFireStorageModule,
-	BrowserAnimationsModule,
 	StarRatingModule
   ],
   providers: [
@@ -55,7 +56,8 @@ import { StarRatingModule } from 'ionic5-star-rating';
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
 	{ provide: ErrorHandler, useClass: ErrorhandlerService },
 	LoadingService,
-    { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
+	NavParams
   ],
   bootstrap: [AppComponent]
 })
