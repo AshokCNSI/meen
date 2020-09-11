@@ -3,7 +3,7 @@
     <ion-buttons style="font-size: 25px;margin: 10px;" slot="start" (click)="location.back()">
 		<ion-icon name="arrow-back-outline"></ion-icon>
 	</ion-buttons>
-    <ion-title>{{isAdmin ? 'Stock' : 'Products'}}</ion-title>
+    <ion-title>{{shopname}}</ion-title>
 	<ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" (click)="openSearch()">
         <ion-icon name="search"></ion-icon>
     </ion-buttons>
@@ -17,7 +17,27 @@
 </ng-container>
 
 <ng-container *ngIf="stockList.length > 0">
-<ion-row *ngIf="stockList.length > 0">
+<ion-list>
+<ion-item *ngFor="let p of stockList; let i = index;">
+  <ion-thumbnail slot="start" style="width: 40%;
+    height: 60%;">
+	<div class="container">
+		<img alt="M" src="{{p.imagepath}}" style="height: 151px;" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+		<div class="centered" *ngIf="p.discountprice && p.discountprice > 0"> &#x20b9; {{p.discountprice}} OFF</div>
+	</div>
+  </ion-thumbnail>
+	<ion-label>
+		<ion-card-title (click)="routeProductDetail(p.index)">{{p.title}}</ion-card-title>
+		<ion-card-subtitle class="subtitleThin">&#x20b9;{{p.price}}</ion-card-subtitle>
+		<ion-card-subtitle class="thrirdlevellabel">{{p.distance}} km | <ion-icon name="stopwatch-outline" style="color:rgb(255 72 72);"></ion-icon> 38 mins</ion-card-subtitle>
+		<ion-button (click)="decrement(i, p.index)">-</ion-button>
+		<ion-button color="light">{{p.quantity ? p.quantity : 0}}</ion-button>
+		<ion-button (click)="increment(i, p.index)">+</ion-button>
+	</ion-label>
+	
+</ion-item>
+</ion-list>
+<!-- <ion-row *ngIf="stockList.length > 0">
 	<ion-col>
 		<ion-card *ngFor="let p of stockList; let i = index;">
 			<div style="position:relative;" (click)="routeProductDetail(p.index)">
@@ -45,13 +65,13 @@
 				(ratingChanged)="logRatingChange($event)">
 			</ionic5-star-rating>
 			</ion-card-header>
-			<!-- <italic style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+			<italic style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
 			  {{p.details}}
-			</italic> -->
+			</italic> 
 			
 		</ion-card>
 	</ion-col>
-</ion-row>
+</ion-row> -->
 </ng-container>
 <div *ngIf="stockList.length == 0">
 	<ion-row *ngFor="let i of Arr(skeletoncount).fill(1)">
@@ -76,3 +96,13 @@
 	</ion-row>
 </div>
 </ion-content>
+<ion-footer *ngIf="cartList.length > 0">
+  <ion-toolbar>
+  <ion-buttons slot="secondary">
+    <ion-button [routerLink]="['/mycart/']">
+      <ion-icon slot="icon-only" name="cart"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+  <ion-title>You have {{cartList.length}} item(s) in the cart</ion-title>
+</ion-toolbar>
+</ion-footer>

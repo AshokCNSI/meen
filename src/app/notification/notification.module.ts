@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { NotificationPageRoutingModule } from './notification-routing.module';
 
 import { NotificationPage } from './notification.page';
+import { StarRatingModule } from 'ionic5-star-rating';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    NotificationPageRoutingModule
+    NotificationPageRoutingModule,
+	StarRatingModule
   ],
   declarations: [NotificationPage]
 })

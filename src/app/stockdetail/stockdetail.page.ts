@@ -402,7 +402,7 @@ export class StockdetailPage implements OnInit {
 			"currentstatus": "AC",
 			"orderedto" : this.index,
 			"seller" : this.seller,
-			"description" : this.orderData.value.description,
+			"description" : this.orderData.value.description ? this.orderData.value.description : "",
 			"createddate" : new Date().toLocaleString(),
 			"createdby":this.authService.getUserID(),
 			"modifieddate": new Date().toLocaleString(),

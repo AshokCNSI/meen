@@ -16,3 +16,38 @@
 #rating {
 	margin-left: 15px !important;
 }
+
+.container {
+  position: relative;
+  text-align: center;
+  color: white;
+}
+
+img {
+
+}
+.centered {
+  position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #eb445a;
+    width: 50%;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 3px;
+}
+
+.thrirdlevellabel {
+font-size	: 13px !important;
+	font-family : Roboto Regular;
+	}
+.subtitleThin {
+font-size	: 12px !important;
+	font-family : Roboto Light;
+}
+ion-title {
+font-size	: 15px !important;
+	font-family : Roboto Bold;
+}

@@ -17,7 +17,30 @@
 </ng-container>
 
 <ng-container *ngIf="stockList.length > 0">
-<ion-row *ngIf="stockList.length > 0">
+<ion-item *ngFor="let p of stockList; let i = index;">
+  <ion-thumbnail slot="start" style="width: 40%;
+    height: 60%;">
+	<div class="container">
+		<img alt="M" src="{{p.imagepath}}" style="height: 151px;" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+		<div class="centered" *ngIf="p.discountprice && p.discountprice > 0"> &#x20b9; {{p.discountprice}} OFF</div>
+	</div>
+  </ion-thumbnail>
+	<ion-label>
+		<ion-card-title (click)="routeStockDetail(p.index,p.productcode)">{{p.title}}</ion-card-title>
+		<ion-card-subtitle class="subtitleThin">&#x20b9;{{p.price}}</ion-card-subtitle>
+		<ion-card-subtitle class="thrirdlevellabel">{{p.distance}} km | {{p.shopname}}</ion-card-subtitle>
+		<ion-card-subtitle class="thrirdlevellabel"><ion-icon name="stopwatch-outline"></ion-icon> 38 mins</ion-card-subtitle>			
+		<ion-card-subtitle> <ion-buttons [routerLink]="['/sellerproducts/'+p.selleruid]">
+			<ion-button color="danger" style="font-size: 10px;margin-left: -5px;">
+				view the seller's products
+			</ion-button>
+		</ion-buttons>
+		</ion-card-subtitle>
+		
+	</ion-label>
+	
+</ion-item>
+<!-- <ion-row *ngIf="stockList.length > 0">
 	<ion-col>
 		<ion-card *ngFor="let p of stockList; let i = index;">
 			<div style="position:relative;" (click)="routeProductDetail(p.index)">
@@ -50,13 +73,13 @@
 					view the seller's products
 				</ion-button>
 			</ion-buttons>
-			<!-- <italic style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+			 <italic style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
 			  {{p.details}}
-			</italic> -->
+			</italic> 
 			
 		</ion-card>
 	</ion-col>
-</ion-row>
+</ion-row> -->
 </ng-container>
 <div *ngIf="stockList.length == 0">
 	<ion-row *ngFor="let i of Arr(skeletoncount).fill(1)">
@@ -81,3 +104,13 @@
 	</ion-row>
 </div>
 </ion-content>
+<ion-footer *ngIf="cartcount > 0">
+  <ion-toolbar>
+  <ion-buttons slot="secondary">
+    <ion-button [routerLink]="['/mycart/']">
+      <ion-icon slot="icon-only" name="cart"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+  <ion-title>You have items in the cart</ion-title>
+</ion-toolbar>
+</ion-footer>

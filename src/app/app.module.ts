@@ -26,6 +26,7 @@ import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { ErrorhandlerService } from './errorhandler.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavParams } from '@ionic/angular';
+import { IonicStorageModule } from '@ionic/storage';
 
 // environment
 import { environment } from '../environments/environment';
@@ -38,6 +39,7 @@ import { StarRatingModule } from 'ionic5-star-rating';
     BrowserModule,
 	BrowserAnimationsModule,
     IonicModule.forRoot(),
+	IonicStorageModule.forRoot(),
     AppRoutingModule,
 	AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,

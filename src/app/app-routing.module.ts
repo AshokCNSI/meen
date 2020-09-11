@@ -153,6 +153,10 @@ const routes: Routes = [
   {
     path: 'ordersuccess/:orderid',
     loadChildren: () => import('./ordersuccess/ordersuccess.module').then( m => m.OrdersuccessPageModule)
+  },
+  {
+    path: 'mapselection',
+    loadChildren: () => import('./mapselection/mapselection.module').then( m => m.MapselectionPageModule)
   }
 
 ];

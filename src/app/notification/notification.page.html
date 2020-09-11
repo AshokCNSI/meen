@@ -14,17 +14,30 @@
 <ng-container *ngIf="discountList.length > 0">
 
 <ion-item *ngFor="let p of discountList; let i = index;" (click)="routeStockDetail(p.index,p.productcode)">
-  <ion-thumbnail slot="start">
-	<img alt="M" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+  <ion-thumbnail slot="start" style="width: 40%;
+    height: 60%;">
+	<div class="container">
+		<img alt="M" src="{{p.imagepath}}" style="height: 151px;" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+		<div class="centered"> &#x20b9; {{p.discountprice}} OFF</div>
+	</div>
   </ion-thumbnail>
 	<ion-label>
-		<h2>{{p.title}}</h2>
-		<h5>{{p.details}}</h5>
-		<h5>Discount Price: &#x20b9;{{p.discountprice}}</h5>
+		<ion-card-title>{{p.title}}</ion-card-title>
+		<ion-card-subtitle>&#x20b9;{{p.price}}</ion-card-subtitle>
+		<ion-card-subtitle class="thrirdlevellabel">{{p.distance}} km | {{p.shopname}}</ion-card-subtitle>
+		<ionic5-star-rating #rating
+				activeIcon = "star"
+				defaultIcon = "star-outline"
+				activeColor = "rgb(255 72 72)" 
+				defaultColor = "rgb(255 72 72)"
+				readonly="true"
+				rating="1"
+				fontSize = "15px"
+				(ratingChanged)="logRatingChange($event)">
+			</ionic5-star-rating>
+			<ion-card-subtitle class="thrirdlevellabel"><ion-icon name="stopwatch-outline"></ion-icon> 38 mins</ion-card-subtitle>			
 	</ion-label>
-	<ion-thumbnail slot="end">
-		<h3>&#x20b9;{{p.price}}</h3>
-	</ion-thumbnail>
+	
 </ion-item>
 
 </ng-container>

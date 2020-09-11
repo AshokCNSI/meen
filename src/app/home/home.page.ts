@@ -21,6 +21,7 @@ import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@io
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { map } from 'rxjs/operators';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { MapselectionPage } from '../mapselection/mapselection.page';
 
 import { IonSlides } from '@ionic/angular';
 @Component({
@@ -61,11 +62,13 @@ export class HomePage implements OnInit {
   sliderOne: any;
   sliderTwo: any;
   sliderThree: any;
-  
+  notificationcount : number;
+  cartcount : number;
+  sellerList = [];
   //Configuration for each Slider
   slideOptsOne = {
     initialSlide: 0,
-    slidesPerView: 3,
+    slidesPerView: 2,
     autoplay: false,
 	spaceBetween: 10 
   };
@@ -79,7 +82,7 @@ export class HomePage implements OnInit {
   
   slideOptsThree = {
     initialSlide: 0,
-    slidesPerView: 1,
+    slidesPerView: 1.1,
     autoplay: false,
 	spaceBetween: 5 
   };
@@ -288,6 +291,37 @@ export class HomePage implements OnInit {
 					
 				});
 			} else {
+					if(this.authService.getIsUserLoggedIn()) {
+						firebase.database().ref('/cart/').orderByChild('createdby').equalTo(this.authService.getUserID()).once('value').then((snapshot) => {
+							this.cartcount = 0;
+							snapshot.forEach(item => {
+								let a = item.toJSON();
+								if(a['currentstatus'] == 'AC') {
+									this.cartcount = this.cartcount + 1;
+								}
+							})
+						});
+					}
+					setTimeout(()=>{                           
+						  firebase.database().ref('/profile/').orderByChild('usertype').equalTo('S').once('value').then((snapshot) => {
+							this.sellerList = [];
+							if(snapshot != null) {
+								snapshot.forEach(item => {
+									let a = item.toJSON();
+									let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
+													a['latitude'],a['longitude']);
+									a['distance'] = Math.round(distance * 100) / 100;
+									this.sellerList.push(a);
+									this.sellerList.sort(function (a, b) {
+										return Number(a.distance) - Number(b.distance);
+									});
+								})
+							}
+						}).catch((error: any) => {
+							
+						});
+					 }, 3000);
+					
 					firebase.database().ref('/properties/products/').once('value').then((snapshot) => {
 						
 						this.productList = [];
@@ -317,6 +351,7 @@ export class HomePage implements OnInit {
 					
 					firebase.database().ref('/properties/products/').once('value').then((snapshot) => {
 						this.discountList = [];
+						this.notificationcount = 0;
 						snapshot.forEach(item => {
 							let a = item.toJSON();
 							firebase.database().ref('/productsforselling/').orderByChild('productcode').equalTo(a['productcode']).once('value').then((snapshot) => {
@@ -330,6 +365,8 @@ export class HomePage implements OnInit {
 								if(this.discountPriceList.length > 0) {
 									a['price'] = Math.max.apply(Math, this.discountPriceList);
 									this.discountList.push(a);
+									this.notificationcount = this.notificationcount + 1;
+									
 								}
 							}).catch((error: any) => {
 								
@@ -338,6 +375,7 @@ export class HomePage implements OnInit {
 					}).catch((error: any) => {
 						
 					});
+					
 				}  
 			
 	}
@@ -351,4 +389,21 @@ export class HomePage implements OnInit {
 		this.visibility = 'shown';
 		this.productvisibility = 'hidden';
 	}
+	
+	async openMapSelection() {
+		const modal = await this.modalController.create({
+		  component: MapselectionPage,
+		  cssClass: 'my-custom-class',
+		  componentProps: {
+			pagemode: 'H'
+		  }
+		});
+		modal.onDidDismiss()
+		  .then((data) => {
+			  if (data !== null) {
+				
+			  }
+		});
+		return await modal.present();
+  }
 }

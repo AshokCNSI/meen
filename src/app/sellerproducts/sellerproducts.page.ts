@@ -8,6 +8,8 @@ import { NavController } from '@ionic/angular';
 import { LocationserviceService } from '../locationservice.service';
 import { LoadingService } from '../loading.service';
 import { Location } from '@angular/common';
+import { Storage } from '@ionic/storage';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-sellerproducts',
@@ -17,6 +19,7 @@ import { Location } from '@angular/common';
 export class SellerproductsPage implements OnInit {
   public stockList = [];
   constructor(
+  public alertCtrl: AlertController,
   private activatedRoute: ActivatedRoute, 
   public fAuth: AngularFireAuth, 
   private authService: AuthenticateService,
@@ -25,8 +28,11 @@ export class SellerproductsPage implements OnInit {
   private router : ActivatedRoute,
   private locationService: LocationserviceService,
   private loading : LoadingService,
-  private location : Location
-  ) { }
+  private location : Location,
+  private storage: Storage
+  ) { 
+	
+  }
 @ViewChild('search') search : any;
 Arr = Array;
 skeletoncount : number = 10;
@@ -41,7 +47,71 @@ productTempList = [];
 productstatus : string;
 productcode : string;
 selleruid : string;
+shopname : string;
+cartList = [];
+
+private increment (i, itemid) {
+  this.stockList[i].quantity = this.stockList[i].quantity ? this.stockList[i].quantity + 1 : 1;
+  let itempresent = false;
+  if(this.cartList.length == 0 || this.cartList[0].seller == this.selleruid) {
+	  this.cartList.forEach(item => {
+		  if(item.item == itemid) {
+			  itempresent = true;
+			  item.itemcount = this.stockList[i].quantity;
+		  }
+	  })
+	  
+	  if(!itempresent) {
+		  this.cartList.push({
+			  item : itemid,
+			  itemcount : this.stockList[i].quantity,
+			  seller : this.selleruid
+		  })
+	  }
+	 
+	  this.storage.set('cart', this.cartList); 
+  } else {
+	 this.stockList[i].quantity = 0;
+	 this.presentAlertWithCancel('Warning','We found that cart item(s) are not belongs to the current seller. Press ok to clear the cart and try to add this item again.');
+  }
+}
+
+private decrement (i, itemid) {
+  this.stockList[i].quantity = this.stockList[i].quantity ? this.stockList[i].quantity - 1 : 0;
+  let counter = 0;
+  let itempresent = false;
+  this.cartList.forEach(item => {
+	  if(item.item == itemid) {
+		  itempresent = true;
+		  item.itemcount = this.stockList[i].quantity;
+		  this.cartList.splice(counter, 1);
+		  return;
+	  }
+	  counter++;
+  })  
+  this.storage.set('cart', this.cartList);  
+}
+
+async presentAlertWithCancel(status, msg) {
+    const alert = await this.alertCtrl.create({
+      header: status,
+      message: msg,
+	  backdropDismiss : false,
+      buttons: [{
+          text: 'Ok',
+          handler: () => {
+		  if(status == 'Warning') {
+			this.cartList = [];
+			this.storage.set('cart', this.cartList); 
+		  } 
+	  }},{text : 'Cancel'}]
+    });
+    await alert.present();
+  }
   ngOnInit() {
+		this.cartList = this.storage.get('cart').then((val) => {
+			this.cartList = val;
+		
 	  this.activatedRoute.queryParams.subscribe(params => {
 		  this.selleruid = this.activatedRoute.snapshot.params['selleruid'];
 		  firebase.database().ref('/productsforselling/').orderByChild('createdby').equalTo(this.selleruid).once('value').then((snapshot) => {
@@ -59,8 +129,14 @@ selleruid : string;
 								a['discount'] = b['discount'];
 								a['discountprice'] = b['discountprice'];
 								a['selleruid'] = b['createdby'];
+								this.cartList.forEach(item => {
+								  if(item.item == a['index'] && item.seller == a['selleruid']) {
+									  a['quantity'] = item.itemcount;
+								  }
+							  })
 								firebase.database().ref('/profile/'+b['createdby']).once('value').then((snapshot) => {
 									if(snapshot != null) {
+										this.shopname = snapshot.child('shopname').val();
 										let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
 														snapshot.child('latitude').val(),snapshot.child('longitude').val());
 										a['distance'] = Math.round(distance * 100) / 100;
@@ -81,7 +157,8 @@ selleruid : string;
 			}).catch((error: any) => {
 				
 			});
-		});	  
+		});	 
+	});		
 	  
 	if(this.authService.getUserType() == 'SA' || this.authService.getUserType() == 'A') {
 		this.isAdmin = true;

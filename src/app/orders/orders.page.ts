@@ -57,11 +57,11 @@ export class OrdersPage implements OnInit {
 	  });
 	  
 	  if(this.authService.getUserType() == 'S') {
-		  this.db.list('/orders', ref => ref.orderByChild('seller').equalTo(this.authService.getUserID())).snapshotChanges().subscribe(res => { 
-			  if(res != null) {
+		  firebase.database().ref('/orders').orderByChild('seller').equalTo(this.authService.getUserID()).once('value').then((snapshot) => {
+			  if(snapshot != null) {
 				  this.orderList = [];
-				  res.forEach(item => {
-					let a = item.payload.toJSON();
+				  snapshot.forEach(item => {
+					let a = item.toJSON();
 					a['index'] = item.key;
 					this.statusList.forEach(item => {
 						if(a['currentstatus'] == item.code) {

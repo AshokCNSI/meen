@@ -20,7 +20,7 @@
 		  <ion-card-subtitle>{{p.modifieddate |  date:'MM/dd/yyyy h:mm:ss a'}}</ion-card-subtitle>
 		  <ion-card-subtitle>&#x20b9;{{p.totalamount}}</ion-card-subtitle>
 		  <ion-card-subtitle style="color:{{p.statuscolor}}">{{p.statusname}}</ion-card-subtitle>
-		  <ion-card-title color="primary" [routerLink]="['/trackmyorder/'+p.index+'/'+p.statusindex]" *ngIf="(authService.getUserType() == 'C' && p.currentstatus != 'DE' && p.currentstatus != 'CL')">Track my Order</ion-card-title>
+		  <ion-card-title color="danger" [routerLink]="['/trackmyorder/'+p.index+'/'+p.statusindex]" *ngIf="(authService.getUserType() == 'C' && p.currentstatus != 'DE' && p.currentstatus != 'CL')">Track my Order</ion-card-title>
 	  </ion-card-header>
 	</ion-item>
 	

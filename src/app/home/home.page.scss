@@ -12,7 +12,6 @@ text-align:center;
 
 ion-title {
     .subtitle {
-      font-size: 66%;
       margin: 0;
     }
   }
@@ -35,4 +34,50 @@ ion-title {
 
 .banner {
 	width: 95% !important;
+}
+
+ion-card-title{
+font-family : Roboto Bold;
+font-size : 20px;
+}
+
+ion-card-subtitle {
+font-size	: 13px !important;
+font-family : Roboto Black;
+}
+
+.thrirdlevellabel {
+	font-size	: 13px !important;
+	font-family : Roboto Regular;
+}
+ion-card-content {
+font-family : Roboto Light;
+}
+
+.heading {
+font-size	: 18px !important;
+	font-family : Roboto Regular;
+}
+
+.sub-icon {
+font-size	: 20px !important;
+text-align : right;
+color : #eb445a;
+}
+
+.off {
+color: #eb445a;
+    width: 50%;
+    font-weight: bold;
+    padding: 3px;
+}
+
+.subtitleThin {
+font-size	: 12px !important;
+	font-family : Roboto Light;
+}
+
+.titleThin {
+font-size	: 16px !important;
+	font-family : Roboto Medium;
 }

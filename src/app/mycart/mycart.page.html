@@ -75,11 +75,8 @@
 <ion-footer class="ion-no-border" *ngIf="cartList.length > 0">
   <ion-toolbar>
     <ion-row>
-	  <ion-col style="text-align:center;">
-		 <ion-button expand="block" color="danger" (click)="clearCart()">Clear Cart</ion-button>
-	  </ion-col>
 	  <ion-col style="text-align:center;" [routerLink]="['/billingdetails']">
-		 <ion-button expand="block" color="success">Order Review</ion-button>
+		 <ion-button expand="block" color="danger">Order Review</ion-button>
 	  </ion-col>
 	</ion-row>
   </ion-toolbar>

@@ -7,13 +7,17 @@ import { IonicModule } from '@ionic/angular';
 import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
+import {MatBadgeModule} from '@angular/material/badge';
+import { StarRatingModule } from 'ionic5-star-rating';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    HomePageRoutingModule
+    HomePageRoutingModule,
+	MatBadgeModule,
+	StarRatingModule
   ],
   declarations: [HomePage]
 })

@@ -1,17 +1,22 @@
-import { Component, OnInit, ViewChild, ElementRef, NgZone } from '@angular/core';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
-import { Location } from '@angular/common';
-import { ModalController, NavParams } from '@ionic/angular';
-import { LocationsearchPage } from '../locationsearch/locationsearch.page';
-import { AuthenticateService } from '../authentication.service';
-import { LocationserviceService } from '../locationservice.service';
+import { Component, OnInit, Injectable } from '@angular/core';
+import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { ActivatedRoute, NavigationEnd, NavigationStart  } from '@angular/router';
+import{ Validators, FormBuilder, FormGroup, FormControl }from'@angular/forms';
 import { AlertController } from '@ionic/angular';
 import { NavController } from '@ionic/angular';
+import { Router } from '@angular/router';
 import * as firebase from 'firebase';
-import {  MenuController } from '@ionic/angular';
+import { filter } from 'rxjs/operators';
+import { RouterserviceService } from '../routerservice.service';
+import { AuthenticateService } from '../authentication.service';
+import { LoadingService } from '../loading.service';
+import { MapselectionPage } from '../mapselection/mapselection.page';
+import { ModalController } from '@ionic/angular';
 
-declare var google;
+@Injectable({
+  providedIn: 'root'
+})
 
 @Component({
   selector: 'app-addaddress',
@@ -19,70 +24,48 @@ declare var google;
   styleUrls: ['./addaddress.page.scss'],
 })
 export class AddaddressPage implements OnInit {
+
+  constructor(
+  public alertCtrl: AlertController, 
+  public fAuth: AngularFireAuth, 
+  private navController: NavController, 
+  public formBuilder: FormBuilder, 
+  private router: Router,
+  private db: AngularFireDatabase,
+  private activatedRoute: ActivatedRoute,
+  private routerService: RouterserviceService,
+  private authService: AuthenticateService,
+  public loading: LoadingService,
+  private modalController : ModalController
+) { 
   
-  @ViewChild('map',  {static: false}) mapElement: ElementRef;
-  map: any;
-  address:string;
-  addressA : string[];
-  lat: string;
-  long: string;  
-  autocomplete: { input: string; };
-  autocompleteItems: any[];
-  location: any;
-  placeid: any;
-  GoogleAutocomplete: any;
-  current_location : string = "";
-  current_lat : string = "";
-  current_long : string = "";
-  isHidden : boolean = false;
+  }
+  
+  latitude : string;
+  longitude : string;
+  location : string;
   name : string;
   mobile : string;
   houseno : string;
   streetname : string;
   landmark : string;
-  latitude : string;
-  longitude : string;
-  customeraddress : string;
-  pageMode : string;
+  isSubmitted : boolean = false;
   
-  constructor(
-    private geolocation: Geolocation,
-    private nativeGeocoder: NativeGeocoder,    
-    public zone: NgZone,
-	public locationR : Location,
-	public modalController: ModalController,
-	public alertCtrl: AlertController, 
-	private navController: NavController, 
-	private authService: AuthenticateService,
-	private locationService: LocationserviceService,
-	private menuCtrl : MenuController,
-	private navParams: NavParams
-  ) {
-    this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
-    this.autocomplete = { input: '' };
-    this.autocompleteItems = [];
-	this.pageMode = this.navParams.data.pagemode;
-  }
- 
-  //LOAD THE MAP ONINIT.
   ngOnInit() {
-	  this.authService.userDetails().subscribe(res => { 
-	  if (res !== null) {
-		firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
-			if(snapshot != null) {
-				if(snapshot.child('latitude').val() == null 
-					|| snapshot.child('latitude').val() == undefined 
-					|| snapshot.child('latitude').val() == "") {
-					this.isHidden = true;
-					this.menuCtrl.enable(false);
-				} 
-			}
-		});
-	  } 
-	}, err => {
-	  console.log('err', err);
+	  
+  }
+  
+  addressData = this.formBuilder.group({
+	   name: ['', [Validators.required]],
+	   mobile: ['', Validators.compose([Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern('^[0-9]+$')])],
+	   houseno: ['', [Validators.required]],
+	   streetname : ['', [Validators.required]],
+	   landmark: ['', [Validators.required]],
+	   location: ['', [Validators.required]]
 	});
-    this.loadMap();    
+	
+  get errorAddressControl() {
+	return this.addressData.controls;
   }
   
   async presentAlert(status, msg) {
@@ -90,278 +73,60 @@ export class AddaddressPage implements OnInit {
       header: status,
       message: msg,
 	  backdropDismiss : false,
-      buttons: ['Ok']
+      buttons: [{
+          text: 'Ok',
+          handler: () => {
+            
+	  }}]
     });
     await alert.present();
   }
-
-  //LOADING THE MAP HAS 2 PARTS.
-  loadMap() {
-    
-    //FIRST GET THE LOCATION FROM THE DEVICE.
-    this.geolocation.getCurrentPosition().then((resp) => {
-      let latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
-      let mapOptions = {
-        center: latLng,
-        zoom: 15,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-		panControl: false,
-		zoomControl: false,
-		mapTypeControl: false,
-		scaleControl: false,
-		streetViewControl: false,
-		overviewMapControl: false,
-		rotateControl: false,
-		disableDefaultUI: true
-      } 
-      
-      //LOAD THE MAP WITH THE PREVIOUS VALUES AS PARAMETERS.
-      this.getAddressFromCoords(resp.coords.latitude, resp.coords.longitude); 
-      this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-      //this.addMarker(this.map);	  
-      this.map.addListener('tilesloaded', () => {
-        console.log('accuracy',this.map, this.map.center.lat());
-        this.getAddressFromCoords(this.map.center.lat(), this.map.center.lng())
-        this.lat = this.map.center.lat()
-        this.long = this.map.center.lng()
-		this.current_lat = this.map.center.lat();
-		this.current_long = this.map.center.lng();
-		this.current_location = this.getAddressFromCoords(this.map.center.lat(), this.map.center.lng());
-		this.addressA = this.current_location.split(",");
-      }); 
-    }).catch((error) => {
-      console.log('Error getting location', error);
-	  this.current_lat = "";
-	  this.current_long = "";
-	  this.current_location = 'No address found.';
-    });
-  }
-
   
-  getAddressFromCoords(lattitude, longitude) : string {
-    console.log("getAddressFromCoords "+lattitude+" "+longitude);
-    let options: NativeGeocoderOptions = {
-      useLocale: true,
-      maxResults: 5    
-    }; 
-    this.nativeGeocoder.reverseGeocode(lattitude, longitude, options)
-      .then((result: NativeGeocoderResult[]) => {
-        this.address = "";
-        let responseAddress = [];
-        for (let [key, value] of Object.entries(result[0])) {
-          if(value.length>0)
-          responseAddress.push(value); 
-        }
-        responseAddress.reverse();
-        for (let value of responseAddress) {
-          this.address += value+", ";
-        }
-        this.address = this.address.slice(0, -2);
-		return this.address;
-      })
-      .catch((error: any) =>{ 
-        this.address = "Address Not Available!";
-		this.current_lat = "";
-		this.current_long = "";
-		this.current_location = 'No address found.';
-      });
-		return this.address	  
-  }
-
-  //FUNCTION SHOWING THE COORDINATES OF THE POINT AT THE CENTER OF THE MAP
-  ShowCords(){
-    alert('lat' +this.lat+', long'+this.long )
-  }
-  
-  //AUTOCOMPLETE, SIMPLY LOAD THE PLACE USING GOOGLE PREDICTIONS AND RETURNING THE ARRAY.
-  UpdateSearchResults(){
-    if (this.autocomplete.input == '') {
-      this.autocompleteItems = [];
-      return;
-    }
-    this.GoogleAutocomplete.getPlacePredictions({ input: this.autocomplete.input },
-    (predictions, status) => {
-      this.autocompleteItems = [];
-      this.zone.run(() => {
-        predictions.forEach((prediction) => {
-          this.autocompleteItems.push(prediction);
-        });
-      });
-    });
-  }
-  
-  //wE CALL THIS FROM EACH ITEM.
-  SelectSearchResult(item) {
-    ///WE CAN CONFIGURE MORE COMPLEX FUNCTIONS SUCH AS UPLOAD DATA TO FIRESTORE OR LINK IT TO SOMETHING
-    alert(JSON.stringify(item))      
-    this.placeid = item.place_id
-  }
-  
-  
-  //lET'S BE CLEAN! THIS WILL JUST CLEAN THE LIST WHEN WE CLOSE THE SEARCH BAR.
-  ClearAutocomplete(){
-    this.autocompleteItems = []
-    this.autocomplete.input = ''
-  }
- 
-  //sIMPLE EXAMPLE TO OPEN AN URL WITH THE PLACEID AS PARAMETER.
-  GoTo(){
-    return window.location.href = 'https://www.google.com/maps/search/?api=1&query=Google&query_place_id='+this.placeid;
-  }
-  
-  addMarker(map:any){
-	let marker = new google.maps.Marker({
-	  map: map,
-	  animation: google.maps.Animation.DROP,
-	  position: map.getCenter()
-	});
-	let content = "<h4>Information!</h4>";
-	this.addInfoWindow(marker, content);
-  }
-  
-  addInfoWindow(marker, content){
-
-    let infoWindow = new google.maps.InfoWindow({
-      content: content
-    });
-
-    google.maps.event.addListener(marker, 'click', () => {
-      infoWindow.open(this.map, marker);
-    });
-  }
-  
-  goBack() {
-	  this.locationR.back();
-  }
-  
-  async openAddressBar() {
-	  const modal = await this.modalController.create({
-      component: LocationsearchPage,
-      cssClass: 'my-custom-class'
+  async openMapSelection() {
+    const modal = await this.modalController.create({
+      component: MapselectionPage,
+      cssClass: 'my-custom-class',
+	  componentProps: {
+		pagemode: 'AA'
+	  }
     });
 	modal.onDidDismiss()
       .then((data) => {
 		  if (data !== null) {
-			this.address = data.data.description; 
-			this.current_location = this.address;
-			this.addressA = this.address.split(",")			
-			let options: NativeGeocoderOptions = {
-			  useLocale: true,
-			  maxResults: 5    
-			}; 
-			this.nativeGeocoder.forwardGeocode(this.address, options)
-			.then((result: NativeGeocoderResult[]) => {
-				let current_lat = result[0].latitude;
-				let current_long = result[0].longitude;
-				
-				let latLng = new google.maps.LatLng(current_lat, current_long);
-				  let mapOptions = {
-					center: latLng,
-					zoom: 15,
-					mapTypeId: google.maps.MapTypeId.ROADMAP,
-					panControl: false,
-					zoomControl: false,
-					mapTypeControl: false,
-					scaleControl: false,
-					streetViewControl: false,
-					overviewMapControl: false,
-					rotateControl: false,
-					disableDefaultUI: true
-				  } 
-				  
-				  //LOAD THE MAP WITH THE PREVIOUS VALUES AS PARAMETERS.
-				  this.getAddressFromCoords(current_lat, current_long); 
-				  this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-				  //this.addMarker(this.map);	  
-				  this.map.addListener('tilesloaded', () => {
-					console.log('accuracy',this.map, this.map.center.lat());
-					this.getAddressFromCoords(this.map.center.lat(), this.map.center.lng())
-					this.lat = this.map.center.lat()
-					this.long = this.map.center.lng()
-					this.current_lat = this.map.center.lat();
-					this.current_long = this.map.center.lng();
-				  }); 	
-			})
-			.catch((error: any) => {
-				
-			});
+			this.latitude = data.data.latitude;
+			this.longitude = data.data.longitude;
+			this.location = data.data.cur_location;
 		  }
     });
-    await modal.present();
+    return await modal.present();
   }
   
   confirmMyLocation() {
-	  
-	  if(this.current_lat != undefined && this.current_lat != "" 
-		&& this.current_long != undefined && this.current_long != ""
-		&& this.current_location != undefined && this.current_location != "") {
-			
-			if(!this.name || !this.mobile || !this.houseno || !this.streetname || !this.landmark || !this.current_lat || !this.current_long || this.mobile.toString().length != 10) {
-			  if(!this.mobile) {
-				  this.presentAlert('Error','Please give Contact Number.');
-			  } else if(this.mobile.toString().length != 10) {
-				  this.presentAlert('Error','Contact Number is invalid.');
-			  } else {
-				  this.presentAlert('Error','Please fill all the required fields.');
-			  }
-		  } else {
-			  firebase.database().ref('/addressbook/').push({
-					"name" : this.name,
-					"mobile" : this.mobile,
-					"houseno" : this.houseno,
-					"streetname" : this.streetname,
-					"landmark" : this.landmark,
-					"latitude" : this.current_lat,
-					"longitude" : this.current_long,
-					"address" : this.address,
-					"createddate" : Date(),
-					"createdby":this.authService.getUserID(),
-					"modifieddate": Date(),
-					"modifiedby":this.authService.getUserID()
-			  }).then(
-			   res => 
-			   {
-				   firebase.database().ref('/profile/'+this.authService.getUserID()).update({
-					   "latitude" : this.current_lat,
-					   "longitude" : this.current_long,
-					   "lastlocation" : this.current_location,
-					   "modifieddate": Date(),
-					   "modifiedby":this.authService.getUserID()
-				  }).then(
-				   res => 
-				   {
-						this.locationService.setLatitude(this.current_lat);
-						this.locationService.setLongitude(this.current_long);
-						this.locationService.setCurrentLocation(this.current_location);
-						if(this.pageMode == 'M') {
-							this.modalController.dismiss();
-						} else {
-							this.navController.navigateRoot('/addressbook');
-						}
-				   }
-				 ).catch(error => {
-					this.presentAlert('Error',error);
-				  });	
-				   this.presentAlert('Success','Your address has been successfully added');
-				   this.name = '';
-				   this.mobile = '';
-				   this.houseno = '';
-				   this.streetname = '';
-				   this.landmark = '';
-				   this.current_lat = '';
-				   this.current_long = '';
-				   this.address = '';
-			   }
-			 ).catch(res => console.log(res))
-		  }
+	  this.isSubmitted = true;
+	  if (!this.addressData.valid) {
+		return false;
+	  } else {
+		  firebase.database().ref('/addressbook/').push({
+				"name" : this.name,
+				"mobile" : this.mobile,
+				"houseno" : this.houseno,
+				"streetname" : this.streetname,
+				"landmark" : this.landmark,
+				"latitude" : this.latitude,
+				"longitude" : this.longitude,
+				"address" : this.location,
+				"createddate" : Date(),
+				"createdby":this.authService.getUserID(),
+				"modifieddate": Date(),
+				"modifiedby":this.authService.getUserID()
+		  }).then(
+		   res => 
+		   {
+			   this.presentAlert('Success','Your address has been successfully added');
+			   this.navController.navigateRoot('/addressbook');
+		   }
+		 ).catch(res => console.log(res))
+	  }
+  }
 
-	} else {
-		this.presentAlert('Error','No address found');
-	}
-  }
-  
-  closeModal() {
-	  this.modalController.dismiss();
-  }
-  
 }

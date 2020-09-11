@@ -39,7 +39,19 @@ searchVal : string;
 productTempList = [];
 productstatus : string;
 productcode : string;
+cartcount : number;
   ngOnInit() {
+	  if(this.authService.getIsUserLoggedIn()) {
+			firebase.database().ref('/cart/').orderByChild('createdby').equalTo(this.authService.getUserID()).once('value').then((snapshot) => {
+				this.cartcount = 0;
+				snapshot.forEach(item => {
+					let a = item.toJSON();
+					if(a['currentstatus'] == 'AC') {
+						this.cartcount = this.cartcount + 1;
+					}
+				})
+			});
+		}
 	  this.activatedRoute.queryParams.subscribe(params => {
 		  this.productcode = params['productcode'];
 		  this.productstatus = params['productstatus'];
@@ -67,6 +79,9 @@ productcode : string;
 											a['distance'] = Math.round(distance * 100) / 100;
 											a['shopname'] = snapshot.child('shopname').val();
 											this.stockList.push(a);
+											this.stockList.sort(function (a, b) {
+												return Number(a.distance) - Number(b.distance);
+											});
 										}
 									}).catch((error: any) => {
 										
@@ -105,6 +120,9 @@ productcode : string;
 											a['distance'] = Math.round(distance * 100) / 100;
 											a['shopname'] = snapshot.child('shopname').val();
 											this.stockList.push(a);
+											this.stockList.sort(function (a, b) {
+												return Number(a.distance) - Number(b.distance);
+											});
 										}
 									}).catch((error: any) => {
 										
@@ -143,6 +161,9 @@ productcode : string;
 											a['distance'] = Math.round(distance * 100) / 100;
 											a['shopname'] = snapshot.child('shopname').val();
 											this.stockList.push(a);
+											this.stockList.sort(function (a, b) {
+												return Number(a.distance) - Number(b.distance);
+											});
 										}
 									}).catch((error: any) => {
 										

@@ -48,6 +48,7 @@ export class NotificationPage implements OnInit {
 								
 								let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),snapshot.child('latitude').val(),snapshot.child('longitude').val());
 								a['distance'] = Math.round(distance * 100) / 100;
+								a['shopname'] = snapshot.child('shopname').val();
 								this.discountList.push(a);
 							}
 						}).catch((error: any) => {

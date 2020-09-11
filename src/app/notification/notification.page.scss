@@ -2,3 +2,43 @@
 	text-align: center;
 	font-size : 10px;
 }
+
+ion-card-title{
+font-family : Roboto Bold;
+font-size : 17px;
+}
+
+ion-card-subtitle {
+font-size	: 13px !important;
+font-family : Roboto Black;
+}
+
+.thrirdlevellabel {
+	font-size	: 13px !important;
+	font-family : Roboto Regular;
+}
+ion-card-content {
+margin-left : -15px;
+font-family : Roboto Light Italic;
+}
+.container {
+  position: relative;
+  text-align: center;
+  color: white;
+}
+
+img {
+
+}
+.centered {
+  position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #eb445a;
+    width: 50%;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 3px;
+}

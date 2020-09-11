@@ -23,14 +23,14 @@
 		<img alt="M" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
 	  </ion-thumbnail>
 		<ion-label>
-			<h2>{{p.title}}</h2>
-			<h5>{{p.details}}</h5>
-			<h5>Available for Sale: {{p.available == "Y" ? "Yes" : "No"}}</h5>
-			<h5>Availbale for discount: {{p.discount == "Y" ? "Yes" : "No"}}</h5>
-			<h5>Discount Price: &#x20b9;{{p.discountprice}}</h5>
+			<ion-card-title>{{p.title}}</ion-card-title>
+			<ion-card-subtitle>{{p.details}}</ion-card-subtitle>
+			<ion-card-subtitle>Available for Sale: {{p.available == "Y" ? "Yes" : "No"}}</ion-card-subtitle>
+			<ion-card-subtitle>Availbale for discount: {{p.discount == "Y" ? "Yes" : "No"}}</ion-card-subtitle>
+			<ion-card-subtitle>Discount Price: &#x20b9;{{p.discountprice}}</ion-card-subtitle>
 		</ion-label>
 		<ion-thumbnail slot="end">
-			<h3>&#x20b9;{{p.price}}</h3>
+			<ion-card-subtitle>&#x20b9;{{p.price}}</ion-card-subtitle>
 	    </ion-thumbnail>
 	</ion-item>
 	
