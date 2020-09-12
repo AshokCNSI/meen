@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { MycartPageRoutingModule } from './mycart-routing.module';
 
 import { MycartPage } from './mycart.page';
+import { StarRatingModule } from 'ionic5-star-rating';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    MycartPageRoutingModule
+    MycartPageRoutingModule,
+	StarRatingModule
   ],
   declarations: [MycartPage]
 })

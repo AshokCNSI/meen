@@ -8,18 +8,33 @@
 </ion-header>
 
 <ion-content>
+<ion-card-header>
+	<ion-card-title class="heading">We would like to serve you if you need?</ion-card-title>
+</ion-card-header>
+<ion-item>
+<ion-label>Do you need masala?</ion-label>
+<ion-checkbox color="danger" slot="start" (ionChange)="checkboxClick($event)"></ion-checkbox>
+</ion-item>
+<ion-item *ngIf="showMasala">
+<ion-label>Masala Quantity</ion-label>
+<ion-button (click)="removeMasalaQuantity()">-</ion-button>
+<ion-button color="light">{{masalaquantity}}</ion-button>
+<ion-button (click)="addMasalaQuantity()">+</ion-button>
+</ion-item>
+<ion-item *ngIf="showMasala">
+<ion-label>Total</ion-label>
+<ion-card-subtitle style="color:#eb445a;">&#x20b9; {{masalaquantity * masalacharge}}</ion-card-subtitle>  
+</ion-item>
+<ion-card-header>
+	<ion-card-title class="heading">Bill details</ion-card-title>
+</ion-card-header>
 <ng-container *ngIf="cartList.length > 0">
-<ng-container *ngFor="let p of cartList;">
-<ion-item (click)="routeStockDetail(p.index,p.productcode,p.currentstatus)">
-	<ion-thumbnail slot="start">
-		<img alt="M" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
-	  </ion-thumbnail>
+<ng-container *ngFor="let p of cartList;let i = index;">
+<ion-item (click)="openItemDetails(i)">
 	<ion-card-header>
-		  <ion-card-title>{{p.title}}</ion-card-title>
-		  <ion-card-subtitle style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{p.details}}</ion-card-subtitle>
-		  <ion-card-subtitle>Ordered on {{p.modifieddate}}</ion-card-subtitle>
+		  <ion-card-title class="title">{{p.title}}</ion-card-title>
+		  <ion-card-title class="titlelink" style="color:#3880ff">customize ></ion-card-title>
 	</ion-card-header>
-	
 </ion-item>
 <ion-item-divider>
 <ion-grid>
@@ -39,25 +54,18 @@
 			 <ion-card-subtitle>&#x20b9; {{p.quantity * p.discount}}</ion-card-subtitle>
 		  </ion-col>
 	</ion-row>
-	<ion-row *ngIf="p.masala == 'Y' && p.masalaquantity">
-		  <ion-col>
-			 <ion-card-subtitle>Masala</ion-card-subtitle>
-		  </ion-col>
-		  <ion-col style="text-align:right;">
-			 <ion-card-subtitle>&#x20b9; {{p.masalaquantity * masalacharge}}</ion-card-subtitle>
-		  </ion-col>
-	</ion-row>
 	<ion-row>
 		  <ion-col>
 			 <ion-card-subtitle>Total</ion-card-subtitle>
 		  </ion-col>
 		  <ion-col style="text-align:right;">
-			 <ion-card-subtitle>&#x20b9; {{p.quantity * p.price - p.quantity * p.discount + ((p.masala == 'Y' && p.masalaquantity) ? (p.masalaquantity * masalacharge):0)}}</ion-card-subtitle>
+			 <ion-card-subtitle style="color:#eb445a;">&#x20b9; {{p.quantity * p.price - p.quantity * p.discount + ((p.masala == 'Y' && p.masalaquantity) ? (p.masalaquantity * masalacharge):0)}}</ion-card-subtitle>
 		  </ion-col>
 	</ion-row>
 </ion-grid>
 </ion-item-divider>
 </ng-container>
+<ng-container *ngIf="authService.getIsUserLoggedIn()">
 <ion-item (click)="selectAddress()">
 	<ion-note slot="start">Delivering to</ion-note>
 	<ion-label *ngIf="!dmobile">No Address Selected</ion-label>
@@ -79,9 +87,9 @@
 		</ion-buttons>
 	  </ion-card-content>
   </ion-card-header>
-
+  
 </ion-card>
-
+</ng-container>
 </ng-container>
 <ng-container *ngIf="cartList.length == 0">
 	<ion-row *ngFor="let i of Arr(skeletoncount).fill(1)">

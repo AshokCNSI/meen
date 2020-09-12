@@ -215,7 +215,7 @@
 	</ng-container>
 </ng-container>
 
-<ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="cartcount > 0 && authService.getIsUserLoggedIn() && authService.getUserType() == 'C'">
+<ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="(!authService.getIsUserLoggedIn() && cartList.length > 0) || (cartList.length > 0 && authService.getUserType() == 'C')">
 	<ion-fab-button color="danger" [routerLink]="['/mycart']">
 	  <ion-icon name="cart"></ion-icon>
 	</ion-fab-button>

@@ -1,136 +1,31 @@
-<ion-header translucent>
-  <ion-toolbar>
-	<ion-buttons style="font-size: 25px;margin: 10px;" slot="start" (click)="location.back()">
-		<ion-icon name="arrow-back-outline"></ion-icon>
-	</ion-buttons>
-	
-	<ion-title>{{title}}</ion-title>
-	<ion-buttons slot="secondary" style="font-size: 25px;margin: 10px;" (click)="saveStock()" *ngIf="(authService.getUserType() == 'A' || authService.getUserType() == 'SA') && productVisibility == 'R'">
-        <ion-icon name="push-outline"></ion-icon>
-    </ion-buttons>
-	<ion-buttons slot="secondary" style="font-size: 25px;margin: 10px;" (click)="updateStatus()" *ngIf="(authService.getUserType() == 'S' || authService.getUserType() == 'D') && (productVisibility != 'AC' && productVisibility != 'R' && oldStatus!='DE')">
-        <ion-icon name="arrow-up-circle-outline"></ion-icon>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
 
 <ion-card>
-	<img alt="M" style="width:100%;height:200px;" src="{{imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
 	<ion-card-header>
-	  <ion-card-title>{{shopname}}</ion-card-title>
-	  <ion-card-subtitle>{{title}}</ion-card-subtitle>
-	  <ion-card-title>&#x20b9; {{price}}</ion-card-title>
-	  <ionic5-star-rating #rating
-		activeIcon = "star"
-		defaultIcon = "star-outline"
-		activeColor = "rgb(255 72 72)" 
-				defaultColor = "rgb(255 72 72)"
-		readonly="true"
-		rating="3"
-		fontSize = "15px"
-		(ratingChanged)="logRatingChange($event)">
-	</ionic5-star-rating>
-	</ion-card-header>
+	  <ion-card-title>{{title}}</ion-card-title>
+	  </ion-card-header>
 	<ion-card-content>
 	  {{details}}
 	</ion-card-content>
   </ion-card>
-<ng-container *ngIf="productVisibility == 'R' && (authService.getUserType() == 'SA' || authService.getUserType() == 'A')">
-<div *ngIf="isSubmitted && errorControl.title.errors?.required"
-		class="validator-error">
-	  Enter Title of the Product.
-	</div>
-  <form [formGroup]="formData" id="formData" novalidate>
-	  <ion-item>
-		  <ion-label position="floating">Title</ion-label>
-		  <ion-input type="text" formControlName="title" [(ngModel)]="title" required></ion-input>
-		</ion-item>
-		<ion-item>
-		  <ion-label position="floating">Description</ion-label>
-		  <ion-textarea formControlName="details" [(ngModel)]="details"></ion-textarea>
-		</ion-item>
-		<ion-item>
-		  <ion-label position="floating">Image Path</ion-label>
-		  <ion-textarea formControlName="imagepath" [(ngModel)]="imagepath"></ion-textarea>
-		</ion-item>
-	</form>
-</ng-container>
-<ng-container *ngIf="(authService.getUserType() != 'SA' || authService.getUserType() != 'A')">
-	<div *ngIf="isSubmitted && errorOrderControl.quantity.errors?.required"
-		class="validator-error">
-	  Enter quantity of the product.
-	</div>
-	<div *ngIf="isSubmitted && errorOrderControl.cookingpurpose.errors?.required"
-		class="validator-error">
-	  Please select the type of piece you want.
-	</div>
-	<div *ngIf="isSubmitted && errorOrderControl.masala.errors?.required"
-	class="validator-error">
-	  Please select masala.
-	</div>
-	<div *ngIf="isSubmitted && errorOrderControl.description.errors?.required"
-	class="validator-error">
-	  Please give description.
-	</div>
-<form [formGroup]="orderData" id="orderData" (ngSubmit)="productVisibility == 'AC' ? orderConfirm() : addToCart()" novalidate>
-		<ion-item>
-		  <ion-label position="floating">How much you need in Kg?</ion-label>
-		  <ion-input type="number" formControlName="quantity" [(ngModel)]="quantity" required disabled="{{ordervisibility}}"></ion-input>
-		  <ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" slot="end" (click)="removeNumber()">
-			<ion-icon name="remove-circle-outline"></ion-icon>
-		  </ion-buttons>
-		  <ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" slot="end" (click)="addNumber()">
-			<ion-icon name="add-circle-outline"></ion-icon>
-		  </ion-buttons>
-		</ion-item>
-		<ion-item>
-		  <ion-label>Purpose</ion-label>
-		  <ion-select [(ngModel)]="cookingpurpose" formControlName="cookingpurpose" interface="action-sheet" required disabled="{{ordervisibility}}">
-			<ion-select-option value="FR">Fry</ion-select-option>
-			<ion-select-option value="GA">Gravy</ion-select-option>
-			<ion-select-option value="TA">Tawa Fry</ion-select-option>
-			<ion-select-option value="CH">Chilli</ion-select-option>
-			<ion-select-option value="CR">Cross cut</ion-select-option>
-			<ion-select-option value="FI">Fillet</ion-select-option>
-		  </ion-select>
-		</ion-item>
-		<ion-item>
-		  <ion-label>Masala</ion-label>
-		  <ion-select [(ngModel)]="masala" formControlName="masala" interface="action-sheet" required disabled="{{ordervisibility}}">
-			<ion-select-option value="Y">Yes</ion-select-option>
-			<ion-select-option value="N">No</ion-select-option>
-		  </ion-select>
-		</ion-item>
-		<ion-item *ngIf="masala == 'Y'">
-		  <ion-label position="floating">Masala Quantity</ion-label>
-		  <ion-input type="number" formControlName="masalaquantity" [(ngModel)]="masalaquantity" required disabled="{{ordervisibility}}"></ion-input>
-		  <ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" slot="end" (click)="removeMasalaQuantity()">
-			<ion-icon name="remove-circle-outline"></ion-icon>
-		  </ion-buttons>
-		  <ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" slot="end" (click)="addMasalaQuantity()">
-			<ion-icon name="add-circle-outline"></ion-icon>
-		  </ion-buttons>
-		</ion-item>
-		<ion-item>
-		  <ion-label position="floating">What would you like us to do?</ion-label>
-		  <ion-textarea formControlName="description" [(ngModel)]="description" disabled="{{ordervisibility}}"></ion-textarea>
-		</ion-item>
-		
-		<ion-row>
-		<ng-container *ngIf="productVisibility == 'R'">
-		  <ion-col style="text-align:center;">
-			 <ion-button expand="block" color="danger" type="submit">Add to Cart</ion-button>
-		  </ion-col>
-		</ng-container>
-		<ng-container *ngIf="productVisibility == 'AC'">
-		  <ion-col style="text-align:center;">
-			 <ion-button expand="block" color="danger" (click)="updateCart()">Update Cart</ion-button>
-		  </ion-col>
-		</ng-container>
-		</ion-row>
-	</form>
-</ng-container>
-
+<ion-card-header>
+	<ion-card-title class="heading">What are you going to do with?</ion-card-title>
+</ion-card-header>
+  <ion-item *ngFor="let p of fishpiecetype">
+	<ion-label>{{p.name}}</ion-label>
+	<ion-checkbox color="danger" slot="start" [(ngModel)]="p.checked" (ionChange)="checkboxClick($event)"></ion-checkbox>
+  </ion-item>
+  <ion-item>
+	  <ion-label position="floating">What would you like us to do?</ion-label>
+	  <ion-textarea [(ngModel)]="desc"></ion-textarea>
+	</ion-item>
 </ion-content>
+<ion-footer class="ion-no-border">
+  <ion-toolbar>
+    <ion-row>
+	  <ion-col style="text-align:center;">
+		 <ion-button expand="block" color="danger" (click)="updateItem()">Update Order</ion-button>
+	  </ion-col>
+	</ion-row>
+  </ion-toolbar>
+</ion-footer>

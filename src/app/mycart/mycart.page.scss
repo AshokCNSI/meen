@@ -3,15 +3,40 @@
 	font-size : 10px;
 }
 
-*{
-font-family : Roboto Light;
+ion-title {
+font-size	: 12px !important;
+font-family : Roboto Bold;
+}
+
+ion-card-title {
+font-size	: 17px !important;
+font-family : Roboto Bold;
 }
 
 ion-card-subtitle {
 font-size	: 12px !important;
+font-family : Roboto Medium;
 }
 
 ion-card-content {
 margin-left : -15px;
-font-family : Roboto Light Italic;
+font-family : Roboto Light;
+}
+
+.thrirdlevellabel {
+font-size	: 13px !important;
+	font-family : Roboto Regular;
+	}
+.subtitleThin {
+font-size	: 12px !important;
+	font-family : Roboto Light;
+}
+ion-title {
+font-size	: 15px !important;
+	font-family : Roboto Bold;
+}
+
+.heading {
+font-size	: 18px !important;
+	font-family : Roboto Regular;
 }

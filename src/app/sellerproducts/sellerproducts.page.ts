@@ -84,7 +84,9 @@ private decrement (i, itemid) {
 	  if(item.item == itemid) {
 		  itempresent = true;
 		  item.itemcount = this.stockList[i].quantity;
-		  this.cartList.splice(counter, 1);
+		  if(this.stockList[i].quantity == 0) {
+			this.cartList.splice(counter, 1);
+		  }
 		  return;
 	  }
 	  counter++;
@@ -109,8 +111,10 @@ async presentAlertWithCancel(status, msg) {
     await alert.present();
   }
   ngOnInit() {
-		this.cartList = this.storage.get('cart').then((val) => {
-			this.cartList = val;
+		this.storage.get('cart').then((val) => {
+			if(val) {
+				this.cartList = val;
+			}
 		
 	  this.activatedRoute.queryParams.subscribe(params => {
 		  this.selleruid = this.activatedRoute.snapshot.params['selleruid'];

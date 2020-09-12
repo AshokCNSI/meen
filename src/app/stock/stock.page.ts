@@ -8,6 +8,7 @@ import { NavController } from '@ionic/angular';
 import { LocationserviceService } from '../locationservice.service';
 import { LoadingService } from '../loading.service';
 import { Location } from '@angular/common';
+import { Storage } from '@ionic/storage';
 @Component({
   selector: 'app-stock',
   templateUrl: './stock.page.html',
@@ -24,7 +25,8 @@ export class StockPage implements OnInit {
   private router : ActivatedRoute,
   private locationService: LocationserviceService,
   private loading : LoadingService,
-  private location : Location
+  private location : Location,
+  private storage: Storage
   ) { }
 @ViewChild('search') search : any;
 Arr = Array;
@@ -40,17 +42,14 @@ productTempList = [];
 productstatus : string;
 productcode : string;
 cartcount : number;
+cartList = [];
   ngOnInit() {
 	  if(this.authService.getIsUserLoggedIn()) {
-			firebase.database().ref('/cart/').orderByChild('createdby').equalTo(this.authService.getUserID()).once('value').then((snapshot) => {
-				this.cartcount = 0;
-				snapshot.forEach(item => {
-					let a = item.toJSON();
-					if(a['currentstatus'] == 'AC') {
-						this.cartcount = this.cartcount + 1;
-					}
-				})
-			});
+		  this.storage.get('cart').then((val) => {
+			if(val) {
+				this.cartList = val;
+			}
+		  })
 		}
 	  this.activatedRoute.queryParams.subscribe(params => {
 		  this.productcode = params['productcode'];

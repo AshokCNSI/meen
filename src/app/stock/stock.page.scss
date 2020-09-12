@@ -48,3 +48,8 @@ font-size	: 13px !important;
 font-size	: 12px !important;
 	font-family : Roboto Light;
 }
+
+ion-toolbar {
+--background: transparent;
+--ion-color-base: transparent !important;
+}

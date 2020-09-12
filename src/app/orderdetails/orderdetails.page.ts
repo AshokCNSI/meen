@@ -2,7 +2,7 @@ import { Component, OnInit, Injectable } from '@angular/core';
 import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { ActivatedRoute, NavigationEnd, NavigationStart  } from '@angular/router';
-import{ Validators, FormGroup, FormControl }from'@angular/forms';
+import{ Validators, FormBuilder, FormGroup, FormControl }from'@angular/forms';
 import { AlertController } from '@ionic/angular';
 import { NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
@@ -12,9 +12,10 @@ import { RouterserviceService } from '../routerservice.service';
 import { AuthenticateService } from '../authentication.service';
 import { LoadingService } from '../loading.service';
 import { MyaddressPage } from '../myaddress/myaddress.page';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavParams } from '@ionic/angular';
 import { DeliverylocationPage } from '../deliverylocation/deliverylocation.page';
 import { Location } from '@angular/common';
+import { StockdetailPage } from '../stockdetail/stockdetail.page';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,7 @@ export class OrderdetailsPage implements OnInit {
   constructor(
   public alertCtrl: AlertController, 
   public fAuth: AngularFireAuth, 
+  public formBuilder: FormBuilder,
   private navController: NavController, 
   private router: Router,
   private db: AngularFireDatabase,
@@ -38,7 +40,8 @@ export class OrderdetailsPage implements OnInit {
   private authService: AuthenticateService,
   public loading: LoadingService,
   private modalController : ModalController,
-  private location : Location
+  private location : Location,
+  private navParams: NavParams
 ) { 
   
   }
@@ -211,6 +214,20 @@ export class OrderdetailsPage implements OnInit {
 	  componentProps: {
 		destinationlatitude: this.productVisibility == 'DS' ? this.sellerlatitude : this.latitude,
 		destinationlongitude: this.productVisibility == 'DS' ? this.sellerlongitude : this.longitude
+	  }
+	});
+	await modal.present();
+  }
+  
+  async openItemDetails(index) {
+	  console.log(this.cartList[index].options)
+	const modal = await this.modalController.create({
+	  component: StockdetailPage,
+	  cssClass: 'stock-detail-modal-css',
+	  componentProps: {
+		itemid : this.cartList[index].index,
+		desc : this.cartList[index].desc,
+		options : this.cartList[index].options
 	  }
 	});
 	await modal.present();

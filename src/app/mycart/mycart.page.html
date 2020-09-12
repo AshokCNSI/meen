@@ -8,40 +8,45 @@
 </ion-header>
 
 <ion-content>
+
 <ng-container *ngIf="cartList.length > 0">
-<ion-item-sliding *ngFor="let p of cartList;">
-	<ion-item (click)="routeStockDetail(p.index,p.productcode,p.currentstatus)">
-	  <ion-thumbnail slot="start">
+<ion-card-header>
+	<ion-card-title class="heading">Seller details</ion-card-title>
+</ion-card-header>
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>{{sellershopname}}</ion-card-title>
+	<ion-card-subtitle>{{distance}} km</ion-card-subtitle>
+	<ion-card-subtitle>
+  <ionic5-star-rating #rating
+		activeIcon = "star"
+		defaultIcon = "star-outline"
+		activeColor = "rgb(255 72 72)" 
+		defaultColor = "rgb(255 72 72)"
+		readonly="true"
+		rating="3"
+		fontSize = "15px"
+		(ratingChanged)="logRatingChange($event)">
+	</ionic5-star-rating> .. 3.8</ion-card-subtitle>
+  </ion-card-header>
+</ion-card>
+<ion-card-header>
+	<ion-card-title class="heading">Your items are...</ion-card-title>
+</ion-card-header>
+	<ion-item *ngFor="let p of cartList; let i = index;">
+	  <ion-thumbnail slot="start" style="width: 40%;
+    height: 60%;">
 		<img alt="M" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
 	  </ion-thumbnail>
-			<ion-card-header>
-				  <ion-card-title>{{p.title}}</ion-card-title>
-				  <ion-card-subtitle style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{p.details}}</ion-card-subtitle>
-				  <ion-card-subtitle>Ordered on {{p.modifieddate}}</ion-card-subtitle>
-				  <ion-card-subtitle>Quantity: {{p.quantity}} kg</ion-card-subtitle>
-			</ion-card-header>
-		<ion-thumbnail slot="end">
-			<h3>&#x20b9;{{p.price}}</h3>
-			<ion-badge color="dark">
-				<ng-container *ngIf="p.currentstatus == 'ORD'">
-					Ordered
-				  </ng-container>
-				  <ng-container *ngIf="p.currentstatus == 'INP'">
-					In-Progress
-				  </ng-container>
-				  <ng-container *ngIf="p.currentstatus == 'DE'">
-					Delievered
-				  </ng-container>
-			</ion-badge>
-	    </ion-thumbnail>
+	<ion-card-header>
+		  <ion-card-title (click)="routeStockDetail(p.index,p.productcode,p.currentstatus)">{{p.title}}</ion-card-title>
+		  <ion-card-subtitle class="subtitleThin">&#x20b9;{{p.price}}</ion-card-subtitle>
+		  <ion-button (click)="decrement(i, p.index)">-</ion-button>
+		<ion-button color="light">{{p.quantity ? p.quantity : 0}}</ion-button>
+		<ion-button (click)="increment(i, p.index)">+</ion-button>
+	</ion-card-header>
 	</ion-item>
-	<ion-item-options>
-      <ion-item-option color="danger" (click)="deleteThisItem(p.index)">
-        <ion-icon slot="start" name="trash"></ion-icon>
-        Delete
-      </ion-item-option>
-    </ion-item-options>
-</ion-item-sliding>
+	
 
 
 </ng-container>

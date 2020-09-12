@@ -22,6 +22,7 @@ import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { map } from 'rxjs/operators';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { MapselectionPage } from '../mapselection/mapselection.page';
+import { Storage } from '@ionic/storage';
 
 import { IonSlides } from '@ionic/angular';
 @Component({
@@ -65,6 +66,7 @@ export class HomePage implements OnInit {
   notificationcount : number;
   cartcount : number;
   sellerList = [];
+  cartList = [];
   //Configuration for each Slider
   slideOptsOne = {
     initialSlide: 0,
@@ -100,7 +102,8 @@ export class HomePage implements OnInit {
   private geolocation: Geolocation,
   private nativeGeocoder: NativeGeocoder,
   private diagnostic: Diagnostic,
-  private locationService: LocationserviceService
+  private locationService: LocationserviceService,
+  private storage: Storage
   ) { 
 		
   }
@@ -291,17 +294,12 @@ export class HomePage implements OnInit {
 					
 				});
 			} else {
-					if(this.authService.getIsUserLoggedIn()) {
-						firebase.database().ref('/cart/').orderByChild('createdby').equalTo(this.authService.getUserID()).once('value').then((snapshot) => {
-							this.cartcount = 0;
-							snapshot.forEach(item => {
-								let a = item.toJSON();
-								if(a['currentstatus'] == 'AC') {
-									this.cartcount = this.cartcount + 1;
-								}
-							})
-						});
-					}
+				
+					this.storage.get('cart').then((val) => {
+						if(val) {
+							this.cartList = val;
+						}
+					})
 					setTimeout(()=>{                           
 						  firebase.database().ref('/profile/').orderByChild('usertype').equalTo('S').once('value').then((snapshot) => {
 							this.sellerList = [];

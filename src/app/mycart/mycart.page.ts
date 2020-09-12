@@ -10,9 +10,11 @@ import * as firebase from 'firebase';
 import { filter } from 'rxjs/operators';
 import { RouterserviceService } from '../routerservice.service';
 import { AuthenticateService } from '../authentication.service';
+import { LocationserviceService } from '../locationservice.service';
+
 import { LoadingService } from '../loading.service';
 import { timer } from 'rxjs';
-
+import { Storage } from '@ionic/storage';
 @Injectable({
   providedIn: 'root'
 })
@@ -33,7 +35,9 @@ export class MycartPage implements OnInit {
   private activatedRoute: ActivatedRoute,
   private routerService: RouterserviceService,
   private authService: AuthenticateService,
-  public loading: LoadingService
+  public loading: LoadingService,
+  private storage: Storage,
+  private locationService: LocationserviceService,
 ) { 
   
   }
@@ -43,38 +47,87 @@ export class MycartPage implements OnInit {
   isAdmin : boolean = false;
   shownoitems : boolean = false;
   cartList = [];
+  cartListDetails = []
+  sellername : string;
+  sellershopname : string;
+  sellerroute : string;
+  
+private increment (i, itemid) {
+  this.cartList[i].quantity = this.cartList[i].quantity ? this.cartList[i].quantity + 1 : 1;
+  let itempresent = false;
+  this.cartList.forEach(item => {
+	  if(item.item == itemid) {
+		  itempresent = true;
+		  item.itemcount = this.cartList[i].quantity;
+	  }
+  })
+  
+  if(!itempresent) {
+	  this.cartList.push({
+		  item : itemid,
+		  itemcount : this.cartList[i].quantity,
+		  seller : this.selleruid
+	  })
+  }
+  this.storage.set('cart', this.cartList); 
+}
+
+private decrement (i, itemid) {
+  this.cartList[i].quantity = this.cartList[i].quantity ? this.cartList[i].quantity - 1 : 0;
+  let counter = 0;
+  let itempresent = false;
+  this.cartList.forEach(item => {
+	  if(item.item == itemid) {
+		  itempresent = true;
+		  item.itemcount = this.cartList[i].quantity;
+		  if(this.cartList[i].quantity == 0) {
+			this.cartList.splice(counter, 1);
+		  }
+		  return;
+	  }
+	  counter++;
+  })  
+  this.storage.set('cart', this.cartList);  
+}
+
+
   ngOnInit() {
 	  this.isAdmin = this.authService.getIsAdmin();
-	  let getCartDetail = this.db.list('/cart', ref => ref.orderByChild('createdby').equalTo(this.authService.getUserID()));
-	  getCartDetail.snapshotChanges().subscribe(res => { 
-		  if(res != null) {
-			  this.cartList = [];
-			  res.forEach(item => {
-				let a = item.payload.toJSON();
-				a['index'] = item.key;
-				firebase.database().ref('/productsforselling/'+a['orderedto']).once('value').then((snapshot) => {
-					if(snapshot != null) {
-						a['price'] = snapshot.child('price').val();
-						a['productcode'] = snapshot.child('productcode').val();
-						a['seller'] = snapshot.child('createdby').val();
-						firebase.database().ref('/properties/products/'+snapshot.child('productcode').val()).once('value').then((snapshot) => {
-							if(snapshot != null) {
-								a['title'] = snapshot.child('title').val();
-								a['details'] = snapshot.child('details').val();
-								a['imagepath'] = snapshot.child('imagepath').val();
-								if(a['currentstatus'] == 'AC') {
-									this.cartList.push(a);
-									this.cartList.sort(function (a, b) {
-										return (new Date(b.modifieddate).getTime() - new Date(a.modifieddate).getTime());
-									});
-								}
-							}
-						})
-					}
-				});
-			  })
-		  }
-	});
+	  this.storage.get('cart').then((val) => {
+		if(val) {
+			this.cartListDetails = val;
+		}
+		this.cartListDetails.forEach(item => {
+			firebase.database().ref('/productsforselling/'+item.item).once('value').then((snapshot) => {
+				if(snapshot != null) {
+					item.price = snapshot.child('price').val();
+					item.index = snapshot.key;
+					firebase.database().ref('/properties/products/'+snapshot.child('productcode').val()).once('value').then((snapshot) => {
+						if(snapshot != null) {
+							item.title = snapshot.child('title').val();
+							item.imagepath = snapshot.child('imagepath').val();
+							item.quantity = item.itemcount;
+							this.cartList.push(item);
+						}
+					})
+				}
+			})
+		})
+		
+		if(this.cartListDetails[0]) {
+			firebase.database().ref('/profile/'+this.cartListDetails[0].seller).once('value').then((snapshot) => {
+				if(snapshot != null) {
+					this.sellershopname = snapshot.child('shopname').val();
+					let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
+									snapshot.child('latitude').val(),snapshot.child('longitude').val());
+					this.distance = Math.round(distance * 100) / 100;
+				}
+			}).catch((error: any) => {
+				
+			});
+		}
+	  });
+
 	timer(3000).subscribe(() => {
 		if(this.cartList.length == 0) {
 		  this.shownoitems = true;

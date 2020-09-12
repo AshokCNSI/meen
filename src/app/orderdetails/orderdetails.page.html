@@ -8,18 +8,16 @@
 </ion-header>
 
 <ion-content>
+<ion-card-header>
+	<ion-card-title class="heading">Bill details</ion-card-title>
+</ion-card-header>
 <ng-container *ngIf="cartList.length > 0">
-<ng-container *ngFor="let p of cartList;">
-<ion-item (click)="routeStockDetail(p.index,p.productcode,p.currentstatus)">
-	<ion-thumbnail slot="start">
-		<img alt="M" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
-	  </ion-thumbnail>
+<ng-container *ngFor="let p of cartList; let i = index;">
+<ion-item (click)="openItemDetails(i)">
 	<ion-card-header>
-		  <ion-card-title>{{p.title}}</ion-card-title>
-		  <ion-card-subtitle style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{p.details}}</ion-card-subtitle>
-		  <ion-card-subtitle>Ordered on {{p.modifieddate}}</ion-card-subtitle>
+		  <ion-card-title class="title">{{p.title}}</ion-card-title>
+		  <ion-card-title class="titlelink" style="color:#3880ff">customized ></ion-card-title>
 	</ion-card-header>
-	
 </ion-item>
 <ion-item-divider>
 <ion-grid>
@@ -59,15 +57,15 @@
 </ion-item-divider>
 </ng-container>
 <ion-item>
-	<ion-note slot="start">Delivering to</ion-note>
+	<ion-note slot="start" class="heading">Delivering to</ion-note>
 	<ion-label *ngIf="!dindex && productVisibility == 'AC'">No Address Selected</ion-label>
 	<ion-label (click)="selectAddress()" *ngIf="dindex && productVisibility == 'AC'">Click to change address</ion-label>
 </ion-item>
 <ion-card *ngIf="dindex">
   <ion-card-header>
-	<ion-card-subtitle>{{dname}}</ion-card-subtitle>
-	<ion-card-title>{{dmobile}}</ion-card-title>
-	<ion-card-content>
+	<ion-card-subtitle class="thrirdlevellabel">{{dname}}</ion-card-subtitle>
+	<ion-card-title class="thrirdlevellabel">{{dmobile}}</ion-card-title>
+	<ion-card-content class="subtitleThin">
 		{{dhouseno}}
 		{{dstreetname}}
 		{{dlandmark}}

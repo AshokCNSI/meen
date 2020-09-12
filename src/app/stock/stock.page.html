@@ -1,21 +1,19 @@
-<ion-header [translucent]="true">
+<ion-header style="z-index : 0;">
   <ion-toolbar>
     <ion-buttons style="font-size: 25px;margin: 10px;" slot="start" (click)="location.back()">
 		<ion-icon name="arrow-back-outline"></ion-icon>
 	</ion-buttons>
-    <ion-title>{{isAdmin ? 'Stock' : 'Products'}}</ion-title>
 	<ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" (click)="openSearch()">
         <ion-icon name="search"></ion-icon>
     </ion-buttons>
   </ion-toolbar>
+  <ng-container *ngIf="searchInput != null">
+	<ion-searchbar #search animated showCancelButton="always" debounce="500" (ionCancel)="onCancel($event)" cancelButtonText="Custom Cancel"
+		(ionInput)="filterList($event)" [value]="searchVal" autofocus="true"></ion-searchbar>
+	</ng-container>
 </ion-header>
 
 <ion-content>
-<ng-container *ngIf="searchInput != null">
-<ion-searchbar #search animated showCancelButton="always" debounce="500" (ionCancel)="onCancel($event)" cancelButtonText="Custom Cancel"
-    (ionInput)="filterList($event)" [value]="searchVal" autofocus="true"></ion-searchbar>
-</ng-container>
-
 <ng-container *ngIf="stockList.length > 0">
 <ion-item *ngFor="let p of stockList; let i = index;">
   <ion-thumbnail slot="start" style="width: 40%;
@@ -104,13 +102,13 @@
 	</ion-row>
 </div>
 </ion-content>
-<ion-footer *ngIf="cartcount > 0">
+<ion-footer *ngIf="cartList.length > 0">
   <ion-toolbar>
   <ion-buttons slot="secondary">
     <ion-button [routerLink]="['/mycart/']">
       <ion-icon slot="icon-only" name="cart"></ion-icon>
     </ion-button>
   </ion-buttons>
-  <ion-title>You have items in the cart</ion-title>
+  <ion-title>You have {{cartList.length}} item(s) in the cart</ion-title>
 </ion-toolbar>
 </ion-footer>
