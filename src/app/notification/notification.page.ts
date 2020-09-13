@@ -19,7 +19,7 @@ export class NotificationPage implements OnInit {
 	
   public discountList = [];
   userEmail : string;
-  
+  discountPriceList = [];
   constructor(
   private activatedRoute: ActivatedRoute, 
   public fAuth: AngularFireAuth, 
@@ -30,40 +30,27 @@ export class NotificationPage implements OnInit {
   ) { }
 
   ngOnInit() {
-	  firebase.database().ref('/productsforselling/').once('value').then((snapshot) => {
-	  this.discountList = [];
-		snapshot.forEach(item => {
-			let b = item.toJSON();
-			let index = item.key;
-			if(b['available'] == 'Y' && b['discount'] == 'Y' && b['discountprice'] > 0) {
-				firebase.database().ref('/properties/products/').orderByChild('productcode').equalTo(b['productcode']).once('value').then((snapshot) => {
-					snapshot.forEach(item => {
-						let a = item.toJSON();
-						a['index'] = index;
-						a['price'] = b['price'];
-						a['discount'] = b['discount'];
-						a['discountprice'] = b['discountprice'];
-						firebase.database().ref('/profile/'+b['createdby']).once('value').then((snapshot) => {
-							if(snapshot != null) {
-								
-								let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),snapshot.child('latitude').val(),snapshot.child('longitude').val());
-								a['distance'] = Math.round(distance * 100) / 100;
-								a['shopname'] = snapshot.child('shopname').val();
-								this.discountList.push(a);
-							}
-						}).catch((error: any) => {
-							
-						});
-					});
-				}).catch((error: any) => {
-					
-				});
-			}
-		})
-		
-	}).catch((error: any) => {
-		
-	});
+	  firebase.database().ref('/profile/').orderByChild('usertype').equalTo('S').once('value').then((snapshot) => {
+		  snapshot.forEach(item => {
+				let a = item.toJSON();
+				let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),snapshot.child('latitude').val(),snapshot.child('longitude').val());
+				a['distance'] = Math.round(distance * 100) / 100;
+				firebase.database().ref('/productsforselling/').orderByChild('createdby').equalTo(a['createdby']).once('value').then((snapshot) => {
+				  this.discountPriceList = [];
+				  snapshot.forEach(item => {
+					  let b = item.toJSON();
+					  if(b['available'] == 'Y' && b['discount'] == 'Y' && b['discountprice'] > 0) {
+						  this.discountPriceList.push(b['discountprice']);
+					  }
+				  })
+				  if(this.discountPriceList.length > 0) {
+					a['price'] = Math.max.apply(Math, this.discountPriceList);
+					this.discountList.push(a);
+				}
+			  })
+		  })
+		  
+	  })
   }
 
   routeStockDetail(index,productcode){

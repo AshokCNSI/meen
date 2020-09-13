@@ -157,6 +157,10 @@ const routes: Routes = [
   {
     path: 'mapselection',
     loadChildren: () => import('./mapselection/mapselection.module').then( m => m.MapselectionPageModule)
+  },
+  {
+    path: 'mobilelogin',
+    loadChildren: () => import('./mobilelogin/mobilelogin.module').then( m => m.MobileloginPageModule)
   }
 
 ];

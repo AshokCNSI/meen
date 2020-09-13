@@ -1,0 +1,30 @@
+<ion-content>
+<div id="recaptcha-container"></div>
+<div style="top: 45% !important;
+    position: relative;">
+<ion-row>
+ <ion-col>
+	<div class="vertical-center">
+		<div class="center">
+		   Welcome to <div class="centerLogo">Meen</div>
+		</div>
+	 </div>
+  </ion-col>
+</ion-row>
+ <ion-row>
+	<ion-col>
+		<ion-item style="border: 1px solid;
+			margin: 0px 20px;
+			border-radius: 15px;" lines="none">
+		  <ion-input type = "number" placeholder="Enter Mobile Number" [(ngModel)]="phoneNumber"></ion-input>
+		</ion-item>
+	</ion-col>
+</ion-row>
+<ion-row>
+	<ion-col>
+		<ion-button color="danger" expand="block" style="margin: 0px 20px;
+			border-radius: 15px;" (click)="signIn(phoneNumber)">Send OTP</ion-button>
+	</ion-col>
+</ion-row>
+</div> 
+</ion-content>
