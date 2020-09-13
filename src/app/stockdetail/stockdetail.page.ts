@@ -43,6 +43,10 @@ export class StockdetailPage implements OnInit {
 	this.itemid = this.navParams.data.itemid;
 	this.options = this.navParams.data.options;
 	this.desc = this.navParams.data.desc;
+	this.pagemode = this.navParams.data.pagemode;
+	if(this.pagemode == 'O') {
+		this.ordervisibility = true;
+	}
   }
   
   title : string;
@@ -52,6 +56,8 @@ export class StockdetailPage implements OnInit {
   itemid : string;
   options = [];
   desc : string;
+  pagemode : string;
+  ordervisibility : boolean = false;
   
   async presentAlert(status, msg) {
     const alert = await this.alertCtrl.create({

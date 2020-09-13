@@ -1,15 +1,26 @@
 import { Component, OnInit, ViewChild  } from '@angular/core';
-import * as firebase from 'firebase';
-import { ActivatedRoute } from '@angular/router';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { AuthenticateService } from '../authentication.service';
 import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
-import { NavController } from '@ionic/angular';
-import { LocationserviceService } from '../locationservice.service';
-import { LoadingService } from '../loading.service';
-import { Location } from '@angular/common';
-import { Storage } from '@ionic/storage';
+import { ActivatedRoute, NavigationEnd, NavigationStart  } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
+import { Router } from '@angular/router';
+import * as firebase from 'firebase';
+import { filter } from 'rxjs/operators';
+import { RouterserviceService } from '../routerservice.service';
+import { AuthenticateService } from '../authentication.service';
+import { LocationserviceService } from '../locationservice.service';
+import { ModalController, NavParams } from '@ionic/angular';
+import { MyaddressPage } from '../myaddress/myaddress.page';
+import { DeliverylocationPage } from '../deliverylocation/deliverylocation.page';
+import { LoginPage } from '../login/login.page';
+import { RegisterPage } from '../register/register.page';
+import { StockdetailPage } from '../stockdetail/stockdetail.page';
+
+import { Location } from '@angular/common';
+import { LoadingService } from '../loading.service';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-sellerproducts',
@@ -20,15 +31,17 @@ export class SellerproductsPage implements OnInit {
   public stockList = [];
   constructor(
   public alertCtrl: AlertController,
-  private activatedRoute: ActivatedRoute, 
-  public fAuth: AngularFireAuth, 
-  private authService: AuthenticateService,
+  private navController: NavController, 
+  private router: Router,
   private db: AngularFireDatabase,
-  private navController: NavController,
-  private router : ActivatedRoute,
+  private activatedRoute: ActivatedRoute,
+  private routerService: RouterserviceService,
+  private authService: AuthenticateService,
   private locationService: LocationserviceService,
-  private loading : LoadingService,
-  private location : Location,
+  public modalController: ModalController,
+  public location : Location,
+  public loading: LoadingService,
+  private geolocation: Geolocation,
   private storage: Storage
   ) { 
 	
@@ -201,5 +214,19 @@ async presentAlertWithCancel(status, msg) {
         console.log("changed rating: ",rating);
         // do your stuff
     }
+	
+ async openItemDetails(index) {
+	const modal = await this.modalController.create({
+	  component: StockdetailPage,
+	  cssClass: 'stock-detail-modal-css',
+	  componentProps: {
+		itemid : index,
+		options : "",
+		desc : "",
+		pagemode : 'D'
+	  }
+	});
+	await modal.present();
+  }
 
 }

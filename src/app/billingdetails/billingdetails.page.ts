@@ -74,6 +74,9 @@ export class BillingdetailsPage implements OnInit {
   orderId : string;
   showMasala : boolean = false;
   masalaquantity : number = 1;
+  cartListDetails =[];
+  sellershopname : string;
+  distance : number;
   
   async presentAlertWithLoginRegister(status, msg) {
     const alert = await this.alertCtrl.create({
@@ -239,7 +242,8 @@ export class BillingdetailsPage implements OnInit {
 	  componentProps: {
 		itemid : this.cartList[index].index,
 		desc : this.cartList[index].desc,
-		options : this.cartList[index].options
+		options : this.cartList[index].options,
+		pagemode : 'B'
 	  }
 	});
 	modal.onDidDismiss()
@@ -293,7 +297,7 @@ export class BillingdetailsPage implements OnInit {
 			"seller" : this.cartList[0].seller,
 			"deliverycharge" : this.delieverycharge,
 			"masalacharge" : this.masalacharge,
-			"masalaquantity" : this.masalaquantity,
+			"masalaquantity" : this.showMasala ? this.masalaquantity : 0,
 			"currentstatus" : "ORD",
 		  }).then(res => {
 			   this.orderId = res.key;

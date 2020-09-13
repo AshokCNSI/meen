@@ -51,6 +51,8 @@ export class MycartPage implements OnInit {
   sellername : string;
   sellershopname : string;
   sellerroute : string;
+  selleruid : string;
+  distance : number;
   
 private increment (i, itemid) {
   this.cartList[i].quantity = this.cartList[i].quantity ? this.cartList[i].quantity + 1 : 1;

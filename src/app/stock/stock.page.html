@@ -17,14 +17,14 @@
 <ng-container *ngIf="stockList.length > 0">
 <ion-item *ngFor="let p of stockList; let i = index;">
   <ion-thumbnail slot="start" style="width: 40%;
-    height: 60%;">
+    height: 60%;" (click)="openItemDetails(p.index)">
 	<div class="container">
 		<img alt="M" src="{{p.imagepath}}" style="height: 151px;" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
 		<div class="centered" *ngIf="p.discountprice && p.discountprice > 0"> &#x20b9; {{p.discountprice}} OFF</div>
 	</div>
   </ion-thumbnail>
 	<ion-label>
-		<ion-card-title (click)="routeStockDetail(p.index,p.productcode)">{{p.title}}</ion-card-title>
+		<ion-card-title>{{p.title}}</ion-card-title>
 		<ion-card-subtitle class="subtitleThin">&#x20b9;{{p.price}}</ion-card-subtitle>
 		<ion-card-subtitle class="thrirdlevellabel">{{p.distance}} km | {{p.shopname}}</ion-card-subtitle>
 		<ion-card-subtitle class="thrirdlevellabel"><ion-icon name="stopwatch-outline"></ion-icon> 38 mins</ion-card-subtitle>			

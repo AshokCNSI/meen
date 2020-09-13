@@ -56,7 +56,7 @@ export class OrderdetailsPage implements OnInit {
   dhouseno : string;
   dstreetname : string;
   dlandmark : string;
-  delieverycharge : number;
+  deliverycharge : number;
   masalacharge : number;
   totalAmount : number = 0;
   productVisibility : string; 
@@ -69,6 +69,7 @@ export class OrderdetailsPage implements OnInit {
   sellerlongitude : string;
   orderid : string;
   seller : string;
+  masalaquantity : number;
   ngOnInit() {
 	  this.isAdmin = this.authService.getIsAdmin();
 	  firebase.database().ref('/properties/status').once('value').then((snapshot) => {
@@ -95,15 +96,19 @@ export class OrderdetailsPage implements OnInit {
 							this.longitude = snapshot.child('longitude').val();
 						}
 					});
-					this.delieverycharge = snapshot.child('delieverycharge').val();
+					this.deliverycharge = snapshot.child('deliverycharge').val();
 					this.masalacharge = snapshot.child('masalacharge').val();
 					this.totalAmount = snapshot.child('totalamount').val();
 					this.productVisibility = snapshot.child('currentstatus').val();
 					this.oldStatus = snapshot.child('currentstatus').val();
 					this.seller = snapshot.child('seller').val();
 					this.assignedto = snapshot.child('assignedto').val();
+					this.masalaquantity = snapshot.child('masalaquantity').val();
 					snapshot.child('items').forEach(item => {
 						let a = item.toJSON();
+						if(a['options']) {
+							a['options'] = Object.values(a['options']);
+						}
 						this.cartList.push(a);
 					})
 					
@@ -220,14 +225,14 @@ export class OrderdetailsPage implements OnInit {
   }
   
   async openItemDetails(index) {
-	  console.log(this.cartList[index].options)
 	const modal = await this.modalController.create({
 	  component: StockdetailPage,
 	  cssClass: 'stock-detail-modal-css',
 	  componentProps: {
 		itemid : this.cartList[index].index,
 		desc : this.cartList[index].desc,
-		options : this.cartList[index].options
+		options : this.cartList[index].options,
+		pagemode : 'O'
 	  }
 	});
 	await modal.present();
