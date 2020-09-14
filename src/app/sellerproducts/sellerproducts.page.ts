@@ -62,6 +62,7 @@ productcode : string;
 selleruid : string;
 shopname : string;
 cartList = [];
+distance : number;
 
 private increment (i, itemid) {
   this.stockList[i].quantity = this.stockList[i].quantity ? this.stockList[i].quantity + 1 : 1;
@@ -158,6 +159,7 @@ async presentAlertWithCancel(status, msg) {
 														snapshot.child('latitude').val(),snapshot.child('longitude').val());
 										a['distance'] = Math.round(distance * 100) / 100;
 										a['shopname'] = snapshot.child('shopname').val();
+										this.distance = a['distance'];
 										this.stockList.push(a);
 									}
 								}).catch((error: any) => {

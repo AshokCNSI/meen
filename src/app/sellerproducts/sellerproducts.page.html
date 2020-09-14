@@ -1,35 +1,48 @@
-<ion-header [translucent]="true">
+<ion-header [translucent]="true" style="z-index : 0;">
   <ion-toolbar>
     <ion-buttons style="font-size: 25px;margin: 10px;" slot="start" (click)="location.back()">
 		<ion-icon name="arrow-back-outline"></ion-icon>
 	</ion-buttons>
-    <ion-title>{{shopname}}</ion-title>
-	<ion-buttons slot="primary" style="font-size: 25px;margin: 10px;" (click)="openSearch()">
-        <ion-icon name="search"></ion-icon>
-    </ion-buttons>
   </ion-toolbar>
+  <ion-searchbar #search animated showCancelButton="always" debounce="500" (ionCancel)="onCancel($event)" cancelButtonText="Custom Cancel"
+		(ionInput)="filterList($event)" [value]="searchVal" autofocus="true"></ion-searchbar>
 </ion-header>
 
 <ion-content>
-<ng-container *ngIf="searchInput != null">
-<ion-searchbar #search animated showCancelButton="always" debounce="500" (ionCancel)="onCancel($event)" cancelButtonText="Custom Cancel"
-    (ionInput)="filterList($event)" [value]="searchVal" autofocus="true"></ion-searchbar>
-</ng-container>
 
+<ion-card-header>
+	<ion-card-title class="heading">Seller details</ion-card-title>
+</ion-card-header>
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>{{shopname}}</ion-card-title>
+	<ion-card-subtitle>{{distance}} km</ion-card-subtitle>
+	<ion-card-subtitle>
+  <ionic5-star-rating #rating
+		activeIcon = "star"
+		defaultIcon = "star-outline"
+		activeColor = "rgb(255 72 72)" 
+		defaultColor = "rgb(255 72 72)"
+		readonly="true"
+		rating="3"
+		fontSize = "15px"
+		(ratingChanged)="logRatingChange($event)">
+	</ionic5-star-rating> .. 3.8</ion-card-subtitle>
+  </ion-card-header>
+</ion-card>
 <ng-container *ngIf="stockList.length > 0">
 <ion-list>
 <ion-item *ngFor="let p of stockList; let i = index;">
   <ion-thumbnail slot="start" style="width: 40%;
     height: 60%;" (click)="openItemDetails(p.index)">
 	<div class="container">
-		<img alt="M" src="{{p.imagepath}}" style="height: 151px;" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
+		<img alt="M" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
 		<div class="centered" *ngIf="p.discountprice && p.discountprice > 0"> &#x20b9; {{p.discountprice}} OFF</div>
 	</div>
   </ion-thumbnail>
 	<ion-label>
 		<ion-card-title>{{p.title}}</ion-card-title>
 		<ion-card-subtitle class="subtitleThin">&#x20b9;{{p.price}}</ion-card-subtitle>
-		<ion-card-subtitle class="thrirdlevellabel">{{p.distance}} km | <ion-icon name="stopwatch-outline" style="color:rgb(255 72 72);"></ion-icon> 38 mins</ion-card-subtitle>
 		<ion-button (click)="decrement(i, p.index)">-</ion-button>
 		<ion-button color="light">{{p.quantity ? p.quantity : 0}}</ion-button>
 		<ion-button (click)="increment(i, p.index)">+</ion-button>

@@ -75,18 +75,17 @@ export class MobileloginPage implements OnInit {
 	  }
   
 	signIn(phoneNumber: number){
-	  const appVerifier = this.recaptchaVerifier;
-	  const phoneNumberString = "+" + phoneNumber;
+  const appVerifier = this.recaptchaVerifier;
+  const phoneNumberString = "+" + phoneNumber;
+  firebase.auth().signInWithPhoneNumber(phoneNumberString, appVerifier)
+    .then( confirmationResult => {
+      // SMS sent. Prompt user to type the code from the message, then sign the
+      // user in with confirmationResult.confirm(code).
+      this.presentAlert("Success","Mobile sent");
+  })
+  .catch(function (error) {
+    console.error("SMS not sent", error);
+  });
 
-	  firebase.auth().signInWithPhoneNumber(phoneNumberString, appVerifier)
-		.then( confirmationResult => {
-		  // SMS sent. Prompt user to type the code from the message, then sign the
-		  // user in with confirmationResult.confirm(code).
-		  console.log(confirmationResult);
-	  })
-	  .catch(function (error) {
-		console.log("SMS not sent", error);
-	  });
-
-	}
+}
 }
