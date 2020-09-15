@@ -57,49 +57,31 @@ export class OrdersPage implements OnInit {
 	  });
 	  
 	  if(this.authService.getUserType() == 'S') {
-		  firebase.database().ref('/orders').orderByChild('seller').equalTo(this.authService.getUserID()).once('value').then((snapshot) => {
+		  this.db.list('/orders', ref => ref.orderByChild('seller').equalTo(this.authService.getUserID())).snapshotChanges().subscribe((snapshot) => {
 			  if(snapshot != null) {
 				  this.orderList = [];
 				  snapshot.forEach(item => {
-					let a = item.toJSON();
+					let a = item.payload.toJSON();
 					a['index'] = item.key;
-					this.statusList.forEach(item => {
-						if(a['currentstatus'] == item.code) {
-						  a['statusname'] = item.name;
-						  a['statusicon'] = item.icon;
-						  a['statuscode'] = item.code;
-						  a['statusindex'] = item.index;
-						  a['statuscolor'] = item.color;
-						  this.orderList.push(a);
-						  this.orderList.sort(function (a, b) {
-							return (new Date(b.modifieddate).getTime() - new Date(a.modifieddate).getTime());
-						  });
-						}
-					})
+					this.orderList.push(a);
+					  this.orderList.sort(function (a, b) {
+						return (new Date(b.modifieddate).getTime() - new Date(a.modifieddate).getTime());
+					  });
 				  })
 			  }
 
 		});
 	} else {
-		firebase.database().ref('/orders').orderByChild('createdby').equalTo(this.authService.getUserID()).once('value').then((snapshot) => {
+		this.db.list('/orders', ref => ref.orderByChild('createdby').equalTo(this.authService.getUserID())).snapshotChanges().subscribe((snapshot) => {
 			  if(snapshot != null) {
 				  this.orderList = [];
 				  snapshot.forEach(item => {
-					let a = item.toJSON();
+					let a = item.payload.toJSON();
 					a['index'] = item.key;
-					this.statusList.forEach(item => {
-						if(a['currentstatus'] == item.code) {
-						  a['statusname'] = item.name;
-						  a['statusicon'] = item.icon;
-						  a['statuscode'] = item.code;
-						  a['statusindex'] = item.index;
-						  a['statuscolor'] = item.color;
-						  this.orderList.push(a);
-						  this.orderList.sort(function (a, b) {
-							return (new Date(b.modifieddate).getTime() - new Date(a.modifieddate).getTime());
-						  });
-						}
-					})			
+					this.orderList.push(a);
+					  this.orderList.sort(function (a, b) {
+						return (new Date(b.modifieddate).getTime() - new Date(a.modifieddate).getTime());
+					  });
 				  })
 			  }
 		});

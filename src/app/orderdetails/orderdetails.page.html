@@ -8,6 +8,41 @@
 </ion-header>
 
 <ion-content>
+<ng-container *ngIf="authService.getUserType() == 'C'">
+	<mat-vertical-stepper [linear]="true" *ngIf="currentindex != undefined" #stepper style="margin-left: 25%;" [selectedIndex]="currentindex">
+	  <mat-step label="Ordered" [editable]="false" [completed]="false"></mat-step>
+	  <mat-step label="{{currentstatusname}}" [editable]="false" [completed]="false"></mat-step>
+	</mat-vertical-stepper>
+</ng-container>
+<ng-container *ngIf="authService.getUserType() != 'S' || authService.getUserType() == 'D'">
+<ion-card-header>
+	<ion-card-title class="heading">Seller details</ion-card-title>
+</ion-card-header>
+<ion-item>
+	<ion-card-header>
+		  <ion-card-title class="title">{{shopname}}</ion-card-title>
+		  <ion-card-subtitle>{{distance}} km</ion-card-subtitle>
+		  <ion-card-subtitle (click)="goToClientLocation()" color="danger" *ngIf="authService.getUserType() == 'D' && oldStatus == 'DS'">Navigate to Shop</ion-card-subtitle>
+	</ion-card-header>
+</ion-item>
+</ng-container>
+<ng-container *ngIf="authService.getUserType() != 'S' || authService.getUserType() == 'D'">
+<ion-item>
+	<ion-card-title class="heading">Delivering to</ion-card-title>
+</ion-item>
+<ion-card>
+  <ion-card-header>
+	<ion-card-subtitle class="thrirdlevellabel">{{dname}}</ion-card-subtitle>
+	<ion-card-title class="thrirdlevellabel">{{dmobile}}</ion-card-title>
+	<ion-card-content class="subtitleThin">
+		{{dhouseno}}
+		{{dstreetname}}
+		{{dlandmark}}
+	</ion-card-content>
+	<ion-card-subtitle (click)="goToClientLocation()" color="danger" *ngIf="authService.getUserType() == 'D' && oldStatus == 'IPD'">Navigate to Customer</ion-card-subtitle>
+  </ion-card-header>
+</ion-card>
+</ng-container>
 <ion-card-header>
 	<ion-card-title class="heading">Bill details</ion-card-title>
 </ion-card-header>
@@ -81,28 +116,6 @@
 </ion-grid>
 </ion-item-divider>
 </ng-container>
-<ion-item>
-	<ion-note slot="start" class="heading">Delivering to</ion-note>
-	<ion-label *ngIf="!dindex && productVisibility == 'AC'">No Address Selected</ion-label>
-	<ion-label (click)="selectAddress()" *ngIf="dindex && productVisibility == 'AC'">Click to change address</ion-label>
-</ion-item>
-<ion-card *ngIf="dindex">
-  <ion-card-header>
-	<ion-card-subtitle class="thrirdlevellabel">{{dname}}</ion-card-subtitle>
-	<ion-card-title class="thrirdlevellabel">{{dmobile}}</ion-card-title>
-	<ion-card-content class="subtitleThin">
-		{{dhouseno}}
-		{{dstreetname}}
-		{{dlandmark}}
-	</ion-card-content>
-	<ion-buttons (click)="goToClientLocation()" *ngIf="(authService.getUserType() == 'D') && (oldStatus == 'IPD' || oldStatus == 'DS')">
-		<ion-button color="primary">
-		<ng-container *ngIf="(oldStatus == 'DS')">Click to go to Seller Location</ng-container>
-		<ng-container *ngIf="(oldStatus == 'IPD')"> Click to go to Customer Location</ng-container>
-		</ion-button>
-	</ion-buttons>
-  </ion-card-header>
-</ion-card>
 
 <ng-container *ngIf="productVisibility != 'AC' && productVisibility != 'R'">
 	  <ng-container *ngFor="let p of statusList;">

@@ -161,6 +161,10 @@ const routes: Routes = [
   {
     path: 'mobilelogin',
     loadChildren: () => import('./mobilelogin/mobilelogin.module').then( m => m.MobileloginPageModule)
+  },
+  {
+    path: 'ratingseller',
+    loadChildren: () => import('./ratingseller/ratingseller.module').then( m => m.RatingsellerPageModule)
   }
 
 ];

@@ -16,6 +16,9 @@ import { ModalController, NavParams } from '@ionic/angular';
 import { DeliverylocationPage } from '../deliverylocation/deliverylocation.page';
 import { Location } from '@angular/common';
 import { StockdetailPage } from '../stockdetail/stockdetail.page';
+import { RatingsellerPage } from '../ratingseller/ratingseller.page';
+import { LocationserviceService } from '../locationservice.service';
+import { PopoverController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -40,8 +43,10 @@ export class OrderdetailsPage implements OnInit {
   private authService: AuthenticateService,
   public loading: LoadingService,
   private modalController : ModalController,
+  private locationService: LocationserviceService,
   private location : Location,
-  private navParams: NavParams
+  private navParams: NavParams,
+  private popoverController : PopoverController
 ) { 
   
   }
@@ -70,16 +75,12 @@ export class OrderdetailsPage implements OnInit {
   orderid : string;
   seller : string;
   masalaquantity : number;
+  currentindex : number;
+  shopname : string;
+  distance : number;
+  currentstatusname :  string;
   ngOnInit() {
 	  this.isAdmin = this.authService.getIsAdmin();
-	  firebase.database().ref('/properties/status').once('value').then((snapshot) => {
-		  if(snapshot != null) {
-			  snapshot.forEach(item =>{
-				  let a = item.toJSON();
-				  this.statusList.push(a);
-			  })
-		  }
-	  });
 	  this.activatedRoute.queryParams.subscribe(params => {
 		  this.orderid = this.activatedRoute.snapshot.params['orderid'];
 		  firebase.database().ref('/orders/'+this.orderid).once('value').then((snapshot) => {
@@ -100,8 +101,35 @@ export class OrderdetailsPage implements OnInit {
 					this.masalacharge = snapshot.child('masalacharge').val();
 					this.totalAmount = snapshot.child('totalamount').val();
 					this.productVisibility = snapshot.child('currentstatus').val();
+					firebase.database().ref('/properties/status').once('value').then((snapshot) => {
+						  if(snapshot != null) {
+							  snapshot.forEach(item =>{
+								  let a = item.toJSON();
+								  if(a['code'] == this.productVisibility) {
+									  if(a['index'] > 0) {
+										this.currentindex = 1;
+										this.currentstatusname = a['name'];
+									  } else {
+										 this.currentindex = 0; 
+										 this.currentstatusname = 'In Progress';
+									  }
+								  }
+								  this.statusList.push(a);
+							  })
+						  }
+					  });
 					this.oldStatus = snapshot.child('currentstatus').val();
 					this.seller = snapshot.child('seller').val();
+					firebase.database().ref('/rating/'+this.seller).orderByChild('orderid').equalTo(this.orderid).once('value').then((snapshot) => {
+						if(snapshot != null) {
+							if(!snapshot.toJSON() && this.oldStatus == 'DE') {
+								this.openRatingSeller();
+							}
+						}
+					}).catch((error: any) => {
+						
+					});
+					
 					this.assignedto = snapshot.child('assignedto').val();
 					this.masalaquantity = snapshot.child('masalaquantity').val();
 					snapshot.child('items').forEach(item => {
@@ -116,6 +144,9 @@ export class OrderdetailsPage implements OnInit {
 					if(snapshot != null) {
 						this.sellerlatitude = snapshot.child('latitude').val();
 						this.sellerlongitude = snapshot.child('longitude').val();
+						this.shopname = snapshot.child('shopname').val();
+						this.distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
+														snapshot.child('latitude').val(),snapshot.child('longitude').val());
 					}
 				}).catch((error: any) => {
 					
@@ -134,7 +165,7 @@ export class OrderdetailsPage implements OnInit {
       buttons: [{
           text: 'Ok',
           handler: () => {
-            if(this.authService.getUserType() == 'S'){
+            if(this.authService.getUserType() == 'S' || this.authService.getUserType() == 'C'){
 				this.navController.navigateRoot('/orders');
 			} else if(this.authService.getUserType() == 'D'){
 				this.navController.navigateRoot('/myassignments');
@@ -145,6 +176,18 @@ export class OrderdetailsPage implements OnInit {
 	  }}]
     });
     await alert.present();
+  }
+  
+  async openRatingSeller() {
+	 const modal = await this.popoverController.create({
+      component: RatingsellerPage,
+      cssClass: 'my-custom-class',
+	  componentProps: {
+		sellerid : this.seller,
+		orderid : this.orderid
+	  }
+    });
+    return await modal.present();
   }
   
   async presentModal() {

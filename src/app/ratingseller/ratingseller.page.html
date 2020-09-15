@@ -1,0 +1,28 @@
+<ion-content>
+<ion-card>
+  <ion-card-header>
+    <ion-card-subtitle>Are you happy with the product?</ion-card-subtitle>
+    <ion-card-title>Rating our seller</ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    The Rating would be useful for other customers to know the quality fo the product.
+  </ion-card-content>
+  <div style="text-align:center;">
+  <ionic5-star-rating #rating
+		activeIcon = "star"
+		defaultIcon = "star-outline"
+		activeColor = "rgb(255 72 72)" 
+		defaultColor = "rgb(255 72 72)"
+		readonly="false"
+		rating="5"
+		fontSize = "25px"
+		(ratingChanged)="logRatingChange($event)">
+	</ionic5-star-rating>
+	</div>
+</ion-card>
+<div style="text-align:center;">
+<ion-button color="danger" (click)="submitRating()">Submit</ion-button>
+</div>
+</ion-content>
+

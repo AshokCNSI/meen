@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { OrderdetailsPageRoutingModule } from './orderdetails-routing.module';
 
 import { OrderdetailsPage } from './orderdetails.page';
+import { MatStepperModule } from '@angular/material/stepper';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { OrderdetailsPage } from './orderdetails.page';
     FormsModule,
 	ReactiveFormsModule,
     IonicModule,
-    OrderdetailsPageRoutingModule
+    OrderdetailsPageRoutingModule,
+	MatStepperModule
   ],
   declarations: [OrderdetailsPage]
 })
