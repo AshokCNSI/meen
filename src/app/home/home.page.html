@@ -5,10 +5,14 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>
-	<p class="subtitle" *ngIf="!locationService.getCurrentLocation()"><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></p>
-	<p class="subtitle" *ngIf="locationService.getCurrentLocation()" (click)="openMapSelection()">{{locationService.getCurrentLocation() == "" ? 'No address found' : locationService.getCurrentLocation()}}</p>
+    <ion-title *ngIf="!locationService.getCurrentLocation()">
+		<ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
 	</ion-title>
+	<ion-title *ngIf="locationService.getCurrentLocation()" (click)="openMapSelection()">
+		{{locationService.getCurrentLocation() == "" ? 'No address found' : locationService.getCurrentLocation()}}
+		<p class="subtitle">Click to change address</p>
+	</ion-title>
+	
 	<ion-buttons  matBadge="{{notificationcount}}" matBadgePosition="after" matBadgeColor="primary" *ngIf="authService.getIsUserLoggedIn() && authService.getUserType() == 'C'" slot="secondary" style="font-size: 25px;margin: 10px;" [routerLink]="['/notification']">
         <ion-icon name="notifications-circle-outline"></ion-icon>
     </ion-buttons>
@@ -24,6 +28,11 @@
 	</div>
 <ng-container *ngIf="!authService.getIsUserLoggedIn() || authService.getUserType() == 'A' || authService.getUserType() == 'SA'  || authService.getUserType() == 'C'">
 <div [@visibilityChanged]="visibility" style="display: block;">
+<ion-card style="box-shadow: none;" *ngIf="instBanner.length == 0">
+	  <ion-card-header>
+		<ion-card-subtitle><ion-skeleton-text animated style="width: 100%;height:150px;"></ion-skeleton-text></ion-card-subtitle>
+	  </ion-card-header>
+	</ion-card>
 <ion-slides [options]="slideOptsTwo" *ngIf="instBanner.length > 0">
 		<ion-slide *ngFor="let p of instBanner">
 			<ion-card style="border-radius: 12px;background-color: {{p.bgcolor}};border: 2px solid;border-color: {{p.color}};">
@@ -42,14 +51,15 @@
 		</ion-slide>
   </ion-slides> 	
 <ng-container>
-	<ion-card style="box-shadow: none;" *ngIf="fishcategortList.length == 0">
-	  <ion-card-header>
-		<ion-card-subtitle><ion-skeleton-text animated style="width: 100%;height:150px;"></ion-skeleton-text></ion-card-subtitle>
-	  </ion-card-header>
-	</ion-card>
+	
 	<ion-card-header>
 	<ion-card-title class="heading">Browse by Category</ion-card-title>
 	</ion-card-header>
+	<ion-card style="box-shadow: none;" *ngIf="fishcategortList.length == 0">
+		  <ion-card-header>
+			<ion-card-subtitle><ion-skeleton-text animated style="width: 100%;height:150px;"></ion-skeleton-text></ion-card-subtitle>
+		  </ion-card-header>
+		</ion-card>
 	 <ion-slides [options]="slideOptsOne" *ngIf="fishcategortList.length > 0">
 	   <ion-slide *ngFor="let p of fishcategortList;" style="margin: auto;height:150px;width:100%;">
 		   <ion-item [routerLink]="['/stock/'+p.code]">
@@ -84,7 +94,7 @@
 	</ion-card-header>
 	  <ion-card style="box-shadow: none;" *ngIf="discountList.length == 0">
 		  <ion-card-header>
-			<ion-card-subtitle><ion-skeleton-text animated style="width: 100%;height:300px;"></ion-skeleton-text></ion-card-subtitle>
+			<ion-card-subtitle><ion-skeleton-text animated style="width: 100%;height:150px;"></ion-skeleton-text></ion-card-subtitle>
 		  </ion-card-header>
 		</ion-card>
 	  <ion-slides [options]="slideOptsThree" #mySlider *ngIf="discountList.length > 0">
@@ -128,6 +138,28 @@
 		<ion-card-title class="heading">Shops Nearby</ion-card-title>
 		<ion-card-subtitle>Explore the best items you need</ion-card-subtitle>
 	</ion-card-header>	
+<div *ngIf="sellerList.length == 0">
+	<ion-row *ngFor="let i of Arr(skeletoncount).fill(1)">
+		<ion-col>
+			<ion-card>
+				<ion-skeleton-text animated></ion-skeleton-text>
+				<ion-card-header>
+				  <ion-card-subtitle><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-subtitle>
+				  <ion-card-title><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-title>
+				  
+				</ion-card-header>
+				<italic style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+				  <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+				</italic>
+				
+				<ion-card-header>
+				  <ion-card-subtitle><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-subtitle>
+				  <ion-card-subtitle><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-card-subtitle>
+				</ion-card-header>
+			</ion-card>
+		</ion-col>
+	</ion-row>
+</div>
 <ng-container *ngIf="sellerList.length > 0">
 	<ion-item *ngFor="let p of sellerList; let i = index;" [routerLink]="['/sellerproducts/'+p.createdby]">
 		 <ion-thumbnail>
@@ -136,7 +168,7 @@
 		<ion-card-header>
 		  <ion-card-title class="titleThin">{{p.shopname}}</ion-card-title>
 		  <ion-card-subtitle class="subtitleThin"><ion-icon name="ribbon-outline"></ion-icon> {{p.firstname}} {{p.lastname}}</ion-card-subtitle>
-		  <ion-card-subtitle class="subtitleThin">{{p.distance}} km | <ion-icon name="stopwatch-outline"></ion-icon> 38 mins</ion-card-subtitle>
+		  <ion-card-subtitle class="subtitleThin">{{p.distance}} km | <ion-icon name="stopwatch-outline"></ion-icon> ETA - {{40 + p.estimatedtimearr}} {{p.estimatedtimearr > 60 ? 'hrs' : 'mins'}}</ion-card-subtitle>
 		  <ion-card-subtitle>
 		  <ionic5-star-rating #rating
 				activeIcon = "star"
@@ -144,10 +176,10 @@
 				activeColor = "rgb(255 72 72)" 
 				defaultColor = "rgb(255 72 72)"
 				readonly="true"
-				rating="3"
+				rating="{{p.rating ? p.rating : 0}}"
 				fontSize = "15px"
 				(ratingChanged)="logRatingChange($event)">
-			</ionic5-star-rating> .. 3.8</ion-card-subtitle>
+			</ionic5-star-rating> {{p.rating ? p.rating : 'No Reviews yet'}}</ion-card-subtitle>
 		</ion-card-header>
 	</ion-item>
 </ng-container>

@@ -26,6 +26,7 @@
     "@ionic-native/call-number": "^5.26.0",
     "@ionic-native/core": "^5.28.0",
     "@ionic-native/diagnostic": "^5.27.0",
+    "@ionic-native/fcm": "^5.28.0",
     "@ionic-native/firebase-authentication": "^5.26.0",
     "@ionic-native/firebase-x": "^5.26.0",
     "@ionic-native/geolocation": "^5.27.0",
@@ -72,6 +73,7 @@
     "cordova-androidx-build": "^1.0.4",
     "cordova-plugin-androidx-adapter": "^1.1.1",
     "cordova-plugin-device": "^2.0.2",
+    "cordova-plugin-fcm-with-dependecy-updated": "^7.3.1",
     "cordova-plugin-googlemaps": "git+https://github.com/mapsplugin/cordova-plugin-googlemaps.git#multiple_maps",
     "cordova-plugin-ionic-keyboard": "^2.2.0",
     "cordova-plugin-ionic-webview": "^4.2.1",
@@ -113,7 +115,9 @@
       },
       "cordova-plugin-googlemaps": {},
       "cordova-plugin-androidx-adapter": {},
-      "cordova-sqlite-storage": {}
+      "cordova-sqlite-storage": {},
+      "cordova-plugin-fcm-with-dependecy-updated": {},
+      "cordova-support-google-services": {}
     },
     "platforms": [
       "browser",

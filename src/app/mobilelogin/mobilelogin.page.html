@@ -1,30 +1,68 @@
 <ion-content>
-<div id="recaptcha-container"></div>
-<div style="top: 45% !important;
+<div style="text-align:right;font-size:20px;" *ngIf="pagemode != 'M'">
+<ion-chip color="danger" outline (click)="skipLogin()">
+  <ion-label>skip</ion-label>
+</ion-chip>
+</div>
+<div style="top: 30% !important;
     position: relative;">
 <ion-row>
  <ion-col>
 	<div class="vertical-center">
 		<div class="center">
-		   Welcome to <div class="centerLogo">Meen</div>
+		   Welcome to <h1>Meen</h1>
 		</div>
 	 </div>
   </ion-col>
 </ion-row>
- <ion-row>
+<form [formGroup]="formData" (ngSubmit)="signIn(form)" novalidate id="loginFrom">
+<ion-grid>
+	 <ion-row>
+		<ion-col>
+			<ion-item style="border: 2px solid;
+				margin: 0px 20px;
+				border-radius: 15px;" lines="none">
+			  <ion-input type="text" [value]="+91" disabled="true" style="margin-right: -200px;"></ion-input>
+			  <ion-input type="tel" formControlName="phoneNumber" placeholder="Enter Mobile Number" [(ngModel)]="phoneNumber" required maxlength="10" minlength="10"></ion-input>
+			</ion-item>
+		</ion-col>
+	</ion-row>
+	<div *ngIf="isSubmitted && errorControl.phoneNumber.errors?.required"
+	class="validator-error">
+	  <ion-icon name="alert-circle-outline"></ion-icon>  Mobilenumber is required.
+	</div>
+	<div *ngIf="isSubmitted && errorControl.phoneNumber.errors?.maxlength"
+	class="validator-error">
+	  <ion-icon name="alert-circle-outline"></ion-icon>  Mobilenumber is invalid.
+	</div>
+	<div *ngIf="isSubmitted && errorControl.phoneNumber.errors?.minlength"
+	class="validator-error">
+	  <ion-icon name="alert-circle-outline"></ion-icon>  Mobilenumber is invalid.
+	</div>
+	<div *ngIf="isSubmitted && errorControl.phoneNumber.errors?.pattern"
+	class="validator-error">
+	  <ion-icon name="alert-circle-outline"></ion-icon>  Mobilenumber is allowed only numbers.
+	</div>
+	<div *ngIf="isSubmitted && commonError"
+	class="validator-error">
+	  <ion-icon name="alert-circle-outline"></ion-icon>  {{commonErrorMessage}}
+	</div>
+</ion-grid>
+<ion-row>
 	<ion-col>
-		<ion-item style="border: 1px solid;
-			margin: 0px 20px;
-			border-radius: 15px;" lines="none">
-		  <ion-input type = "number" placeholder="Enter Mobile Number" [(ngModel)]="phoneNumber"></ion-input>
-		</ion-item>
+		<div style="text-align:center;">
+			<div id="recaptcha-container"></div>
+		</div>
 	</ion-col>
 </ion-row>
+
 <ion-row>
 	<ion-col>
 		<ion-button color="danger" expand="block" style="margin: 0px 20px;
-			border-radius: 15px;" (click)="signIn(phoneNumber)">Send OTP</ion-button>
+			border-radius: 15px;" type="submit">Send OTP</ion-button>
 	</ion-col>
 </ion-row>
+</form>
 </div> 
+
 </ion-content>

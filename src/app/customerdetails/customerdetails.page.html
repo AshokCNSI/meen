@@ -1,0 +1,67 @@
+<ion-content>
+<div style="margin: auto;
+    margin-top: 20%;">
+<ion-grid>
+<form [formGroup]="formData" (ngSubmit)="save(form)" novalidate id="customerFrom">
+	<ion-row>
+		<ion-col>
+			<ion-item>
+			  <ion-label position="stacked">Can we call you as?</ion-label>
+			  <ion-input placeholder="Please enter Your Firstname" type="text" formControlName="firstname" [(ngModel)]="firstname" required></ion-input>
+			</ion-item>
+			<div *ngIf="isSubmitted && errorControl.firstname.errors?.required"
+					class="validator-error">
+				  <ion-icon name="alert-circle-outline"></ion-icon>  Your First Name is essential.
+				</div>
+			<div *ngIf="isSubmitted && errorControl.firstname.errors?.maxlength"
+					class="validator-error">
+				  <ion-icon name="alert-circle-outline"></ion-icon>  Your First Name shouldn't exceed 50 chars.
+				</div>
+			<ion-item>
+			  <ion-input placeholder="Please enter Your Lastname" type="text" formControlName="lastname" [(ngModel)]="lastname" required></ion-input>
+			</ion-item>
+			<div *ngIf="isSubmitted && errorControl.lastname.errors?.required"
+					class="validator-error">
+				  <ion-icon name="alert-circle-outline"></ion-icon>  Your Last Name is required.
+				</div>
+			<div *ngIf="isSubmitted && errorControl.lastname.errors?.maxlength"
+					class="validator-error">
+				  <ion-icon name="alert-circle-outline"></ion-icon>  Your Last Name shouldn't exceed 50 chars.
+				</div>
+			<ion-item>
+			  <ion-label position="stacked">Your Contact Email</ion-label>
+			  <ion-input placeholder="Please enter Your Email" type="text" formControlName="email" [(ngModel)]="email" required></ion-input>
+			</ion-item>
+			<div *ngIf="isSubmitted && errorControl.email.errors?.required"
+				class="validator-error">
+			  <ion-icon name="alert-circle-outline"></ion-icon> Enter your Email.
+			</div>
+			<div *ngIf="isSubmitted && errorControl.email.errors?.pattern"
+				class="validator-error">
+			  <ion-icon name="alert-circle-outline"></ion-icon> Please enter a valid Email.
+			</div>
+		</ion-col>
+	</ion-row>
+	<ion-row>
+		<ion-col>
+			<ion-button color="danger" expand="block" style="margin: 0px 20px;
+				border-radius: 15px;" type="submit" >Save & Continue</ion-button>
+		</ion-col>
+	</ion-row>
+</form>
+<ng-container *ngIf="pagemode!='M'">
+	<ion-row>
+		<ion-col style="text-align:center;">
+			OR
+		</ion-col>
+	</ion-row>
+	<ion-row>
+		<ion-col>
+			<ion-button color="danger" expand="block" style="margin: 0px 20px;
+				border-radius: 15px;" type="submit" (click)="loginMobile()">Try with New Number</ion-button>
+		</ion-col>
+	</ion-row>
+</ng-container>
+</ion-grid>
+</div>
+</ion-content>

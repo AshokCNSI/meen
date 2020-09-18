@@ -16,6 +16,7 @@ import { DeliverylocationPage } from '../deliverylocation/deliverylocation.page'
 import { LoginPage } from '../login/login.page';
 import { RegisterPage } from '../register/register.page';
 import { StockdetailPage } from '../stockdetail/stockdetail.page';
+import { MobileloginPage } from '../mobilelogin/mobilelogin.page';
 
 import { Location } from '@angular/common';
 import { LoadingService } from '../loading.service';
@@ -84,13 +85,9 @@ export class BillingdetailsPage implements OnInit {
       message: msg,
 	  backdropDismiss : true,
       buttons: [{
-          text: 'Login',
+          text: 'Login/Create',
           handler: () => {
-			this.openLogin();
-	  }},{
-          text: 'Register',
-          handler: () => {
-			this.openRegister();
+			this.openMobileLogin();
 	  }}]
     });
     await alert.present();
@@ -279,9 +276,20 @@ export class BillingdetailsPage implements OnInit {
 	await modal.present();
   }
   
+  async openMobileLogin() {
+	const modal = await this.modalController.create({
+	  component: MobileloginPage,
+	  cssClass: 'my-custom-class',
+	  componentProps: {
+		pagemode : 'M'
+	  }
+	});
+	await modal.present();
+  }
+  
   confirmOrder() {
 	  if(!this.authService.getIsUserLoggedIn()) {
-		  this.presentAlertWithLoginRegister('Login','We are advising you to Login or Register to make sure all the transactions are safe with us.');
+		  this.presentAlertWithLoginRegister('Login','We are advising you to Login/Create account to make sure all the transactions are safe with us.');
 		  return;
 		} else if(!this.dmobile) {
 			this.presentAlert('Address','Please choose address to order.');

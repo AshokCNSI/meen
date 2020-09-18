@@ -27,11 +27,12 @@ import { ErrorhandlerService } from './errorhandler.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavParams } from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 // environment
 import { environment } from '../environments/environment';
 import { StarRatingModule } from 'ionic5-star-rating';
-
+import { FCM } from '@ionic-native/fcm/ngx';
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -45,7 +46,8 @@ import { StarRatingModule } from 'ionic5-star-rating';
     AngularFireAuthModule,
     AngularFireDatabaseModule,
     AngularFireStorageModule,
-	StarRatingModule
+	StarRatingModule,
+	MatSnackBarModule
   ],
   providers: [
     StatusBar,
@@ -54,6 +56,7 @@ import { StarRatingModule } from 'ionic5-star-rating';
     SplashScreen,
 	Geolocation,
 	NativeGeocoder,
+	FCM,
 	Diagnostic,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
 	{ provide: ErrorHandler, useClass: ErrorhandlerService },

@@ -21,6 +21,7 @@ import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
 import { SplashPage } from './splash/splash.page';
 import { timer } from 'rxjs';
+import { FCM } from '@ionic-native/fcm/ngx';
 
 @Component({
   selector: 'app-root',
@@ -49,7 +50,8 @@ export class AppComponent implements OnInit {
 	private diagnostic: Diagnostic,
 	private locationService: LocationserviceService,
 	private loading : LoadingService,
-	private modalController : ModalController
+	private modalController : ModalController,
+	private fcm: FCM
   ) {
 	
     this.initializeApp();
@@ -82,12 +84,6 @@ export class AppComponent implements OnInit {
 	  }, 3000);
 	});
 	
-	this.diagnostic.isLocationEnabled()
-	  .then((state) => {
-		if (!state){
-		  this.navController.navigateRoot('/locationfinder');
-		}
-	  }).catch(e => console.log(e));
 	// stop connect watch
 	//connectSubscription.unsubscribe();
 	
@@ -117,6 +113,52 @@ export class AppComponent implements OnInit {
           event.preventDefault();
           event.stopPropagation();
         }, false);
+      });
+	  
+	  this.diagnostic.isLocationEnabled()
+	  .then((state) => {
+		if (!state){
+		  this.navController.navigateRoot('/locationfinder');
+		} else {
+			this.authService.userDetails().subscribe(res => { 
+				if (res !== null) {
+					firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
+						if(snapshot != null) {
+							if(!snapshot.toJSON()) {
+								this.navController.navigateRoot('/customerdetails');
+							}
+						}
+					})
+				} else {
+					this.navController.navigateRoot('/mobilelogin');
+				}
+			  }, err => {
+				  console.log('err', err);
+			 })
+		}
+	  }).catch(e => console.log(e));
+	  
+	  // subscribe to a topic
+      // this.fcm.subscribeToTopic('Deals');
+
+      // get FCM token
+      this.fcm.getToken().then(token => {
+        console.log(token);
+      });
+
+      // ionic push notification example
+      this.fcm.onNotification().subscribe(data => {
+        console.log(data);
+        if (data.wasTapped) {
+          console.log('Received in background');
+        } else {
+          console.log('Received in foreground');
+        }
+      });      
+
+      // refresh the FCM token
+      this.fcm.onTokenRefresh().subscribe(token => {
+        console.log(token);
       });
     });
   }

@@ -33,8 +33,9 @@ export class NotificationPage implements OnInit {
 	  firebase.database().ref('/profile/').orderByChild('usertype').equalTo('S').once('value').then((snapshot) => {
 		  snapshot.forEach(item => {
 				let a = item.toJSON();
-				let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),snapshot.child('latitude').val(),snapshot.child('longitude').val());
+				let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),a['latitude'],a['longitude']);
 				a['distance'] = Math.round(distance * 100) / 100;
+				a['estimatedtimearr'] = Math.round(((distance / 40) * 60) *100)/100;
 				firebase.database().ref('/productsforselling/').orderByChild('createdby').equalTo(a['createdby']).once('value').then((snapshot) => {
 				  this.discountPriceList = [];
 				  snapshot.forEach(item => {
@@ -46,6 +47,9 @@ export class NotificationPage implements OnInit {
 				  if(this.discountPriceList.length > 0) {
 					a['price'] = Math.max.apply(Math, this.discountPriceList);
 					this.discountList.push(a);
+					this.discountList.sort(function (a, b) {
+						return Number(a.distance) - Number(b.distance);
+					});
 				}
 			  })
 		  })

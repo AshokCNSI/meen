@@ -165,6 +165,10 @@ const routes: Routes = [
   {
     path: 'ratingseller',
     loadChildren: () => import('./ratingseller/ratingseller.module').then( m => m.RatingsellerPageModule)
+  },
+  {
+    path: 'customerdetails',
+    loadChildren: () => import('./customerdetails/customerdetails.module').then( m => m.CustomerdetailsPageModule)
   }
 
 ];

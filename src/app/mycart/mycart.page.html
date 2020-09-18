@@ -24,10 +24,10 @@
 		activeColor = "rgb(255 72 72)" 
 		defaultColor = "rgb(255 72 72)"
 		readonly="true"
-		rating="3"
+		rating="{{sellerrating}}"
 		fontSize = "15px"
 		(ratingChanged)="logRatingChange($event)">
-	</ionic5-star-rating> .. 3.8</ion-card-subtitle>
+	</ionic5-star-rating> {{sellerrating != 0 ? sellerrating: 'No Reviews yet'}}</ion-card-subtitle>
   </ion-card-header>
 </ion-card>
 <ion-card-header>

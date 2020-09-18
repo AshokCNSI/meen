@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-buttons style="font-size: 25px;margin: 10px;" slot="start" [routerLink]="['/addressbook']">
+    <ion-buttons style="font-size: 25px;margin: 10px;" slot="start" (click)="close()">
 		<ion-icon name="arrow-back-outline"></ion-icon>
 	</ion-buttons>
     <ion-title>Contact Details</ion-title>
@@ -35,11 +35,23 @@
 	  Enter Customer name.
 	</div>
 	<ion-item>
-	  <ion-input type="number" formControlName="mobile" placeholder="Contact Number" [(ngModel)]="mobile" required></ion-input>
+	  <ion-input type="number" formControlName="mobile" minlength="10" maxlength="10" placeholder="Contact Number" [(ngModel)]="mobile" required></ion-input>
 	</ion-item>
 	<div *ngIf="isSubmitted && errorAddressControl.mobile.errors?.required"
-		class="validator-error">
-	  Enter Mobile Number.
+	class="validator-error">
+	  <ion-icon name="alert-circle-outline"></ion-icon>  Mobilenumber is required.
+	</div>
+	<div *ngIf="isSubmitted && errorAddressControl.mobile.errors?.maxlength"
+	class="validator-error">
+	  <ion-icon name="alert-circle-outline"></ion-icon>  Mobilenumber is invalid.
+	</div>
+	<div *ngIf="isSubmitted && errorAddressControl.mobile.errors?.minlength"
+	class="validator-error">
+	  <ion-icon name="alert-circle-outline"></ion-icon>  Mobilenumber is invalid.
+	</div>
+	<div *ngIf="isSubmitted && errorAddressControl.mobile.errors?.pattern"
+	class="validator-error">
+	  <ion-icon name="alert-circle-outline"></ion-icon>  Mobilenumber is allowed only numbers.
 	</div>
 	<ion-item>
 	  <ion-input type="text" formControlName="houseno" placeholder="House/Door No" [(ngModel)]="houseno" required></ion-input>

@@ -41,6 +41,8 @@ export class HomePage implements OnInit {
 	
   public discountList = [];
   @ViewChild('mySlider') slider: IonSlides;
+  Arr = Array;
+  skeletoncount : number = 10;
   userEmail : string;
   isUserLoggedIn : boolean = false;
   spinnerShow = false;
@@ -300,25 +302,6 @@ export class HomePage implements OnInit {
 							this.cartList = val;
 						}
 					})
-					setTimeout(()=>{                           
-						  firebase.database().ref('/profile/').orderByChild('usertype').equalTo('S').once('value').then((snapshot) => {
-							this.sellerList = [];
-							if(snapshot != null) {
-								snapshot.forEach(item => {
-									let a = item.toJSON();
-									let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
-													a['latitude'],a['longitude']);
-									a['distance'] = Math.round(distance * 100) / 100;
-									this.sellerList.push(a);
-									this.sellerList.sort(function (a, b) {
-										return Number(a.distance) - Number(b.distance);
-									});
-								})
-							}
-						}).catch((error: any) => {
-							
-						});
-					 }, 3000);
 					
 					firebase.database().ref('/properties/products/').once('value').then((snapshot) => {
 						
@@ -373,9 +356,10 @@ export class HomePage implements OnInit {
 					}).catch((error: any) => {
 						
 					});
+					this.fetchSeller();
 					
 				}  
-			
+				
 	}
 	
 	hideContent() {
@@ -404,4 +388,34 @@ export class HomePage implements OnInit {
 		});
 		return await modal.present();
   }
+  
+  fetchSeller() {
+	  (async() => {
+		
+		if(!this.locationService.getLatitude())
+			await new Promise(resolve => setTimeout(resolve, 3000));
+		
+		firebase.database().ref('/profile/').orderByChild('usertype').equalTo('S').once('value').then((snapshot) => {
+			this.sellerList = [];
+			if(snapshot != null) {
+				snapshot.forEach(item => {
+					let a = item.toJSON();
+					let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
+									a['latitude'],a['longitude']);
+					a['distance'] = Math.round(distance * 100) / 100;
+					a['estimatedtimearr'] = Math.round(((distance / 40) * 60) *100)/100;
+					this.sellerList.push(a);
+					this.sellerList.sort(function (a, b) {
+						return Number(a.distance) - Number(b.distance);
+					});
+					
+				})
+			}
+		}).catch((error: any) => {
+			
+		});
+		
+	})();
+  }
+ 
 }

@@ -122,7 +122,7 @@ export class OrderdetailsPage implements OnInit {
 					this.seller = snapshot.child('seller').val();
 					firebase.database().ref('/rating/'+this.seller).orderByChild('orderid').equalTo(this.orderid).once('value').then((snapshot) => {
 						if(snapshot != null) {
-							if(!snapshot.toJSON() && this.oldStatus == 'DE') {
+							if(!snapshot.toJSON() && this.oldStatus == 'DE' && this.authService.getUserType() == 'C') {
 								this.openRatingSeller();
 							}
 						}

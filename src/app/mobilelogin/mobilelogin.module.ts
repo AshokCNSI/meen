@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { MobileloginPageRoutingModule } from './mobilelogin-routing.module';
 
 import { MobileloginPage } from './mobilelogin.page';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { MobileloginPage } from './mobilelogin.page';
     FormsModule,
 	ReactiveFormsModule,
     IonicModule,
-    MobileloginPageRoutingModule
+    MobileloginPageRoutingModule,
+	MatSnackBarModule
   ],
   declarations: [MobileloginPage]
 })

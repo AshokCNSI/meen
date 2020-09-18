@@ -102,4 +102,25 @@ export class LocationserviceService {
 		deg2rad(deg) {
 		  return deg * (Math.PI/180)
 		}
+		
+		setUserData() {
+			this.authService.userDetails().subscribe(res => { 
+				if (res !== null) {
+					this.authService.setUserName(res.email);
+					this.authService.setUserID(res.uid);
+					this.authService.setEmailID(res.email);
+					this.authService.setIsUserLoggedIn(true);
+					firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
+						if(snapshot != null) {
+							this.authService.setUserType(snapshot.child('usertype').val());  
+							this.authService.setUserName(snapshot.child('firstname').val()+" "+snapshot.child('lastname').val());
+						}
+					})
+				} else {
+					this.authService.setIsUserLoggedIn(false);
+				}
+			  }, err => {
+				  console.log('err', err);
+			 })
+		}
 }

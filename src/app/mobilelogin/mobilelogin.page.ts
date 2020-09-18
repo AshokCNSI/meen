@@ -11,6 +11,8 @@ import { AuthenticateService } from '../authentication.service';
 import {  MenuController } from '@ionic/angular';
 import { ModalController, NavParams } from '@ionic/angular';
 import { LoadingService } from '../loading.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import { CustomerdetailsPage } from '../customerdetails/customerdetails.page';
 
 @Injectable({
   providedIn: 'root'
@@ -34,26 +36,24 @@ export class MobileloginPage implements OnInit {
   private menuCtrl : MenuController,
   public loading: LoadingService,
   public modalController: ModalController,
-  private navParams: NavParams) { 
+  private navParams: NavParams,
+  private _snackBar: MatSnackBar) { 
 	this.pagemode = this.navParams.data.pagemode;
   }
 
   ngOnInit() {
 	  this.menuCtrl.enable(false);
-  }
-  
-  ionViewWillLeave() {
-    
-  }
-  
-  ionViewDidLoad() {
 	  this.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
-	}
+  }
+  
   
   isSubmitted = false;
   firebaseErrors = false;
   firebaseErrorMessage = "";
   pagemode : string;
+  phoneNumber : number;
+  commonError = false;
+  commonErrorMessage :  string;
   
   async presentAlert(status, msg) {
     const alert = await this.alertCtrl.create({
@@ -66,26 +66,100 @@ export class MobileloginPage implements OnInit {
   }
 
   formData = this.formBuilder.group({
-       email: ['', [Validators.required, Validators.pattern('^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$')]],
-	   password: ['', [Validators.required, Validators.minLength(8)]],
-	});
-	
-	get errorControl() {
-		return this.formData.controls;
-	  }
-  
-	signIn(phoneNumber: number){
-  const appVerifier = this.recaptchaVerifier;
-  const phoneNumberString = "+" + phoneNumber;
-  firebase.auth().signInWithPhoneNumber(phoneNumberString, appVerifier)
-    .then( confirmationResult => {
-      // SMS sent. Prompt user to type the code from the message, then sign the
-      // user in with confirmationResult.confirm(code).
-      this.presentAlert("Success","Mobile sent");
-  })
-  .catch(function (error) {
-    console.error("SMS not sent", error);
+      phoneNumber: ['', Validators.compose([Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern('^[0-9]+$')])]
   });
-
-}
+	
+  get errorControl() {
+	return this.formData.controls;
+  }
+  
+signIn(){
+	 this.isSubmitted = true;
+	  if (!this.formData.valid) {
+		return false;
+	  } else {
+		  const appVerifier = this.recaptchaVerifier;
+		  const phoneNumberString = "+91" + this.formData.value.phoneNumber;
+		  firebase.auth().signInWithPhoneNumber(phoneNumberString, appVerifier)
+			.then( async (confirmationResult) => {
+			  // SMS sent. Prompt user to type the code from the message, then sign the
+			  // user in with confirmationResult.confirm(code).
+			  let prompt = await this.alertCtrl.create({
+			  header: 'Enter the Confirmation code',
+			  inputs: [{ name: 'confirmationCode', placeholder: 'Confirmation Code' }],
+			  buttons: [
+				{ text: 'Cancel',
+				  handler: data => { console.log('Cancel clicked'); }
+				},
+				{ text: 'Send',
+				  handler: data => {
+					confirmationResult.confirm(data.confirmationCode)
+					.then((error: any) => {
+					  this.authService.userDetails().subscribe(res => { 
+						if (res !== null) {
+							firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
+								if(snapshot != null) {
+									if(!snapshot.toJSON()) {
+										
+										if(this.pagemode == 'M') {
+											this.modalController.dismiss();
+											this.openCustomerDetails();
+										} else {
+											this.navController.navigateRoot('/customerdetails');
+										}
+									} else {
+										if(this.pagemode == 'M') {
+											this.modalController.dismiss();
+										} else {
+											this.navController.navigateRoot('/home');
+										}
+									}
+								}
+							})
+						} 
+					  }, err => {
+						  console.log('err', err);
+					 })
+					}).catch((error: any) => {
+					  let snackBarRef = this._snackBar.open('Error', error.code,{
+						  duration: 3000,
+						  horizontalPosition: 'center',
+						  verticalPosition: 'top',
+						});
+					});
+				  }
+				}
+			  ]
+			});
+			await prompt.present();
+		  })
+		  .catch((error: any) => {
+			  let snackBarRef = this._snackBar.open('Error', error.code,{
+				  duration: 3000,
+				  horizontalPosition: 'center',
+				  verticalPosition: 'top',
+				});
+			  console.error("SMS not sent", error.code);
+		  });
+	  }
+	}
+	
+	skipLogin() {
+		if(this.pagemode == 'M') {
+			this.modalController.dismiss();
+		} else {
+			this.navController.navigateRoot('/home');
+		}
+	}
+	
+	async openCustomerDetails() {
+		const modal = await this.modalController.create({
+		  component: CustomerdetailsPage,
+		  cssClass: 'my-custom-class',
+		  componentProps: {
+			pagemode : 'M'
+		  }
+		});
+		await modal.present();
+	}
 }

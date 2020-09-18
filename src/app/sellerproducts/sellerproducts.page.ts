@@ -63,6 +63,7 @@ selleruid : string;
 shopname : string;
 cartList = [];
 distance : number;
+sellerrating : number;
 
 private increment (i, itemid) {
   this.stockList[i].quantity = this.stockList[i].quantity ? this.stockList[i].quantity + 1 : 1;
@@ -132,6 +133,21 @@ async presentAlertWithCancel(status, msg) {
 		
 	  this.activatedRoute.queryParams.subscribe(params => {
 		  this.selleruid = this.activatedRoute.snapshot.params['selleruid'];
+		  firebase.database().ref('/profile/'+this.selleruid).once('value').then((snapshot) => {
+				if(snapshot != null) {
+					this.shopname = snapshot.child('shopname').val();
+					let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
+									snapshot.child('latitude').val(),snapshot.child('longitude').val());
+					this.distance = Math.round(distance * 100) / 100;
+					this.sellerrating = snapshot.child('rating').val();
+					if(!this.sellerrating) {
+						this.sellerrating = 0;
+					}
+					
+				}
+			}).catch((error: any) => {
+				
+			});
 		  firebase.database().ref('/productsforselling/').orderByChild('createdby').equalTo(this.selleruid).once('value').then((snapshot) => {
 			  this.stockList = [];
 			  this.productTempList = [];
@@ -152,19 +168,7 @@ async presentAlertWithCancel(status, msg) {
 									  a['quantity'] = item.itemcount;
 								  }
 							  })
-								firebase.database().ref('/profile/'+b['createdby']).once('value').then((snapshot) => {
-									if(snapshot != null) {
-										this.shopname = snapshot.child('shopname').val();
-										let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
-														snapshot.child('latitude').val(),snapshot.child('longitude').val());
-										a['distance'] = Math.round(distance * 100) / 100;
-										a['shopname'] = snapshot.child('shopname').val();
-										this.distance = a['distance'];
-										this.stockList.push(a);
-									}
-								}).catch((error: any) => {
-									
-								});
+							  this.stockList.push(a)
 							});
 						}).catch((error: any) => {
 							

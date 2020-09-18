@@ -12,7 +12,7 @@ import { RouterserviceService } from '../routerservice.service';
 import { AuthenticateService } from '../authentication.service';
 import { LoadingService } from '../loading.service';
 import { MapselectionPage } from '../mapselection/mapselection.page';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavParams } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -36,9 +36,10 @@ export class AddaddressPage implements OnInit {
   private routerService: RouterserviceService,
   private authService: AuthenticateService,
   public loading: LoadingService,
-  private modalController : ModalController
+  private modalController : ModalController,
+  private navParams: NavParams
 ) { 
-  
+	this.pagemode = this.navParams.data.pagemode;
   }
   
   latitude : string;
@@ -50,6 +51,7 @@ export class AddaddressPage implements OnInit {
   streetname : string;
   landmark : string;
   isSubmitted : boolean = false;
+  pagemode : string;
   
   ngOnInit() {
 	  
@@ -127,6 +129,14 @@ export class AddaddressPage implements OnInit {
 		   }
 		 ).catch(res => console.log(res))
 	  }
+  }
+  
+  close() {
+	  if(this.pagemode == 'M') {
+			this.modalController.dismiss();
+		} else {
+			this.navController.navigateRoot('/addressbook');
+		}
   }
 
 }

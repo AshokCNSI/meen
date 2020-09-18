@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:159230424582:android:409f0028ccc390e2dab587",
         "android_client_info": {
-          "package_name": "com.firebase.db"
+          "package_name": "com.meen.ionic.starter"
         }
       },
       "oauth_client": [

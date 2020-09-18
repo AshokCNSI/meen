@@ -53,6 +53,7 @@ export class MycartPage implements OnInit {
   sellerroute : string;
   selleruid : string;
   distance : number;
+  sellerrating : number;
   
 private increment (i, itemid) {
   this.cartList[i].quantity = this.cartList[i].quantity ? this.cartList[i].quantity + 1 : 1;
@@ -123,6 +124,10 @@ private decrement (i, itemid) {
 					let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
 									snapshot.child('latitude').val(),snapshot.child('longitude').val());
 					this.distance = Math.round(distance * 100) / 100;
+					this.sellerrating = snapshot.child('rating').val();
+					if(!this.sellerrating) {
+						this.sellerrating = 0;
+					}
 				}
 			}).catch((error: any) => {
 				

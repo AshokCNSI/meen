@@ -128,13 +128,6 @@ font-family : Roboto Light;
 	height: 150px;
 }
 
-.menu-item {
-	ion-item {
-		margin-left: 26px;
-		padding: 7px;
-	}
-}
-
 .splash{
 	position : absolute;
 	width : 100%;
@@ -175,3 +168,12 @@ div.at-container {
   }
 }
 
+ion-card-title{
+font-family : Roboto Bold;
+font-size : 17px;
+}
+
+ion-card-subtitle {
+font-size	: 13px !important;
+font-family : Roboto Black;
+}
