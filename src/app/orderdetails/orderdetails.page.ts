@@ -103,6 +103,7 @@ export class OrderdetailsPage implements OnInit {
 					this.productVisibility = snapshot.child('currentstatus').val();
 					firebase.database().ref('/properties/status').once('value').then((snapshot) => {
 						  if(snapshot != null) {
+							  this.statusList = [];
 							  snapshot.forEach(item =>{
 								  let a = item.toJSON();
 								  if(a['code'] == this.productVisibility) {

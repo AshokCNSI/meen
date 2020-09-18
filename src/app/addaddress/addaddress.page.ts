@@ -125,7 +125,11 @@ export class AddaddressPage implements OnInit {
 		   res => 
 		   {
 			   this.presentAlert('Success','Your address has been successfully added');
-			   this.navController.navigateRoot('/addressbook');
+			   if(this.pagemode == 'M') {
+					this.modalController.dismiss();
+				} else {
+					this.navController.navigateRoot('/addressbook');
+				}
 		   }
 		 ).catch(res => console.log(res))
 	  }
