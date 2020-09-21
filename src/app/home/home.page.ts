@@ -251,7 +251,7 @@ export class HomePage implements OnInit {
 								 firebase.database().ref('/profile/'+a['seller']).once('value').then((snapshot) => {
 									if(snapshot != null) {
 										let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),snapshot.child('latitude').val(),snapshot.child('longitude').val());
-										a['distance'] = Math.round(distance * 100) / 100;
+										a['distance'] = Math.floor(Math.round(distance * 100) / 100);
 										 firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
 											if(snapshot != null) {
 												this.productList.push(a);
@@ -402,8 +402,8 @@ export class HomePage implements OnInit {
 					let a = item.toJSON();
 					let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
 									a['latitude'],a['longitude']);
-					a['distance'] = Math.round(distance * 100) / 100;
-					a['estimatedtimearr'] = Math.round(((distance / 40) * 60) *100)/100;
+					a['distance'] = Math.floor(Math.round(distance * 100) / 100);
+					a['estimatedtimearr'] = Math.floor(Math.round(((distance / 40) * 60) *100)/100);
 					this.sellerList.push(a);
 					this.sellerList.sort(function (a, b) {
 						return Number(a.distance) - Number(b.distance);

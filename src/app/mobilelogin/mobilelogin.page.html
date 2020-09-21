@@ -4,7 +4,7 @@
   <ion-label>skip</ion-label>
 </ion-chip>
 </div>
-<div style="top: 30% !important;
+<div style="top: 10% !important;
     position: relative;">
 <ion-row>
  <ion-col>
@@ -60,6 +60,23 @@
 	<ion-col>
 		<ion-button color="danger" expand="block" style="margin: 0px 20px;
 			border-radius: 15px;" type="submit">Send OTP</ion-button>
+	</ion-col>
+</ion-row>
+<ion-row>
+	<ion-col style="text-align:center;">
+		OR
+	</ion-col>
+</ion-row>
+<ion-row>
+	<ion-col>
+		<ion-button color="danger" fill="outline" expand="block" style="margin: 0px 20px;
+			border-radius: 15px;" [routerLink]="['/login']">Seller Login</ion-button>
+	</ion-col>
+</ion-row>
+<ion-row>
+	<ion-col>
+		<ion-button color="danger" fill="outline" expand="block" style="margin: 0px 20px;
+			border-radius: 15px;" [routerLink]="['/login']">Driver Login</ion-button>
 	</ion-col>
 </ion-row>
 </form>

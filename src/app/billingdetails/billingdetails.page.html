@@ -33,7 +33,7 @@
 <ion-item (click)="openItemDetails(i)">
 	<ion-card-header>
 		  <ion-card-title class="title">{{p.title}}</ion-card-title>
-		  <ion-card-title class="titlelink" style="color:#3880ff">customize ></ion-card-title>
+		  <ion-card-title class="titlelink" style="color:{{cartList[i].options || cartList[i].desc ? 'red' : '#3880ff'}}">{{cartList[i].options || cartList[i].desc ? 'customized' : 'customize'}} ></ion-card-title>
 	</ion-card-header>
 </ion-item>
 <ion-item-divider>

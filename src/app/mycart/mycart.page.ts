@@ -123,7 +123,7 @@ private decrement (i, itemid) {
 					this.sellershopname = snapshot.child('shopname').val();
 					let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
 									snapshot.child('latitude').val(),snapshot.child('longitude').val());
-					this.distance = Math.round(distance * 100) / 100;
+					this.distance = Math.floor(Math.round(distance * 100) / 100);
 					this.sellerrating = snapshot.child('rating').val();
 					if(!this.sellerrating) {
 						this.sellerrating = 0;

@@ -68,7 +68,7 @@ this.orderid = this.navParams.data.orderid;
 				}
 				
 				firebase.database().ref('/profile/'+this.sellerid).update({
-				   rating: (Math.round(rating * 100) / 100),
+				   rating: Math.floor(Math.round(rating * 100) / 100),
 				   "modifieddate": Date(),
 				   "modifiedby":this.authService.getUserID()
 			  }).then(
