@@ -13,7 +13,6 @@ import { AuthenticateService } from '../authentication.service';
 import { LoadingService } from '../loading.service';
 import { MyaddressPage } from '../myaddress/myaddress.page';
 import { ModalController, NavParams } from '@ionic/angular';
-import { DeliverylocationPage } from '../deliverylocation/deliverylocation.page';
 import { Location } from '@angular/common';
 import { StockdetailPage } from '../stockdetail/stockdetail.page';
 import { RatingsellerPage } from '../ratingseller/ratingseller.page';
@@ -254,18 +253,6 @@ export class OrderdetailsPage implements OnInit {
 	   }
 	 )
 	 this.loading.dismiss();	
-  }
-  
-  async goToClientLocation() {
-	const modal = await this.modalController.create({
-	  component: DeliverylocationPage,
-	  cssClass: 'my-custom-class',
-	  componentProps: {
-		destinationlatitude: this.productVisibility == 'DS' ? this.sellerlatitude : this.latitude,
-		destinationlongitude: this.productVisibility == 'DS' ? this.sellerlongitude : this.longitude
-	  }
-	});
-	await modal.present();
   }
   
   async openItemDetails(index) {

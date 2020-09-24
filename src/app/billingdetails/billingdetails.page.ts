@@ -12,9 +12,7 @@ import { AuthenticateService } from '../authentication.service';
 import { LocationserviceService } from '../locationservice.service';
 import { ModalController, NavParams } from '@ionic/angular';
 import { MyaddressPage } from '../myaddress/myaddress.page';
-import { DeliverylocationPage } from '../deliverylocation/deliverylocation.page';
-import { LoginPage } from '../login/login.page';
-import { RegisterPage } from '../register/register.page';
+
 import { StockdetailPage } from '../stockdetail/stockdetail.page';
 import { MobileloginPage } from '../mobilelogin/mobilelogin.page';
 
@@ -251,28 +249,6 @@ export class BillingdetailsPage implements OnInit {
 			this.storage.set('cart', this.cartList);
 		  }
     });
-	await modal.present();
-  }
-  
-  async openLogin() {
-	const modal = await this.modalController.create({
-	  component: LoginPage,
-	  cssClass: 'my-custom-class',
-	  componentProps: {
-		pagemode : 'M'
-	  }
-	});
-	await modal.present();
-  }
-  
-  async openRegister() {
-	const modal = await this.modalController.create({
-	  component: RegisterPage,
-	  cssClass: 'my-custom-class',
-	  componentProps: {
-		pagemode : 'M'
-	  }
-	});
 	await modal.present();
   }
   

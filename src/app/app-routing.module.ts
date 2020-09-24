@@ -8,17 +8,6 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'folder/:id',
-    loadChildren: () => import('./folder/folder.module').then( m => m.FolderPageModule)
-  },
-  {
-    path: 'login',
-    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
-  },  {
-    path: 'register',
-    loadChildren: () => import('./register/register.module').then( m => m.RegisterPageModule)
-  },
-  {
     path: 'home',
     loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
   },
@@ -31,16 +20,8 @@ const routes: Routes = [
     loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
   },
   {
-    path: 'customers',
-    loadChildren: () => import('./customers/customers.module').then( m => m.CustomersPageModule)
-  },
-  {
     path: 'orders',
     loadChildren: () => import('./orders/orders.module').then( m => m.OrdersPageModule)
-  },
-  {
-    path: 'discounts',
-    loadChildren: () => import('./discounts/discounts.module').then( m => m.DiscountsPageModule)
   },
   {
     path: 'notification',
@@ -63,10 +44,6 @@ const routes: Routes = [
     loadChildren: () => import('./network/network.module').then( m => m.NetworkPageModule)
   },
   {
-    path: 'properties',
-    loadChildren: () => import('./properties/properties.module').then( m => m.PropertiesPageModule)
-  },
-  {
     path: 'locationmap',
     loadChildren: () => import('./locationmap/locationmap.module').then( m => m.LocationmapPageModule)
   },
@@ -77,18 +54,6 @@ const routes: Routes = [
   {
     path: 'myaddress',
     loadChildren: () => import('./myaddress/myaddress.module').then( m => m.MyaddressPageModule)
-  },
-  {
-    path: 'myassignments',
-    loadChildren: () => import('./myassignments/myassignments.module').then( m => m.MyassignmentsPageModule)
-  },
-  {
-    path: 'mysellingproducts',
-    loadChildren: () => import('./mysellingproducts/mysellingproducts.module').then( m => m.MysellingproductsPageModule)
-  },
-  {
-    path: 'addproduct',
-    loadChildren: () => import('./addproduct/addproduct.module').then( m => m.AddproductPageModule)
   },
   {
     path: 'addressbook',
@@ -127,14 +92,6 @@ const routes: Routes = [
     loadChildren: () => import('./addaddress/addaddress.module').then( m => m.AddaddressPageModule)
   },
   {
-    path: 'splash',
-    loadChildren: () => import('./splash/splash.module').then( m => m.SplashPageModule)
-  },
-  {
-    path: 'deliverylocation',
-    loadChildren: () => import('./deliverylocation/deliverylocation.module').then( m => m.DeliverylocationPageModule)
-  },
-  {
     path: 'sellerproducts/:selleruid',
     loadChildren: () => import('./sellerproducts/sellerproducts.module').then( m => m.SellerproductsPageModule)
   },
@@ -145,10 +102,6 @@ const routes: Routes = [
   {
     path: 'orderdetails/:orderid',
     loadChildren: () => import('./orderdetails/orderdetails.module').then( m => m.OrderdetailsPageModule)
-  },
-  {
-    path: 'trackmyorder/:orderid/:statusindex',
-    loadChildren: () => import('./trackmyorder/trackmyorder.module').then( m => m.TrackmyorderPageModule)
   },
   {
     path: 'ordersuccess/:orderid',

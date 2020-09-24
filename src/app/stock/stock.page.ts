@@ -11,9 +11,7 @@ import { AuthenticateService } from '../authentication.service';
 import { LocationserviceService } from '../locationservice.service';
 import { ModalController, NavParams } from '@ionic/angular';
 import { MyaddressPage } from '../myaddress/myaddress.page';
-import { DeliverylocationPage } from '../deliverylocation/deliverylocation.page';
-import { LoginPage } from '../login/login.page';
-import { RegisterPage } from '../register/register.page';
+
 import { StockdetailPage } from '../stockdetail/stockdetail.page';
 
 import { Location } from '@angular/common';

@@ -19,7 +19,6 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
-import { SplashPage } from './splash/splash.page';
 import { timer } from 'rxjs';
 import { FCM } from '@ionic-native/fcm/ngx';
 
@@ -185,13 +184,4 @@ export class AppComponent implements OnInit {
 	  this.menuCtrl.toggle();
 	  this.navController.navigateRoot('/aboutme');
 	}
-
-  async openSplash() {
-	const modal = await this.modalController.create({
-		  component: SplashPage,
-		  cssClass: 'my-custom-class'
-		});
-		await modal.present();
-		
-  }
 }

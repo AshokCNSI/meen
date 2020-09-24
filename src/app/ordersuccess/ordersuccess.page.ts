@@ -13,7 +13,6 @@ import { AuthenticateService } from '../authentication.service';
 import { LoadingService } from '../loading.service';
 import { MyaddressPage } from '../myaddress/myaddress.page';
 import { ModalController } from '@ionic/angular';
-import { DeliverylocationPage } from '../deliverylocation/deliverylocation.page';
 import { Location } from '@angular/common';
 import { timer } from 'rxjs';
 

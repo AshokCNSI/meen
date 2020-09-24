@@ -86,6 +86,7 @@ signIn(){
 			  // user in with confirmationResult.confirm(code).
 			  let prompt = await this.alertCtrl.create({
 			  header: 'Enter the Confirmation code',
+			  backdropDismiss : false,
 			  inputs: [{ name: 'confirmationCode', placeholder: 'Confirmation Code' }],
 			  buttons: [
 				{ text: 'Cancel',
