@@ -68,7 +68,27 @@ export class AppComponent implements OnInit {
 
 	// stop disconnect watch
 	//disconnectSubscription.unsubscribe();
-
+	let options: NativeGeocoderOptions = {
+		useLocale: true,
+		maxResults: 5
+	};
+	if(this.locationService.getLatitude() == undefined || this.locationService.getLatitude() == "" 
+		|| this.locationService.getLongitude() == undefined || this.locationService.getLongitude() == ""
+		|| this.locationService.getCurrentLocation() == undefined || this.locationService.getCurrentLocation() == "") {
+		this.geolocation.getCurrentPosition().then((resp) => {
+		 this.locationService.setLatitude(resp.coords.latitude.toString());
+		 this.locationService.setLongitude(resp.coords.longitude.toString());
+		 this.nativeGeocoder.reverseGeocode(resp.coords.latitude, resp.coords.longitude, options)
+			.then((result: NativeGeocoderResult[]) => {
+				this.locationService.setCurrentLocation(this.generateAddress(result[0]));
+			})
+			.catch((error: any) => {
+				//this.navController.navigateRoot('/locationfinder');
+			});
+		}).catch((error) => {
+		  console.log('Error getting location', error);
+		});
+	}
 
 	// watch network for a connection
 	let connectSubscription = this.network.onConnect().subscribe(() => {
@@ -106,7 +126,26 @@ export class AppComponent implements OnInit {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-	  timer(3000).subscribe(() => this.showSplash = false);
+	  this.authService.userDetails().subscribe(res => { 
+		if (res !== null) {
+			this.authService.setUserName(res.email);
+			this.authService.setUserID(res.uid);
+			this.authService.setEmailID(res.email);
+			this.authService.setIsUserLoggedIn(true);
+			firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
+				if(snapshot != null) {
+					this.authService.setUserType(snapshot.child('usertype').val());  
+					this.authService.setUserName(snapshot.child('firstname').val()+" "+snapshot.child('lastname').val());
+					timer(2000).subscribe(() => this.showSplash = false);
+				}
+			})
+		} else {
+			this.authService.setIsUserLoggedIn(false);
+			timer(2000).subscribe(() => this.showSplash = false);
+		}
+	  }, err => {
+		  console.log('err', err);
+	 })
 	  this.platform.backButton.subscribeWithPriority(9999, () => {
         document.addEventListener('backbutton', function (event) {
           event.preventDefault();
@@ -184,4 +223,18 @@ export class AppComponent implements OnInit {
 	  this.menuCtrl.toggle();
 	  this.navController.navigateRoot('/aboutme');
 	}
+	
+	generateAddress(addressObj) {
+		let obj = [];
+		let address = "";
+		for (let key in addressObj) {
+		  obj.push(addressObj[key]);
+		}
+		obj.reverse();
+		for (let val in obj) {
+		  if (obj[val].length)
+			address += obj[val] + ', ';
+		}
+		return address.slice(0, -2);
+	  }
 }

@@ -9,6 +9,7 @@ import { HomePageRoutingModule } from './home-routing.module';
 import { HomePage } from './home.page';
 import {MatBadgeModule} from '@angular/material/badge';
 import { StarRatingModule } from 'ionic5-star-rating';
+import { PipesModule } from '../pipes.module';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { StarRatingModule } from 'ionic5-star-rating';
     IonicModule,
     HomePageRoutingModule,
 	MatBadgeModule,
-	StarRatingModule
+	StarRatingModule,
+	PipesModule
   ],
   declarations: [HomePage]
 })

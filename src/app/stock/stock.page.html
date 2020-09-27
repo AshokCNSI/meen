@@ -1,6 +1,6 @@
 <ion-header style="z-index : 0;">
   <ion-toolbar>
-    <ion-buttons style="font-size: 25px;margin: 10px;" slot="start" (click)="location.back()">
+    <ion-buttons style="font-size: 25px;margin: 10px;" slot="start" [routerLink]="['/home']">
 		<ion-icon name="arrow-back-outline"></ion-icon>
 	</ion-buttons>
   </ion-toolbar>
@@ -19,13 +19,14 @@
 	</div>
   </ion-thumbnail>
 	<ion-label>
-		<ion-card-title>{{p.title}}</ion-card-title>
-		<ion-card-subtitle class="subtitleThin">&#x20b9;{{p.price}}</ion-card-subtitle>
-		<ion-card-subtitle class="thrirdlevellabel">{{p.distance}} km | {{p.shopname}}</ion-card-subtitle>
-		<ion-card-subtitle class="thrirdlevellabel"><ion-icon name="stopwatch-outline"></ion-icon> 38 mins</ion-card-subtitle>			
+		<ion-card-title class="title-list-1">{{p.title}}</ion-card-title>
+		<ion-card-title class="title-list-2">{{p.shopname}}</ion-card-title>
+		<ion-card-subtitle class="subtitle-list-1">&#x20b9;{{p.price}}</ion-card-subtitle>
+		<ion-card-subtitle class="subtitle-list-2">{{p.distance}} km </ion-card-subtitle>
+		<ion-card-subtitle class="subtitle-list-3"><ion-icon name="stopwatch-outline"></ion-icon> ETA - {{40 + p.estimatedtimearr}} {{p.estimatedtimearr > 60 ? 'hrs' : 'mins'}}</ion-card-subtitle>			
 		<ion-card-subtitle> <ion-buttons [routerLink]="['/sellerproducts/'+p.selleruid]">
-			<ion-button color="danger" style="font-size: 10px;margin-left: -5px;">
-				view the seller's products
+			<ion-button class="button-list-1">
+				go to seller
 			</ion-button>
 		</ion-buttons>
 		</ion-card-subtitle>
@@ -74,7 +75,14 @@
 	</ion-col>
 </ion-row> -->
 </ng-container>
-<div *ngIf="stockList.length == 0">
+<ng-container *ngIf="stockList.length == 0 && norecordstatus">
+<div class="no-items">
+	<ion-card-subtitle>No items Available</ion-card-subtitle>
+	<ion-button color="light" (click)="fetchData()">Retry</ion-button>
+</div>
+</ng-container>
+
+<div *ngIf="stockList.length == 0 && !norecordstatus">
 	<ion-row *ngFor="let i of Arr(skeletoncount).fill(1)">
 		<ion-col>
 			<ion-card>
@@ -104,6 +112,6 @@
       <ion-icon slot="icon-only" name="cart"></ion-icon>
     </ion-button>
   </ion-buttons>
-  <ion-title>You have {{cartList.length}} item(s) in the cart</ion-title>
+  <ion-title class="title-footer-1">You have {{cartList.length}} item(s) in the cart</ion-title>
 </ion-toolbar>
 </ion-footer>

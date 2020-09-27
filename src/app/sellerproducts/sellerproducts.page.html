@@ -43,9 +43,9 @@
 	<ion-label>
 		<ion-card-title>{{p.title}}</ion-card-title>
 		<ion-card-subtitle class="subtitleThin">&#x20b9;{{p.price}}</ion-card-subtitle>
-		<ion-button (click)="decrement(i, p.index)">-</ion-button>
-		<ion-button color="light">{{p.quantity ? p.quantity : 0}}</ion-button>
-		<ion-button (click)="increment(i, p.index)">+</ion-button>
+		<ion-button *ngIf="shopavailable == 'Y'" (click)="decrement(i, p.index)">-</ion-button>
+		<ion-button *ngIf="shopavailable == 'Y'"color="light">{{p.quantity ? p.quantity : 0}}</ion-button>
+		<ion-button *ngIf="shopavailable == 'Y'" (click)="increment(i, p.index)">+</ion-button>
 	</ion-label>
 	
 </ion-item>
@@ -86,7 +86,13 @@
 	</ion-col>
 </ion-row> -->
 </ng-container>
-<div *ngIf="stockList.length == 0">
+<ng-container *ngIf="stockList.length == 0 && norecordstatus">
+<div class="no-items">
+	<ion-card-subtitle>No items Available</ion-card-subtitle>
+	<ion-button color="light" (click)="fetchData()">Retry</ion-button>
+</div>
+</ng-container>
+<div *ngIf="stockList.length == 0 && !norecordstatus">
 	<ion-row *ngFor="let i of Arr(skeletoncount).fill(1)">
 		<ion-col>
 			<ion-card>

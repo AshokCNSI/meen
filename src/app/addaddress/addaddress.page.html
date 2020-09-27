@@ -17,11 +17,9 @@
 		<ion-note slot="start">Delivering to</ion-note>
 	</ion-item>
 	<ion-card *ngIf="location">
-	  <ion-card-header>
 		<ion-card-content>
-			<ion-textarea formControlName="location" [(ngModel)]="location" disabled="true"></ion-textarea>
+			<ion-textarea style="font-weight:bold;" formControlName="location" [(ngModel)]="location" disabled="true"></ion-textarea>
 		  </ion-card-content>
-	  </ion-card-header>
 	</ion-card>
 	<div *ngIf="isSubmitted && errorAddressControl.location.errors?.required"
 		class="validator-error">

@@ -57,6 +57,8 @@ productstatus : string;
 productcode : string;
 cartcount : number;
 cartList = [];
+norecordstatus = false;
+ 
   ngOnInit() {
 	  if(this.authService.getIsUserLoggedIn()) {
 		  this.storage.get('cart').then((val) => {
@@ -65,136 +67,8 @@ cartList = [];
 			}
 		  })
 		}
-	  this.activatedRoute.queryParams.subscribe(params => {
-		  this.productcode = params['productcode'];
-		  this.productstatus = params['productstatus'];
-		  this.categoryID = this.activatedRoute.snapshot.params['id'];  
-		  if(this.productcode != undefined) {
-			  firebase.database().ref('/productsforselling/').orderByChild('productcode').equalTo(this.productcode).once('value').then((snapshot) => {
-				  this.stockList = [];
-				  this.productTempList = [];
-					snapshot.forEach(item => {
-						let b = item.toJSON();
-						let index = item.key;
-						if((this.productstatus == 'D') ? b['discount'] : b['available'] == 'Y') {
-							firebase.database().ref('/properties/products/').orderByChild('productcode').equalTo(b['productcode']).once('value').then((snapshot) => {
-								snapshot.forEach(item => {
-									let a = item.toJSON();
-									a['index'] = index;
-									a['price'] = b['price'];
-									a['discount'] = b['discount'];
-									a['discountprice'] = b['discountprice'];
-									a['selleruid'] = b['createdby'];
-									firebase.database().ref('/profile/'+b['createdby']).once('value').then((snapshot) => {
-										if(snapshot != null) {
-											let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
-															snapshot.child('latitude').val(),snapshot.child('longitude').val());
-											a['distance'] = Math.round(distance * 100) / 100;
-											a['shopname'] = snapshot.child('shopname').val();
-											this.stockList.push(a);
-											this.stockList.sort(function (a, b) {
-												return Number(a.distance) - Number(b.distance);
-											});
-										}
-									}).catch((error: any) => {
-										
-									});
-								});
-							}).catch((error: any) => {
-								
-							});
-						}
-					})
-					this.productTempList = this.stockList;
-					
-				}).catch((error: any) => {
-					
-				});
-		  } else if(this.categoryID == 0) {
-				firebase.database().ref('/productsforselling/').once('value').then((snapshot) => {
-				  this.stockList = [];
-				  this.productTempList = [];
-					snapshot.forEach(item => {
-						let b = item.toJSON();
-						let index = item.key;
-						if(b['available'] == 'Y') {
-							firebase.database().ref('/properties/products/').orderByChild('productcode').equalTo(b['productcode']).once('value').then((snapshot) => {
-								snapshot.forEach(item => {
-									let a = item.toJSON();
-									a['index'] = index;
-									a['price'] = b['price'];
-									a['discount'] = b['discount'];
-									a['discountprice'] = b['discountprice'];
-									a['selleruid'] = b['createdby'];
-									firebase.database().ref('/profile/'+b['createdby']).once('value').then((snapshot) => {
-										if(snapshot != null) {
-											let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
-															snapshot.child('latitude').val(),snapshot.child('longitude').val());
-											a['distance'] = Math.round(distance * 100) / 100;
-											a['shopname'] = snapshot.child('shopname').val();
-											this.stockList.push(a);
-											this.stockList.sort(function (a, b) {
-												return Number(a.distance) - Number(b.distance);
-											});
-										}
-									}).catch((error: any) => {
-										
-									});
-								});
-							}).catch((error: any) => {
-								
-							});
-						}
-					})
-					this.productTempList = this.stockList;
-					
-				}).catch((error: any) => {
-					
-				});
-			  } else {
-				  firebase.database().ref('/productsforselling/').orderByChild('category').equalTo(this.categoryID).once('value').then((snapshot) => {
-				  this.stockList = [];
-				  this.productTempList = [];
-					snapshot.forEach(item => {
-						let b = item.toJSON();
-						let index = item.key;
-						if(b['available'] == 'Y') {
-							firebase.database().ref('/properties/products/').orderByChild('productcode').equalTo(b['productcode']).once('value').then((snapshot) => {
-								snapshot.forEach(item => {
-									let a = item.toJSON();
-									a['index'] = index;
-									a['price'] = b['price'];
-									a['discount'] = b['discount'];
-									a['discountprice'] = b['discountprice'];
-									a['selleruid'] = b['createdby'];
-									firebase.database().ref('/profile/'+b['createdby']).once('value').then((snapshot) => {
-										if(snapshot != null) {
-											let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
-															snapshot.child('latitude').val(),snapshot.child('longitude').val());
-											a['distance'] = Math.round(distance * 100) / 100;
-											a['shopname'] = snapshot.child('shopname').val();
-											this.stockList.push(a);
-											this.stockList.sort(function (a, b) {
-												return Number(a.distance) - Number(b.distance);
-											});
-										}
-									}).catch((error: any) => {
-										
-									});
-								});
-							}).catch((error: any) => {
-								
-							});
-						}
-					})
-					this.productTempList = this.stockList;
-					
-				}).catch((error: any) => {
-					
-				});
-			  }
-		});	  
-	  
+	this.fetchData();
+	
 	if(this.authService.getUserType() == 'SA' || this.authService.getUserType() == 'A') {
 		this.isAdmin = true;
 	}
@@ -245,6 +119,155 @@ cartList = [];
 	  }
 	});
 	await modal.present();
+  }
+  
+  fetchData() {
+	  this.norecordstatus = false;
+	  this.activatedRoute.queryParams.subscribe(params => {
+		  this.productcode = params['productcode'];
+		  this.productstatus = params['productstatus'];
+		  this.categoryID = this.activatedRoute.snapshot.params['id'];  
+		  if(this.productcode != undefined) {
+			  firebase.database().ref('/productsforselling/').orderByChild('productcode').equalTo(this.productcode).once('value').then((snapshot) => {
+				  this.stockList = [];
+				  this.productTempList = [];
+					snapshot.forEach(item => {
+						let b = item.toJSON();
+						let index = item.key;
+						if((this.productstatus == 'D') ? b['discount'] : b['available'] == 'Y') {
+							firebase.database().ref('/properties/products/').orderByChild('productcode').equalTo(b['productcode']).once('value').then((snapshot) => {
+								snapshot.forEach(item => {
+									let a = item.toJSON();
+									a['index'] = index;
+									a['price'] = b['price'];
+									a['discount'] = b['discount'];
+									a['discountprice'] = b['discountprice'];
+									a['selleruid'] = b['createdby'];
+									firebase.database().ref('/profile/'+b['createdby']).once('value').then((snapshot) => {
+										if(snapshot != null) {
+											if(snapshot.child('active').val() == 'Y') {
+												let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
+																snapshot.child('latitude').val(),snapshot.child('longitude').val());
+												a['distance'] = Math.floor(Math.round(distance * 100) / 100);
+												a['estimatedtimearr'] = Math.floor(Math.round(((distance / 40) * 60) *100)/100);
+												a['shopname'] = snapshot.child('shopname').val();
+												this.stockList.push(a);
+												this.stockList.sort(function (a, b) {
+													return Number(a.distance) - Number(b.distance);
+												});
+											}
+										}
+									}).catch((error: any) => {
+										
+									});
+								});
+							}).catch((error: any) => {
+								
+							});
+						}
+					})
+					this.productTempList = this.stockList;
+					
+				}).catch((error: any) => {
+					
+				});
+		  } else if(this.categoryID == 0) {
+				firebase.database().ref('/productsforselling/').once('value').then((snapshot) => {
+				  this.stockList = [];
+				  this.productTempList = [];
+					snapshot.forEach(item => {
+						let b = item.toJSON();
+						let index = item.key;
+						if(b['available'] == 'Y') {
+							firebase.database().ref('/properties/products/').orderByChild('productcode').equalTo(b['productcode']).once('value').then((snapshot) => {
+								snapshot.forEach(item => {
+									let a = item.toJSON();
+									a['index'] = index;
+									a['price'] = b['price'];
+									a['discount'] = b['discount'];
+									a['discountprice'] = b['discountprice'];
+									a['selleruid'] = b['createdby'];
+									firebase.database().ref('/profile/'+b['createdby']).once('value').then((snapshot) => {
+										if(snapshot != null) {
+											if(snapshot.child('active').val() == 'Y') {
+												let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
+																snapshot.child('latitude').val(),snapshot.child('longitude').val());
+												a['distance'] = Math.floor(Math.round(distance * 100) / 100);
+												a['estimatedtimearr'] = Math.floor(Math.round(((distance / 40) * 60) *100)/100);
+												a['shopname'] = snapshot.child('shopname').val();
+												this.stockList.push(a);
+												this.stockList.sort(function (a, b) {
+													return Number(a.distance) - Number(b.distance);
+												});
+											}
+										}
+									}).catch((error: any) => {
+										
+									});
+								});
+							}).catch((error: any) => {
+								
+							});
+						}
+					})
+					this.productTempList = this.stockList;
+					
+				}).catch((error: any) => {
+					
+				});
+			  } else {
+				  
+				  firebase.database().ref('/productsforselling/').orderByChild('category').equalTo(this.categoryID).once('value').then((snapshot) => {
+				  this.stockList = [];
+				  this.productTempList = [];
+					snapshot.forEach(item => {
+						let b = item.toJSON();
+						let index = item.key;
+						if(b['available'] == 'Y') {
+							firebase.database().ref('/properties/products/').orderByChild('productcode').equalTo(b['productcode']).once('value').then((snapshot) => {
+								snapshot.forEach(item => {
+									let a = item.toJSON();
+									a['index'] = index;
+									a['price'] = b['price'];
+									a['discount'] = b['discount'];
+									a['discountprice'] = b['discountprice'];
+									a['selleruid'] = b['createdby'];
+									firebase.database().ref('/profile/'+b['createdby']).once('value').then((snapshot) => {
+										if(snapshot != null) {
+											if(snapshot.child('active').val() == 'Y') {
+												let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
+																snapshot.child('latitude').val(),snapshot.child('longitude').val());
+												a['distance'] = Math.floor(Math.round(distance * 100) / 100);
+												a['estimatedtimearr'] = Math.floor(Math.round(((distance / 40) * 60) *100)/100);
+												a['shopname'] = snapshot.child('shopname').val();
+												this.stockList.push(a);
+												this.stockList.sort(function (a, b) {
+													return Number(a.distance) - Number(b.distance);
+												});
+											}
+										}
+									}).catch((error: any) => {
+										
+									});
+								});
+							}).catch((error: any) => {
+								
+							});
+						}
+					})
+					this.productTempList = this.stockList;
+					
+				}).catch((error: any) => {
+					
+				});
+			  }
+		});	 
+
+	setTimeout(() => {
+		if(this.stockList.length == 0) {
+			this.norecordstatus = true;
+		}
+	}, 10000);
   }
 
 }

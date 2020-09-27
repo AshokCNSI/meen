@@ -9,6 +9,7 @@
 		<ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
 	</ion-title>
 	<ion-title *ngIf="locationService.getCurrentLocation()" (click)="openMapSelection()">
+	<!-- <ion-title (click)="openMapSelection()"> -->
 		{{locationService.getCurrentLocation() == "" ? 'No address found' : locationService.getCurrentLocation()}}
 		<p class="subtitle">Click to change address</p>
 	</ion-title>
@@ -17,7 +18,7 @@
         <ion-icon name="notifications-circle-outline"></ion-icon>
     </ion-buttons>
   </ion-toolbar>
-  	<ion-searchbar *ngIf="authService.getUserType() != 'D'" animated showCancelButton="always" debounce="500" (ionCancel)="onCancel($event)" cancelButtonText="Custom Cancel"
+  	<ion-searchbar *ngIf="sellerList.length > 0" animated showCancelButton="always" debounce="500" (ionCancel)="onCancel($event)" cancelButtonText="Custom Cancel"
 		(ionInput)="filterProductList($event)" (ionFocus)="hideContent()"  [value]="searchVal" autofocus="true"></ion-searchbar>
 
 </ion-header>
@@ -26,6 +27,21 @@
 	<div class="spin" *ngIf="spinnerShow">
 		<ion-spinner name="lines"></ion-spinner>
 	</div>
+<ng-container *ngIf="sellerList.length == 0 && nosellerrecordstatus">
+<div class="no-items" style="margin-top:30%;">
+	<ion-card-title class="title-warning-1">Sorry. No Shops Available</ion-card-title>
+	<ion-card-subtitle class="subtitle-warning-1">Orders will be served within 10km radius. Please change the location to see any shops available near to your place.</ion-card-subtitle>
+	<ion-button color="light" (click)="openMapSelection()">Change Location</ion-button>
+</div>
+</ng-container>
+<ng-container *ngIf="sellerList.length == 0 && !nosellerrecordstatus">
+<div class="no-items" style="margin-top:30%;">
+	Please wait, we are fishing for you...
+	<img src="../assets/images/fishing.jpg">
+
+</div>
+</ng-container>
+<div *ngIf="sellerList.length > 0">
 <ng-container *ngIf="!authService.getIsUserLoggedIn() || authService.getUserType() == 'A' || authService.getUserType() == 'SA'  || authService.getUserType() == 'C'">
 <div [@visibilityChanged]="visibility" style="display: block;">
 <ion-card style="box-shadow: none;" *ngIf="instBanner.length == 0">
@@ -92,7 +108,12 @@
 	<ion-card-header>
 		<ion-card-title class="heading">Available Offers</ion-card-title>
 	</ion-card-header>
-	  <ion-card style="box-shadow: none;" *ngIf="discountList.length == 0">
+	<ng-container *ngIf="discountList.length == 0 && nodiscountstatus">
+	<div class="no-items">
+		<ion-card-subtitle>No offers Available today</ion-card-subtitle>
+	</div>
+	</ng-container>
+	  <ion-card style="box-shadow: none;" *ngIf="discountList.length == 0 && !nodiscountstatus">
 		  <ion-card-header>
 			<ion-card-subtitle><ion-skeleton-text animated style="width: 100%;height:150px;"></ion-skeleton-text></ion-card-subtitle>
 		  </ion-card-header>
@@ -138,7 +159,8 @@
 		<ion-card-title class="heading">Shops Nearby</ion-card-title>
 		<ion-card-subtitle>Explore the best items you need</ion-card-subtitle>
 	</ion-card-header>	
-<div *ngIf="sellerList.length == 0">
+
+<div *ngIf="sellerList.length == 0 && !nosellerrecordstatus">
 	<ion-row *ngFor="let i of Arr(skeletoncount).fill(1)">
 		<ion-col>
 			<ion-card>
@@ -162,13 +184,15 @@
 </div>
 <ng-container *ngIf="sellerList.length > 0">
 	<ion-item *ngFor="let p of sellerList; let i = index;" [routerLink]="['/sellerproducts/'+p.createdby]">
-		 <ion-thumbnail>
-				<img src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://americana-group.com/app/uploads/2016/11/345634573.jpg';">
+		 <ion-thumbnail [ngClass]="{'wrapper' : p.shopavailable == 'N'}">
+				<img [ngClass]="{'myImage' : p.shopavailable == 'N'}" src="{{p.imagepath}}" onerror="this.onerror=null;this.src='https://americana-group.com/app/uploads/2016/11/345634573.jpg';">
 		  </ion-thumbnail>
 		<ion-card-header>
-		  <ion-card-title class="titleThin">{{p.shopname}}</ion-card-title>
-		  <ion-card-subtitle class="subtitleThin"><ion-icon name="ribbon-outline"></ion-icon> {{p.firstname}} {{p.lastname}}</ion-card-subtitle>
-		  <ion-card-subtitle class="subtitleThin">{{p.distance}} km | <ion-icon name="stopwatch-outline"></ion-icon> ETA - {{40 + p.estimatedtimearr}} {{p.estimatedtimearr > 60 ? 'hrs' : 'mins'}}</ion-card-subtitle>
+		  <ion-card-title class="title-list-1">{{p.shopname}}</ion-card-title>
+		  <ion-card-subtitle class="subtitle-list-1"><ion-icon name="ribbon-outline"></ion-icon> {{p.firstname}} {{p.lastname}}</ion-card-subtitle>
+		  <ion-card-subtitle class="subtitle-list-2">{{p.distance}} km | <ion-icon name="stopwatch-outline"></ion-icon> ETA - {{40 + p.estimatedtimearr}} {{p.estimatedtimearr > 60 ? 'hrs' : 'mins'}}</ion-card-subtitle>
+		  <ion-card-subtitle class="subtitle-list-3" *ngIf="p.shopavailable == 'Y'">Shop opening from {{p.starttime | timepipe}} to {{p.endtime | timepipe}} </ion-card-subtitle>
+		  <ion-card-subtitle class="subtitle-list-3" *ngIf="p.shopavailable == 'N'">Shop closed and will be available</ion-card-subtitle>
 		  <ion-card-subtitle>
 		  <ionic5-star-rating #rating
 				activeIcon = "star"
@@ -208,48 +232,11 @@
 </div>
 	
 </ng-container>
-<ng-container *ngIf="authService.getUserType() == 'S'">
-	<ng-container *ngIf="productList.length == 0">
-		<p class="no-items">No products available</p>
-	</ng-container>
-	<ng-container *ngIf="productList.length > 0">
-	<ion-row>
-		<ion-col>
-			<ion-card *ngFor="let p of productList; let i = index;" (click)="routeProductDetail(p.index)">
-				<img alt="M" class="center" src="{{productList[i].imagepath}}" onerror="this.onerror=null;this.src='https://www.nicepng.com/png/detail/128-1282756_svg-free-download-marlin-clipart-deep-sea-fishing.png';">
-				<ion-card-header>
-				  <ion-card-subtitle>{{productList[i].title}}</ion-card-subtitle>
-				  <ion-card-title>&#x20b9; {{productList[i].price}}</ion-card-title>
-				</ion-card-header>
-				<ion-card-content style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-				  {{productList[i].details}}
-				</ion-card-content>
-			</ion-card>
-		</ion-col>
-	</ion-row>
-	</ng-container>
-</ng-container>
-<ng-container *ngIf="authService.getUserType() == 'D'">
-	<ng-container *ngIf="productList.length == 0">
-		<p class="no-items">No Assignments available</p>
-	</ng-container>
-	<ng-container *ngIf="productList.length > 0">
-	<ion-item *ngFor="let p of productList;" [routerLink]="['/orderdetails/'+p.index]">
-	  <ion-card-header>
-		  <ion-card-title>Order reference - {{p.orderref}}</ion-card-title>
-		  <ion-card-subtitle>{{p.modifieddate |  date:'MM/dd/yyyy h:mm:ss a'}}</ion-card-subtitle>
-		  <ion-card-subtitle>&#x20b9;{{p.totalamount}}</ion-card-subtitle>
-		  <ion-card-content style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-			  Pickup available within {{p.distance}} km
-		  </ion-card-content>
-	  </ion-card-header>
-	</ion-item>
-	</ng-container>
-</ng-container>
 
 <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="(!authService.getIsUserLoggedIn() && cartList.length > 0) || (cartList.length > 0 && authService.getUserType() == 'C')">
 	<ion-fab-button color="danger" [routerLink]="['/mycart']">
 	  <ion-icon name="cart"></ion-icon>
 	</ion-fab-button>
 </ion-fab>
+</div>
 </ion-content>

@@ -28,6 +28,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavParams } from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { PipesModule } from './pipes.module';
 
 // environment
 import { environment } from '../environments/environment';
@@ -47,7 +48,8 @@ import { FCM } from '@ionic-native/fcm/ngx';
     AngularFireDatabaseModule,
     AngularFireStorageModule,
 	StarRatingModule,
-	MatSnackBarModule
+	MatSnackBarModule,
+	PipesModule
   ],
   providers: [
     StatusBar,

@@ -69,6 +69,8 @@ export class HomePage implements OnInit {
   cartcount : number;
   sellerList = [];
   cartList = [];
+  nodiscountstatus = false;
+  nosellerrecordstatus = false;
   //Configuration for each Slider
   slideOptsOne = {
     initialSlide: 0,
@@ -130,29 +132,8 @@ export class HomePage implements OnInit {
     return await popover.present();
   }
   ngOnInit() { 
-	this.authService.userDetails().subscribe(res => { 
-		if (res !== null) {
-			this.authService.setUserName(res.email);
-			this.authService.setUserID(res.uid);
-			this.authService.setEmailID(res.email);
-			this.authService.setIsUserLoggedIn(true);
-			firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
-				if(snapshot != null) {
-					this.authService.setUserType(snapshot.child('usertype').val());  
-					this.authService.setUserName(snapshot.child('firstname').val()+" "+snapshot.child('lastname').val());
-					this.locationService.setCurrentLocationFn();
-					this.loadData();
-				}
-			})
-		} else {
-			this.authService.setIsUserLoggedIn(false);
-			this.locationService.setCurrentLocationFn();
-			this.loadData();
-		}
-	  }, err => {
-		  console.log('err', err);
-	 })
-	 
+	
+	this.loadData();
 	firebase.database().ref('/properties/prop').once('value').then((snapshot) => {
 		  if(snapshot != null) {
 			  if(snapshot.child('restrictapp').val() == 'Y') {
@@ -239,64 +220,7 @@ export class HomePage implements OnInit {
 	
 	loadData() {
 		this.menuCtrl.enable(true);
-		  if(this.authService.getUserType() == 'D') {
-			  firebase.database().ref('/orders/').orderByChild('currentstatus').equalTo('WFP').once('value').then((snapshot) => { 
-				  if(snapshot != null) {
-					  this.productList = [];
-					  snapshot.forEach(item => {
-						let a = item.toJSON();
-						a['index'] = item.key;
-						 firebase.database().ref('/productsforselling/'+a['seller']).once('value').then((snapshot) => {
-							if(snapshot != null) {
-								 firebase.database().ref('/profile/'+a['seller']).once('value').then((snapshot) => {
-									if(snapshot != null) {
-										let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),snapshot.child('latitude').val(),snapshot.child('longitude').val());
-										a['distance'] = Math.floor(Math.round(distance * 100) / 100);
-										 firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
-											if(snapshot != null) {
-												this.productList.push(a);
-											}
-										}).catch((error: any) => {
-											
-										});
-									}
-								}).catch((error: any) => {
-									
-								});
-							}
-						}).catch((error: any) => {
-								
-							});
-						this.productTempList = this.productList;
-					  })
-				  }
-			}).catch((error: any) => {
-				
-			});
-		} else if(this.authService.getUserType() == 'S') {
-			  firebase.database().ref('/productsforselling/').orderByChild('createdby').equalTo(this.authService.getUserID()).once('value').then((snapshot) => {
-				  this.productList = [];
-				  this.productTempList = [];
-				  snapshot.forEach(item => {
-					let a = item.toJSON();
-					a['index'] = item.key;
-					firebase.database().ref('/properties/products/'+a['productcode']).once('value').then((snapshot) => {
-						a['title'] = snapshot.child('title').val();
-						a['imagepath'] = snapshot.child('imagepath').val();
-						a['details'] = snapshot.child('details').val();
-						if(a['available'] == 'Y') {
-							this.productList.push(a);
-						}
-					}).catch((error: any) => {
-						
-					});
-					this.productTempList = this.productList;
-				  })
-			  }).catch((error: any) => {
-					
-				});
-			} else {
-				
+
 					this.storage.get('cart').then((val) => {
 						if(val) {
 							this.cartList = val;
@@ -330,35 +254,9 @@ export class HomePage implements OnInit {
 						
 					});
 					
-					firebase.database().ref('/properties/products/').once('value').then((snapshot) => {
-						this.discountList = [];
-						this.notificationcount = 0;
-						snapshot.forEach(item => {
-							let a = item.toJSON();
-							firebase.database().ref('/productsforselling/').orderByChild('productcode').equalTo(a['productcode']).once('value').then((snapshot) => {
-								this.discountPriceList = [];
-								snapshot.forEach(item => {
-									let b = item.toJSON();
-									if(b['discount'] == 'Y' && b['discountprice'] > 0) {
-										this.discountPriceList.push(b['discountprice']);
-									}
-								})
-								if(this.discountPriceList.length > 0) {
-									a['price'] = Math.max.apply(Math, this.discountPriceList);
-									this.discountList.push(a);
-									this.notificationcount = this.notificationcount + 1;
-									
-								}
-							}).catch((error: any) => {
-								
-							});
-						});
-					}).catch((error: any) => {
-						
-					});
 					this.fetchSeller();
+					this.fetchDiscount();
 					
-				}  
 				
 	}
 	
@@ -382,40 +280,84 @@ export class HomePage implements OnInit {
 		});
 		modal.onDidDismiss()
 		  .then((data) => {
-			  if (data !== null) {
-				
-			  }
+			this.fetchSeller();
+			this.fetchDiscount();
+			this.menuCtrl.enable(true);
 		});
 		return await modal.present();
   }
   
   fetchSeller() {
-	  (async() => {
-		
-		if(!this.locationService.getLatitude())
-			await new Promise(resolve => setTimeout(resolve, 3000));
-		
-		firebase.database().ref('/profile/').orderByChild('usertype').equalTo('S').once('value').then((snapshot) => {
-			this.sellerList = [];
-			if(snapshot != null) {
-				snapshot.forEach(item => {
-					let a = item.toJSON();
-					let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
-									a['latitude'],a['longitude']);
-					a['distance'] = Math.floor(Math.round(distance * 100) / 100);
+	  this.nosellerrecordstatus = false;
+	  firebase.database().ref('/profile/').orderByChild('usertype').equalTo('S').once('value').then((snapshot) => {
+		this.sellerList = [];
+		if(snapshot != null) {
+			snapshot.forEach(item => {
+				let a = item.toJSON();
+				console.log(a);
+				let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
+								a['latitude'],a['longitude']);
+				a['distance'] = Math.floor(Math.round(distance * 100) / 100);
+				if(a['distance'] <= 10) {
 					a['estimatedtimearr'] = Math.floor(Math.round(((distance / 40) * 60) *100)/100);
+					let starttimes = a['starttime'].split(":");
+					let endtimes = a['endtime'].split(":");
+					let starttime = Number(starttimes[0]) * 60 + Number(starttimes[1]);
+					let endtime = Number(endtimes[0]) * 60 + Number(endtimes[1]);
+					
+					let currentdate = new Date(); 
+					let currenttime = Number(currentdate.getHours()) * 60 + Number(currentdate.getMinutes());
+					a['shopavailable'] = (starttime <= currenttime && currenttime <= endtime) ? 'Y' : 'N';
 					this.sellerList.push(a);
 					this.sellerList.sort(function (a, b) {
 						return Number(a.distance) - Number(b.distance);
 					});
-					
-				})
-			}
-		}).catch((error: any) => {
-			
-		});
+				}
+			})
+		}
+	}).catch((error: any) => {
 		
-	})();
+	});
+	setTimeout(() => {
+		if(this.sellerList.length == 0) {
+			this.nosellerrecordstatus = true;
+		}
+	}, 10000);
+  }
+  
+  fetchDiscount() {
+	  this.nodiscountstatus = false;
+	  firebase.database().ref('/properties/products/').once('value').then((snapshot) => {
+		this.discountList = [];
+		this.notificationcount = 0;
+		snapshot.forEach(item => {
+			let a = item.toJSON();
+			firebase.database().ref('/productsforselling/').orderByChild('productcode').equalTo(a['productcode']).once('value').then((snapshot) => {
+				this.discountPriceList = [];
+				snapshot.forEach(item => {
+					let b = item.toJSON();
+					if(b['discount'] == 'Y' && b['discountprice'] > 0) {
+						this.discountPriceList.push(b['discountprice']);
+					}
+				})
+				if(this.discountPriceList.length > 0) {
+					a['price'] = Math.max.apply(Math, this.discountPriceList);
+					this.discountList.push(a);
+					this.notificationcount = this.notificationcount + 1;
+					
+				}
+			}).catch((error: any) => {
+				
+			});
+		});
+	}).catch((error: any) => {
+		
+	});
+	setTimeout(() => {
+		if(this.discountList.length == 0) {
+			this.nodiscountstatus = true;
+		}
+	}, 10000);
   }
  
 }

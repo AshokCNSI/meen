@@ -10,6 +10,7 @@ import { AlertController } from '@ionic/angular';
 import { NavController } from '@ionic/angular';
 import * as firebase from 'firebase';
 import {  MenuController } from '@ionic/angular';
+import { LoadingService } from '../loading.service';
 
 declare var google;
 
@@ -52,6 +53,7 @@ export class MapselectionPage implements OnInit {
 	public locationR : Location,
 	public modalController: ModalController,
 	public alertCtrl: AlertController, 
+	public loading: LoadingService,
 	private navController: NavController, 
 	private authService: AuthenticateService,
 	private locationService: LocationserviceService,
@@ -97,222 +99,9 @@ export class MapselectionPage implements OnInit {
 
   //LOADING THE MAP HAS 2 PARTS.
   loadMap() {
-    var styledMapType = new google.maps.StyledMapType([
-  {
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#ebe3cd"
-      }
-    ]
-  },
-  {
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#523735"
-      }
-    ]
-  },
-  {
-    "elementType": "labels.text.stroke",
-    "stylers": [
-      {
-        "color": "#f5f1e6"
-      }
-    ]
-  },
-  {
-    "featureType": "administrative",
-    "elementType": "geometry.stroke",
-    "stylers": [
-      {
-        "color": "#c9b2a6"
-      }
-    ]
-  },
-  {
-    "featureType": "administrative.land_parcel",
-    "elementType": "geometry.stroke",
-    "stylers": [
-      {
-        "color": "#dcd2be"
-      }
-    ]
-  },
-  {
-    "featureType": "administrative.land_parcel",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#ae9e90"
-      }
-    ]
-  },
-  {
-    "featureType": "landscape.natural",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#dfd2ae"
-      }
-    ]
-  },
-  {
-    "featureType": "poi",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#dfd2ae"
-      }
-    ]
-  },
-  {
-    "featureType": "poi",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#93817c"
-      }
-    ]
-  },
-  {
-    "featureType": "poi.park",
-    "elementType": "geometry.fill",
-    "stylers": [
-      {
-        "color": "#a5b076"
-      }
-    ]
-  },
-  {
-    "featureType": "poi.park",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#447530"
-      }
-    ]
-  },
-  {
-    "featureType": "road",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#f5f1e6"
-      }
-    ]
-  },
-  {
-    "featureType": "road.arterial",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#fdfcf8"
-      }
-    ]
-  },
-  {
-    "featureType": "road.highway",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#f8c967"
-      }
-    ]
-  },
-  {
-    "featureType": "road.highway",
-    "elementType": "geometry.stroke",
-    "stylers": [
-      {
-        "color": "#e9bc62"
-      }
-    ]
-  },
-  {
-    "featureType": "road.highway.controlled_access",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#e98d58"
-      }
-    ]
-  },
-  {
-    "featureType": "road.highway.controlled_access",
-    "elementType": "geometry.stroke",
-    "stylers": [
-      {
-        "color": "#db8555"
-      }
-    ]
-  },
-  {
-    "featureType": "road.local",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#806b63"
-      }
-    ]
-  },
-  {
-    "featureType": "transit.line",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#dfd2ae"
-      }
-    ]
-  },
-  {
-    "featureType": "transit.line",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#8f7d77"
-      }
-    ]
-  },
-  {
-    "featureType": "transit.line",
-    "elementType": "labels.text.stroke",
-    "stylers": [
-      {
-        "color": "#ebe3cd"
-      }
-    ]
-  },
-  {
-    "featureType": "transit.station",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#dfd2ae"
-      }
-    ]
-  },
-  {
-    "featureType": "water",
-    "elementType": "geometry.fill",
-    "stylers": [
-      {
-        "color": "#b9d3c2"
-      }
-    ]
-  },
-  {
-    "featureType": "water",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#92998d"
-      }
-    ]
-  }
-]);
+    
     //FIRST GET THE LOCATION FROM THE DEVICE.
+	this.loading.present();
     this.geolocation.getCurrentPosition().then((resp) => {
       let latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
       let mapOptions = {
@@ -332,10 +121,9 @@ export class MapselectionPage implements OnInit {
       //LOAD THE MAP WITH THE PREVIOUS VALUES AS PARAMETERS.
       this.getAddressFromCoords(resp.coords.latitude, resp.coords.longitude); 
       this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-	  this.map.mapTypes.set('styled_map', styledMapType);
-      this.map.setMapTypeId('styled_map');
       //this.addMarker(this.map);	  
       this.map.addListener('tilesloaded', () => {
+		this.loading.present();
         console.log('accuracy',this.map, this.map.center.lat());
         this.getAddressFromCoords(this.map.center.lat(), this.map.center.lng())
         this.lat = this.map.center.lat()
@@ -344,6 +132,7 @@ export class MapselectionPage implements OnInit {
 		this.current_long = this.map.center.lng();
 		this.current_location = this.getAddressFromCoords(this.map.center.lat(), this.map.center.lng());
 		this.addressA = this.current_location.split(",");
+		this.loading.dismiss();
       }); 
     }).catch((error) => {
       console.log('Error getting location', error);
@@ -351,6 +140,7 @@ export class MapselectionPage implements OnInit {
 	  this.current_long = "";
 	  this.current_location = 'No address found.';
     });
+	this.loading.dismiss();
   }
 
   
@@ -458,6 +248,7 @@ export class MapselectionPage implements OnInit {
 	modal.onDidDismiss()
       .then((data) => {
 		  if (data !== null) {
+			this.loading.present();
 			this.address = data.data.description; 
 			this.current_location = this.address;
 			this.addressA = this.address.split(",")			
@@ -501,6 +292,7 @@ export class MapselectionPage implements OnInit {
 			.catch((error: any) => {
 				
 			});
+			this.loading.dismiss();
 		  }
     });
     await modal.present();
@@ -511,6 +303,10 @@ export class MapselectionPage implements OnInit {
   }
   
   confirmMyLocation() {
+	  //this.current_lat = "11.477696";
+	  //this.current_long = "77.873886";
+	  //this.current_location = "Sankari";
+	  this.loading.present();
 	  if(this.current_lat != undefined && this.current_lat != "" 
 		&& this.current_long != undefined && this.current_long != ""
 		&& this.current_location != undefined && this.current_location != "") {
@@ -524,7 +320,10 @@ export class MapselectionPage implements OnInit {
 				this.locationService.setLatitude(this.current_lat);
 				this.locationService.setLongitude(this.current_long);
 				this.locationService.setCurrentLocation(this.current_location);
-				this.modalController.dismiss();
+				setTimeout(() => {
+					this.loading.dismiss();
+					this.modalController.dismiss();
+				}, 5000);
 			}
 		} else {
 			this.presentAlert('Error','No address found');
