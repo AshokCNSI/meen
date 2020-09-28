@@ -20,7 +20,7 @@
 </ion-card-header>
 <ion-item>
 	<ion-card-header>
-		  <ion-card-title class="title">{{shopname}}</ion-card-title>
+		  <ion-card-title >{{shopname}}</ion-card-title>
 		  <ion-card-subtitle>{{distance}} km</ion-card-subtitle>
 		  <ion-card-subtitle (click)="goToClientLocation()" color="danger" *ngIf="authService.getUserType() == 'D' && oldStatus == 'DS'">Navigate to Shop</ion-card-subtitle>
 	</ion-card-header>
@@ -32,15 +32,15 @@
 </ion-item>
 <ion-card>
   <ion-card-header>
-	<ion-card-subtitle class="thrirdlevellabel">{{dname}}</ion-card-subtitle>
-	<ion-card-title class="thrirdlevellabel">{{dmobile}}</ion-card-title>
-	<ion-card-content class="subtitleThin">
+	<ion-card-subtitle >{{dname}}</ion-card-subtitle>
+	<ion-card-title >{{dmobile}}</ion-card-title>
+	<ion-card-subtitle (click)="goToClientLocation()" color="danger" *ngIf="authService.getUserType() == 'D' && oldStatus == 'IPD'">Navigate to Customer</ion-card-subtitle>
+  </ion-card-header>
+  <ion-card-content >
 		{{dhouseno}}
 		{{dstreetname}}
 		{{dlandmark}}
 	</ion-card-content>
-	<ion-card-subtitle (click)="goToClientLocation()" color="danger" *ngIf="authService.getUserType() == 'D' && oldStatus == 'IPD'">Navigate to Customer</ion-card-subtitle>
-  </ion-card-header>
 </ion-card>
 </ng-container>
 <ion-card-header>
@@ -50,7 +50,7 @@
 <ng-container *ngFor="let p of cartList; let i = index;">
 <ion-item (click)="openItemDetails(i)">
 	<ion-card-header>
-		  <ion-card-title class="title">{{p.title}}</ion-card-title>
+		  <ion-card-title >{{p.title}}</ion-card-title>
 		  <ion-card-title class="titlelink" style="color:{{cartList[i].options || cartList[i].desc ? 'red' : '#3880ff'}}">{{cartList[i].options || cartList[i].desc ? 'customized' : 'customize'}} ></ion-card-title>
 	</ion-card-header>
 </ion-item>

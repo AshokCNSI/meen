@@ -303,8 +303,8 @@ export class MapselectionPage implements OnInit {
   }
   
   confirmMyLocation() {
-	  //this.current_lat = "11.477696";
-	  //this.current_long = "77.873886";
+	  //this.current_lat = "11.365270";
+	  //this.current_long = "77.748310";
 	  //this.current_location = "Sankari";
 	  this.loading.present();
 	  if(this.current_lat != undefined && this.current_lat != "" 

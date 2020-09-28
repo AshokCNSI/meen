@@ -193,7 +193,7 @@
 		  <ion-card-subtitle class="subtitle-list-2">{{p.distance}} km | <ion-icon name="stopwatch-outline"></ion-icon> ETA - {{40 + p.estimatedtimearr}} {{p.estimatedtimearr > 60 ? 'hrs' : 'mins'}}</ion-card-subtitle>
 		  <ion-card-subtitle class="subtitle-list-3" *ngIf="p.shopavailable == 'Y'">Shop opening from {{p.starttime | timepipe}} to {{p.endtime | timepipe}} </ion-card-subtitle>
 		  <ion-card-subtitle class="subtitle-list-3" *ngIf="p.shopavailable == 'N'">Shop closed and will be available</ion-card-subtitle>
-		  <ion-card-subtitle>
+		  <ion-item>
 		  <ionic5-star-rating #rating
 				activeIcon = "star"
 				defaultIcon = "star-outline"
@@ -203,8 +203,10 @@
 				rating="{{p.rating ? p.rating : 0}}"
 				fontSize = "15px"
 				(ratingChanged)="logRatingChange($event)">
-			</ionic5-star-rating> {{p.rating ? p.rating : 'No Reviews yet'}}</ion-card-subtitle>
+			</ionic5-star-rating>>{{p.rating ? p.rating : 'No Reviews yet'}}
+		</ion-item>
 		</ion-card-header>
+		
 	</ion-item>
 </ng-container>
 </div>
@@ -232,11 +234,12 @@
 </div>
 	
 </ng-container>
-
+</div>
+</ion-content>
+<ion-footer>
 <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="(!authService.getIsUserLoggedIn() && cartList.length > 0) || (cartList.length > 0 && authService.getUserType() == 'C')">
 	<ion-fab-button color="danger" [routerLink]="['/mycart']">
 	  <ion-icon name="cart"></ion-icon>
 	</ion-fab-button>
 </ion-fab>
-</div>
-</ion-content>
+</ion-footer>

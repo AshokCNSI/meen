@@ -72,6 +72,9 @@ export class AppComponent implements OnInit {
 		useLocale: true,
 		maxResults: 5
 	};
+	//this.locationService.setLatitude("11.330400");
+	//this.locationService.setLongitude("77.747223");
+	//this.locationService.setCurrentLocation("Kollampalayam, Erode.");
 	if(this.locationService.getLatitude() == undefined || this.locationService.getLatitude() == "" 
 		|| this.locationService.getLongitude() == undefined || this.locationService.getLongitude() == ""
 		|| this.locationService.getCurrentLocation() == undefined || this.locationService.getCurrentLocation() == "") {

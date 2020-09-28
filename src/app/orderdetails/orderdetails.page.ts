@@ -148,6 +148,7 @@ export class OrderdetailsPage implements OnInit {
 						this.shopname = snapshot.child('shopname').val();
 						this.distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
 														snapshot.child('latitude').val(),snapshot.child('longitude').val());
+						this.distance = Math.floor(Math.round(this.distance * 100) / 100);
 					}
 				}).catch((error: any) => {
 					

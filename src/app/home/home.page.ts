@@ -294,10 +294,9 @@ export class HomePage implements OnInit {
 		if(snapshot != null) {
 			snapshot.forEach(item => {
 				let a = item.toJSON();
-				console.log(a);
 				let distance = this.locationService.getDistanceFromLatLonInKm(this.locationService.getLatitude(),this.locationService.getLongitude(),
 								a['latitude'],a['longitude']);
-				a['distance'] = Math.floor(Math.round(distance * 100) / 100);
+				a['distance'] = Math.floor(Math.round(distance * 100) / 100) < 1 ? Math.round(distance * 100) : Math.floor(Math.round(distance * 100) / 100);
 				if(a['distance'] <= 10) {
 					a['estimatedtimearr'] = Math.floor(Math.round(((distance / 40) * 60) *100)/100);
 					let starttimes = a['starttime'].split(":");

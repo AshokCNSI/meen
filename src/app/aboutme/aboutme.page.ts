@@ -50,9 +50,6 @@ export class AboutmePage implements OnInit {
 		this.authService.setIsUserLoggedIn(false);
 		this.authService.setUserType("");  
 		this.authService.setUserName("");  
-		this.locationService.setLatitude("");
-		this.locationService.setLongitude("");
-		this.locationService.setCurrentLocation("");
 		this.locationService.navController.navigateRoot('/home');
       })
       .catch(error => {

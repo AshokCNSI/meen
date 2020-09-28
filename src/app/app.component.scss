@@ -116,14 +116,6 @@ ion-note {
   color: var(--ion-color-medium-shade);
 }
 
-ion-item.selected {
-  --color: var(--ion-color-primary);
-}
-
-* {
-font-family : Roboto Light;
-}
-
 .menu-header-bg {
 	height: 150px;
 }
@@ -166,14 +158,4 @@ div.at-container {
     -webkit-transform: scale(.2);
     transform: scale(.2);
   }
-}
-
-ion-card-title{
-font-family : Roboto Bold;
-font-size : 17px;
-}
-
-ion-card-subtitle {
-font-size	: 13px !important;
-font-family : Roboto Black;
 }
