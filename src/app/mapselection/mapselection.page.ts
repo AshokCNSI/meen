@@ -306,7 +306,7 @@ export class MapselectionPage implements OnInit {
 	  //this.current_lat = "11.365270";
 	  //this.current_long = "77.748310";
 	  //this.current_location = "Sankari";
-	  this.loading.present();
+	  //this.loading.present();
 	  if(this.current_lat != undefined && this.current_lat != "" 
 		&& this.current_long != undefined && this.current_long != ""
 		&& this.current_location != undefined && this.current_location != "") {
@@ -321,13 +321,13 @@ export class MapselectionPage implements OnInit {
 				this.locationService.setLongitude(this.current_long);
 				this.locationService.setCurrentLocation(this.current_location);
 				setTimeout(() => {
-					this.loading.dismiss();
+					//this.loading.dismiss();
 					this.modalController.dismiss();
 				}, 5000);
 			}
 		} else {
 			this.presentAlert('Error','No address found');
-      this.loading.dismiss();
+      //this.loading.dismiss();
 		}
   }
   
