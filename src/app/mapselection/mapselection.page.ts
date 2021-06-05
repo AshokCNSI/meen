@@ -327,6 +327,7 @@ export class MapselectionPage implements OnInit {
 			}
 		} else {
 			this.presentAlert('Error','No address found');
+      this.loading.dismiss();
 		}
   }
   

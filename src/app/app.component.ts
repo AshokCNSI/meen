@@ -21,6 +21,7 @@ import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
 import { timer } from 'rxjs';
 import { FCM } from '@ionic-native/fcm/ngx';
+import { EventsService } from './events.service';
 
 @Component({
   selector: 'app-root',
@@ -50,7 +51,8 @@ export class AppComponent implements OnInit {
 	private locationService: LocationserviceService,
 	private loading : LoadingService,
 	private modalController : ModalController,
-	private fcm: FCM
+	private fcm: FCM,
+	private events: EventsService
   ) {
 	
     this.initializeApp();
@@ -202,6 +204,53 @@ export class AppComponent implements OnInit {
         console.log(token);
       });
     });
+
+	this.events.getObservable().subscribe((data) => {
+		console.log("Data received:", data);
+		this.authService.userDetails().subscribe(res => { 
+			if (res !== null) {
+				this.authService.setUserName(res.email);
+				this.authService.setUserID(res.uid);
+				this.authService.setEmailID(res.email);
+				this.authService.setIsUserLoggedIn(true);
+				firebase.database().ref('/profile/'+res.uid).once('value').then((snapshot) => {
+					if(snapshot != null) {
+						this.authService.setUserType(snapshot.child('usertype').val());  
+						this.authService.setUserName(snapshot.child('firstname').val()+" "+snapshot.child('lastname').val());
+						timer(2000).subscribe(() => this.showSplash = false);
+					}
+				})
+			} else {
+				this.authService.setIsUserLoggedIn(false);
+				timer(2000).subscribe(() => this.showSplash = false);
+			}
+		  }, err => {
+			  console.log('err', err);
+		 })
+	});
+
+	let options: NativeGeocoderOptions = {
+		useLocale: true,
+		maxResults: 5
+	};
+	
+	if(this.locationService.getLatitude() == undefined || this.locationService.getLatitude() == "" 
+		|| this.locationService.getLongitude() == undefined || this.locationService.getLongitude() == ""
+		|| this.locationService.getCurrentLocation() == undefined || this.locationService.getCurrentLocation() == "") {
+		this.geolocation.getCurrentPosition().then((resp) => {
+		 this.locationService.setLatitude(resp.coords.latitude.toString());
+		 this.locationService.setLongitude(resp.coords.longitude.toString());
+		 this.nativeGeocoder.reverseGeocode(resp.coords.latitude, resp.coords.longitude, options)
+			.then((result: NativeGeocoderResult[]) => {
+				this.locationService.setCurrentLocation(this.generateAddress(result[0]));
+			})
+			.catch((error: any) => {
+				//this.navController.navigateRoot('/locationfinder');
+			});
+		}).catch((error) => {
+		  console.log('Error getting location', error);
+		});
+	}
   }
   
   ngOnInit() {

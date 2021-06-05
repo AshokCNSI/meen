@@ -13,6 +13,7 @@ import { ModalController, NavParams } from '@ionic/angular';
 import { LoadingService } from '../loading.service';
 import { MobileloginPage } from '../mobilelogin/mobilelogin.page';
 import { LocationserviceService } from '../locationservice.service';
+import { EventsService } from '../events.service';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +37,8 @@ export class CustomerdetailsPage implements OnInit {
   public loading: LoadingService,
   public modalController: ModalController,
   private locationService: LocationserviceService,
-  private navParams: NavParams) { 
+  private navParams: NavParams,
+  private events : EventsService) { 
 	this.pagemode = this.navParams.data.pagemode;
   }
 
@@ -89,6 +91,7 @@ save(form){
 	  } else {
 		  this.authService.userDetails().subscribe(res => { 
 			if (res !== null) {
+				let userLoginID = res.uid;
 				firebase.database().ref('/profile/'+res.uid).set({
 					"firstname" : this.formData.value.firstname,
 					"lastname" : this.formData.value.lastname,
@@ -104,6 +107,9 @@ save(form){
 						this.modalController.dismiss();
 						this.locationService.setUserData();
 					} else {
+						this.events.publishSomeData({
+							uid: userLoginID
+						  })
 						this.navController.navigateRoot('/home');
 					}
 			   }
